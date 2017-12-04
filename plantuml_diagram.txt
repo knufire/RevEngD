@@ -1,64 +1,22 @@
 @startuml
-class RevEngDField {
-  + Modifier[] modifiers
-  + String type
-  + String name
-}
-
-class RevEngDMethodParam {
-  + String type
-  + String name
-}
-
-class RevEngDMethod {
-  + Modifier[] modifiers
-  + RevEngDMethodParam[] params
-  + String name
-  + String returnType
-}
-
-enum RevEngDModifier {
-}
-
-class RevEngDClass {
-  + Modifier[] modifiers
-  + RevEngDMethod[] methods
-  + RevEngDField[] fields
-  + RevEngDClass[] interfaces
-  + RevEngDClass superclass
-  + String name
-  + String fullName
-}
-
 class RevEngDRelationship {
-	RevEngDClass class1
-	RevEngDClass class2
-	RevEngDRelation relation
+  + SootClass from
+  + SootClass to
+  + Relation rel
 }
 
-enum RevEngDRelation {
+enum Relation {
 }
 
-RevEngDField ..> RevEngDModifier
-RevEngDMethod ..> RevEngDModifier
-RevEngDMethod ..> RevEngDMethodParam
-RevEngDClass ..> RevEngDMethod
-RevEngDClass ..> RevEngDField
-RevEngDClass ..> RevEngDModifier
-RevEngDRelationship ..> RevEngDClass
-RevEngDRelationship ..> RevEngDRelation
+RevEngDRelationship ..> Relation
 
-interface ClassLoader {
-  + List<RevEngDClass> load
-}
-
-class SootLoader implements ClassLoader {
-  - Modifier accessLevel
+class SootLoader {
+  - int modifier
   - String projectDir
   - List<String> classesToParse
-  + List<RevEngDClass> load()
-  + SootLoader(String projectDir, List<String> classes, Modifier modifier)
-  + SootLoader(String projectDir, Modifier modifier)
+  + List<SootClass> load()
+  + SootLoader(String projectDir, List<String> classes, int modifier)
+  + SootLoader(String projectDir, int modifier)
   + SootLoader(String projectDir)
 }
 
@@ -67,64 +25,68 @@ package SOOT <<Node>> {
 }
 
 SootLoader ..> SOOT
-SootLoader ..> RevEngDModifier
-SootLoader ..> RevEngDClass
+SootLoader ..> SootClass
 
-class Generator {
-  + {static} List<RevEngDRelationship> generateRelationships(
-  {static} List<RevEngDClass> classes)
+class GeneratorFactory {
+  - List<SootClasses> classes
+  + GeneratorFactory(List<SootClasses> classes)
 }
 
-Generator ..> RevEngDClass
+GeneratorFactory ..> Generator
+GeneratorFactory ..> RelationshipGenerator
+GeneratorFactory ..> DisplayFactory
+GeneratorFactory ..> SootClass
+
+interface Generator {
+  + Displayable createDisplay()
+}
+
+class RelationshipGenerator implements Generator{
+  - List<SootClasses> classes
+  + RelationshipGenrator(List<SootClasses> classes)
+}
+
+RelationshipGenerator ..> SootClass
+
 Generator ..> RevEngDRelationship
 
 
 class Controller {
-  + Controller(ClassLoader loader, RevEngDUI ui)
+  + Controller(GeneratorFactory genFac)
   + void execute()
 }
 
-note right of Controller
-execute() {
-	List<RevEngDClass> classes = loader.load();
-	List<RevEngDRelationship> relationships = Generator.generateRelationships(classes);
-	ui.display(classes, relationships);
-}
+note left of Controller 
+	Generator generator = genFac.create(cmd);
+	Displayable disp = generator.createDisplay();
+	disp.display();
 end note
 
-Controller ..> RevEngDClass
-Controller ..> RevEngDRelationship
 Controller ..> Generator
-Controller ..> ClassLoader
-Controller ..> RevEngDUI
-Controller ..> RevEngDUIFactory
+Controller ..> GeneratorFactory
+Controller ..> Displayable
 
 class Main {
   + {static} void Main(String[] args)
 }
 
 Main ..> Controller
-Main ..> RevEngDUI
-Main ..> ClassLoader
-Main ..> Generator
+Main ..> SootLoader
+Main ..> GeneratorFactory
 
-interface RevEngDUI {
+interface Displayable {
   + void display()
 }
 
-class RevEngDUIFactory {
-  + RevEngDUI create(List<RevEngDClass> classes, 
-	List<RevEngDRelationship> relationships)
+class DisplayFactory {
+  + Displayable create(String plantUML)
 }
 
-class PlantUMLUI implements RevEngDUI {
-  + PlantUMLUI(List<RevEngDClass> classes, 
-  List<RevEngDRelationship> relationships)
+class PlantUMLDisplay implements Displayable {
+  + PlantUMLDisplay(String syntax)
   + void display()
 }
 
-RevEngDUIFactory ..> RevEngDUI
-PlantUMLUI ..> RevEngDClass
-PlantUMLUI ..> RevEngDRelationship
-
+DisplayFactory ..> Displayable
+DisplayFactory ..> PlantUMLDisplay
 @enduml
