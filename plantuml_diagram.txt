@@ -1,0 +1,130 @@
+@startuml
+class RevEngDField {
+  + Modifier[] modifiers
+  + String type
+  + String name
+}
+
+class RevEngDMethodParam {
+  + String type
+  + String name
+}
+
+class RevEngDMethod {
+  + Modifier[] modifiers
+  + RevEngDMethodParam[] params
+  + String name
+  + String returnType
+}
+
+enum RevEngDModifier {
+}
+
+class RevEngDClass {
+  + Modifier[] modifiers
+  + RevEngDMethod[] methods
+  + RevEngDField[] fields
+  + RevEngDClass[] interfaces
+  + RevEngDClass superclass
+  + String name
+  + String fullName
+}
+
+class RevEngDRelationship {
+	RevEngDClass class1
+	RevEngDClass class2
+	RevEngDRelation relation
+}
+
+enum RevEngDRelation {
+}
+
+RevEngDField ..> RevEngDModifier
+RevEngDMethod ..> RevEngDModifier
+RevEngDMethod ..> RevEngDMethodParam
+RevEngDClass ..> RevEngDMethod
+RevEngDClass ..> RevEngDField
+RevEngDClass ..> RevEngDModifier
+RevEngDRelationship ..> RevEngDClass
+RevEngDRelationship ..> RevEngDRelation
+
+interface ClassLoader {
+  + List<RevEngDClass> load
+}
+
+class SootLoader implements ClassLoader {
+  - Modifier accessLevel
+  - String projectDir
+  - List<String> classesToParse
+  + List<RevEngDClass> load()
+  + SootLoader(String projectDir, List<String> classes, Modifier modifier)
+  + SootLoader(String projectDir, Modifier modifier)
+  + SootLoader(String projectDir)
+}
+
+package SOOT <<Node>> {
+ class SceneBuilder
+}
+
+SootLoader ..> SOOT
+SootLoader ..> RevEngDModifier
+SootLoader ..> RevEngDClass
+
+class Generator {
+  + {static} List<RevEngDRelationship> generateRelationships(
+  {static} List<RevEngDClass> classes)
+}
+
+Generator ..> RevEngDClass
+Generator ..> RevEngDRelationship
+
+
+class Controller {
+  + Controller(ClassLoader loader, RevEngDUI ui)
+  + void execute()
+}
+
+note right of Controller
+execute() {
+	List<RevEngDClass> classes = loader.load();
+	List<RevEngDRelationship> relationships = Generator.generateRelationships(classes);
+	ui.display(classes, relationships);
+}
+end note
+
+Controller ..> RevEngDClass
+Controller ..> RevEngDRelationship
+Controller ..> Generator
+Controller ..> ClassLoader
+Controller ..> RevEngDUI
+Controller ..> RevEngDUIFactory
+
+class Main {
+  + {static} void Main(String[] args)
+}
+
+Main ..> Controller
+Main ..> RevEngDUI
+Main ..> ClassLoader
+Main ..> Generator
+
+interface RevEngDUI {
+  + void display()
+}
+
+class RevEngDUIFactory {
+  + RevEngDUI create(List<RevEngDClass> classes, 
+	List<RevEngDRelationship> relationships)
+}
+
+class PlantUMLUI implements RevEngDUI {
+  + PlantUMLUI(List<RevEngDClass> classes, 
+  List<RevEngDRelationship> relationships)
+  + void display()
+}
+
+RevEngDUIFactory ..> RevEngDUI
+PlantUMLUI ..> RevEngDClass
+PlantUMLUI ..> RevEngDRelationship
+
+@enduml
