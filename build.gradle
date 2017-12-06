@@ -37,7 +37,7 @@ compileJava {
     options.compilerArgs << '-g'
 }
 
-mainClassName = "csse374.revengd.examples.driver.ExamplesDriver"
+mainClassName = "odyssey.app.RevEngDApp"
 applicationDefaultJvmArgs = ["-Xms512m", "-Xmx1024m"]
 run {
 	standardInput = System.in
