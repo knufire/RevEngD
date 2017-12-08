@@ -36,7 +36,7 @@ class GeneratorFactory {
 }
 
 GeneratorFactory ..> Generator
-GeneratorFactory ..> RelationshipGenerator
+GeneratorFactory ..> BasicUMLGenerator
 GeneratorFactory --> DisplayFactory
 GeneratorFactory --> SootClass
 
@@ -48,7 +48,7 @@ abstract class Generator {
   + {abstract} Displayable createDisplay()
 }
 
-class RelationshipGenerator extends Generator{
+class BasicUMLGenerator extends Generator{
   + Displayable createDisplay()
 }
 
