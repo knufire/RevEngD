@@ -31,12 +31,13 @@ SootLoader ..> SootClass
 
 class GeneratorFactory {
   - List<SootClass> classes
-  + GeneratorFactory(List<SootClasses> classes)
+  - DisplayFactory displayFactory
+  + GeneratorFactory(List<SootClasses> classes, DisplayFactory displayFactory)
 }
 
 GeneratorFactory ..> Generator
 GeneratorFactory ..> RelationshipGenerator
-GeneratorFactory ..> DisplayFactory
+GeneratorFactory --> DisplayFactory
 GeneratorFactory --> SootClass
 
 abstract class Generator {
@@ -51,9 +52,9 @@ class RelationshipGenerator extends Generator{
   + Displayable createDisplay()
 }
 
-RelationshipGenerator --> SootClass
-
+Generator --> SootClass
 Generator ..> RevEngDRelationship
+Generator --> DisplayFactory
 
 
 class Controller {
@@ -79,6 +80,7 @@ class Main {
 Main ..> Controller
 Main ..> SootLoader
 Main ..> GeneratorFactory
+Main ..> DisplayFactory
 
 interface Displayable {
   + void display()
