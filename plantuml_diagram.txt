@@ -8,7 +8,9 @@ class RevEngDRelationship {
 enum Relation {
 }
 
-RevEngDRelationship ..> Relation
+RevEngDRelationship --> Relation
+RevEngDRelationship --> SootClass
+
 
 class SootLoader {
   - int modifier
@@ -28,30 +30,34 @@ SootLoader ..> SOOT
 SootLoader ..> SootClass
 
 class GeneratorFactory {
-  - List<SootClasses> classes
+  - List<SootClass> classes
   + GeneratorFactory(List<SootClasses> classes)
 }
 
 GeneratorFactory ..> Generator
 GeneratorFactory ..> RelationshipGenerator
 GeneratorFactory ..> DisplayFactory
-GeneratorFactory ..> SootClass
+GeneratorFactory --> SootClass
 
-interface Generator {
+abstract class Generator {
+  # List<SootClass> classes
+  # DisplayFactory displayFactory
+
+  + Generatory(List<SootClass> classes)
+  + {abstract} Displayable createDisplay()
+}
+
+class RelationshipGenerator extends Generator{
   + Displayable createDisplay()
 }
 
-class RelationshipGenerator implements Generator{
-  - List<SootClasses> classes
-  + RelationshipGenrator(List<SootClasses> classes)
-}
-
-RelationshipGenerator ..> SootClass
+RelationshipGenerator --> SootClass
 
 Generator ..> RevEngDRelationship
 
 
 class Controller {
+  - GeneratorFactory genFac
   + Controller(GeneratorFactory genFac)
   + void execute()
 }
@@ -63,7 +69,7 @@ note left of Controller
 end note
 
 Controller ..> Generator
-Controller ..> GeneratorFactory
+Controller --> GeneratorFactory
 Controller ..> Displayable
 
 class Main {
