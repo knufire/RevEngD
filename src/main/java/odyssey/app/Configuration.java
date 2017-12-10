@@ -1,23 +1,25 @@
 package odyssey.app;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Collections;
 import java.util.List;
 
-public class Configuration {
-	public List<String> classNames; 
-	public Path directory; 
-	public boolean parseAncestors;
-	public int accessModifier;
-	public boolean display;
+import soot.Modifier;
 
-	public Configuration(List<String> classNames, Path directory, boolean parseAncestors, int accessModifier,
-			boolean display) {
-		this.classNames = classNames;
-		this.directory = directory;
-		this.parseAncestors = parseAncestors;
-		this.accessModifier = accessModifier;
-		this.display = display;
-	}
-	
-	
+public class Configuration {
+  public List<String> classNames;
+  public Path directory;
+  public boolean parseAncestors;
+  public int accessModifier;
+  public boolean display;
+
+  public Configuration() {
+    classNames = Collections.emptyList();
+    directory = Paths.get("");
+    parseAncestors = false;
+    accessModifier = Modifier.PRIVATE;
+    display = true;
+  }
+
 }
