@@ -1,10 +1,6 @@
 package odyssey.app;
 
-public class RevEngDApp {
-
-	public RevEngDApp() {
-		// TODO Auto-generated constructor stub
-	}
+public class Runner {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
