@@ -1,0 +1,121 @@
+@startuml
+class UMLGenerationApp {
+  - Configuration config
+  + UMLGeneriationApp(Configuration config)
+  + void generate()
+}
+
+UMLGenerationApp --> Configuration
+
+class Processor {
+  - Configuration config
+  - List<Analyzer> pipeline
+
+  + Processor(Configuration config)
+  - void createPipline()
+  + AnalyzerBundle executePipeline()
+}
+
+Processor --> Configuration
+Processor ..> Analyzer
+Processor ..> AnalyzerBundle
+
+class Configuration {
+  + List<String> classNames
+  + Path directory
+  + boolean parseAncestors
+  + int accessModifier
+  + boolean display
+}
+
+class AnalyzerBundle {
+  + List<SootClass> classes
+  + List<Relationship> relationships
+  + String UML
+}
+
+interface Filter {
+  + boolean shouldProcess(SootClass class)
+  + boolean shouldProcess(SootMethod method)
+  + boolean shouldProcess(SootField field)
+}
+
+class PublicFilter implements Filter {
+  
+}
+
+class ProtectedFilter implements Filter {
+
+}
+
+interface Analyzer {
+  + AnalyzerBundle execute(AnalyzerBundle bundle)
+}
+
+Analyzer ..> AnalyzerBundle
+
+class SootAnalyzer implements Analyzer {
+  - List<Filters> filters
+  - Configuration config
+  - AnalyzerBundle bundle
+  + SootAnalyzer(List<Filters> filters, Configuration config)
+}
+
+package SOOT <<Node>> {
+ class SceneBuilder
+}
+
+SootAnalyzer ..> SOOT
+SootAnalyzer ..> SootClass
+
+class RelationshipAnalyzer implements Analyzer {
+  - List<Filters> filters
+  - Configuration config
+  - AnalyzerBundle bundle
+  + RelationshipAnalyzer(List<Filters> filters, Configuration config)
+}
+
+RelationshipAnalyzer ..> Relationship
+RelationshipAnalyzer ..> Relation
+
+
+class Relationship {
+  + SootClass from
+  + SootClass to
+  + Relation rel
+}
+
+Relationship --> Relation
+Relationship --> SootClass
+
+enum Relation {
+}
+
+class FilterAnalyzer implements Analyzer {
+  - List<Filters> filters
+  - Configuration config
+  - AnalyzerBundle bundle
+  + FilterAnalyzer(List<Filters> filters, Configuration config)
+}
+
+class UMLAnalyzer implements Analyzer {
+  - List<Filters> filters
+  - Configuration config
+  - AnalyzerBundle bundle
+  + UMLAnalyzer(List<Filters> filters, Configuration config)
+}
+
+class AncestorAnalyzer implements Analyzer {
+  - List<Filters> filters
+  - Configuration config
+  - AnalyzerBundle bundle
+  + AncestorAnalyzer(List<Filters> filters, Configuration config)
+}
+
+class Main {
+  + {static} void Main(String[] args)
+}
+
+Main ..> UMLGenerationApp
+Main ..> Configuration
+@enduml
