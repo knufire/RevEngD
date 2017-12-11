@@ -59,11 +59,15 @@ public class Runner {
     case "-a":
       config.accessModifier = parseModifier(values.get(0));
       return;
+    case "-c":
+      config.classNames = values;
+      return;
     case "-d":
       config.directory = Paths.get(values.get(0).trim());
       return;
-    case "-c":
-      config.classNames = values;
+    case "-m":
+      config.mainClassName = values.get(0);
+      return;
     case "--include-ancestors":
       config.parseAncestors = true;
       return;

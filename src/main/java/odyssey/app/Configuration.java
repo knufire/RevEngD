@@ -9,6 +9,7 @@ import soot.Modifier;
 
 public class Configuration {
   public List<String> classNames;
+  public String mainClassName;
   public Path directory;
   public boolean parseAncestors;
   public int accessModifier;
@@ -16,6 +17,7 @@ public class Configuration {
 
   public Configuration() {
     classNames = Collections.emptyList();
+    mainClassName = "";
     directory = Paths.get("");
     parseAncestors = false;
     accessModifier = Modifier.PRIVATE;
