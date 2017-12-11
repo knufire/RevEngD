@@ -12,6 +12,7 @@ public class Processor {
 
   Processor(Configuration config) {
     this.config = config;
+
   }
 
   private void createPipeline() {
@@ -26,4 +27,10 @@ public class Processor {
     return bundle;
   }
 
+  
+  
+  public static Processor getProcessor(Configuration config){
+    return new Processor(config);
+  }
+  
 }

@@ -1,5 +1,6 @@
 package odyssey.app;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -12,12 +13,13 @@ public class Runner {
 
   public static void main(String[] args) {
     if (args.length < 4) {
-      System.err.println("Must provide directory and class names");
+      System.out.println("Must provide directory and class names");
       return;
     }
 
     Configuration config = populateConfiguration(args);
-
+    UMLGenerationApp app = new UMLGenerationApp(config);
+    app.generate();
   }
 
   private static Configuration populateConfiguration(String[] args) {
@@ -35,8 +37,7 @@ public class Runner {
       current = args[i];
       if (current.startsWith("--")) {
         parsedArgs.put(current, Collections.emptyList());
-      }
-      if (current.startsWith("-")) {
+      } else if (current.startsWith("-")) {
         i++;
         List<String> values = new ArrayList<>();
         for (int j = i; j < args.length; j++) {
@@ -58,16 +59,23 @@ public class Runner {
     case "-a":
       config.accessModifier = parseModifier(values.get(0));
       return;
+    case "-d":
+      config.directory = Paths.get(values.get(0).trim());
+      return;
+    case "-c":
+      config.classNames = values;
+    case "--include-ancestors":
+      config.parseAncestors = true;
+      return;
     }
-    // TODO: Finish flags for -d, -c, --include-ancestors
   }
 
   private static int parseModifier(String string) {
     String lower = string.toLowerCase();
-    if(lower.equals("public")){
+    if (lower.equals("public")) {
       return Modifier.PUBLIC;
     }
-    if(lower.equals("protected")){
+    if (lower.equals("protected")) {
       return Modifier.PROTECTED;
     }
     return Modifier.PRIVATE;
