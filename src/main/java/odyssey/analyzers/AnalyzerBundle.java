@@ -2,6 +2,7 @@ package odyssey.analyzers;
 
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import odyssey.app.Relationship;
