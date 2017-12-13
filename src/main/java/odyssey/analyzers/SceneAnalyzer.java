@@ -27,7 +27,7 @@ public class SceneAnalyzer extends Analyzer {
         .addExclusions(Arrays.asList("soot.*", "polygot.*")).addExclusions(Arrays.asList("org.*", "com.*"));
 
     sceneBuilder = sceneBuilder.addClasses(config.classNames);
-
+    
     bundle.scene = sceneBuilder.build();
 
     return bundle;

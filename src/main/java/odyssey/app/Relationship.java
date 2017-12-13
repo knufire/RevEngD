@@ -4,34 +4,37 @@ import soot.SootClass;
 
 public class Relationship {
 
-  private SootClass from;
-  private SootClass to;
-  private Relation relation;
-  private int cardinality;
+	private SootClass from;
+	private SootClass to;
+	private Relation relation;
+	private int cardinality;
 
-  public Relationship(SootClass from, Relation relation, SootClass to, int cardinality) {
-    this.from = from;
-    this.relation = relation;
-    this.to = to;
-    this.cardinality = cardinality;
-  }
+	public Relationship(SootClass from, Relation relation, SootClass to, int cardinality) {
+		this.from = from;
+		this.relation = relation;
+		this.to = to;
+		this.cardinality = cardinality;
+	}
 
-  public SootClass getFromClass() {
-    return from;
-  }
+	public SootClass getFromClass() {
+		return from;
+	}
 
-  public SootClass getToClass() {
-    return to;
-  }
+	public SootClass getToClass() {
+		return to;
+	}
 
-  public Relation getRelation() {
-    return relation;
-  }
+	public Relation getRelation() {
+		return relation;
+	}
 
-  public int getCardinality() {
-    return cardinality;
-  }
-  
-  
+	public int getCardinality() {
+		return cardinality;
+	}
+
+	@Override
+	public String toString() {
+		return this.from.getName() + " " + this.relation.toString() + " " + this.to.getName();
+	}
 
 }
