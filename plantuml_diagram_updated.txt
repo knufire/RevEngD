@@ -1,19 +1,19 @@
 @startuml
 class UMLGenerationApp {
-  - Configuration config
-  + UMLGeneriationApp(Configuration config)
-  + void generate()
+ - Configuration config
+ + UMLGeneriationApp(Configuration config)
+ + void generate()
 }
 
 UMLGenerationApp --> Configuration
 
 class Processor {
-  - Configuration config
-  - List<Analyzer> pipeline
+ - Configuration config
+ - List<Analyzer> pipeline
 
-  + Processor(Configuration config)
-  - void createPipline()
-  + AnalyzerBundle executePipeline()
+ + Processor(Configuration config)
+ - void createPipline()
+ + AnalyzerBundle executePipeline()
 }
 
 Processor --> Configuration
@@ -21,58 +21,61 @@ Processor ..> Analyzer
 Processor ..> AnalyzerBundle
 
 class Configuration {
-  + List<String> classNames
-  + Path directory
-  + boolean parseAncestors
-  + int accessModifier
-  + boolean display
+ + List<String> classNames
+ + String mainClassName
+ + Path directory
+ + boolean parseAncestors
+ + int accessModifier
+ + boolean display
 }
 
 class AnalyzerBundle {
-  + List<SootClass> classes
-  + List<Relationship> relationships
-  + String UML
+ + List<SootClass> classes
+ + List<Relationship> relationships
+ + String UML
+ + Scene scene
+ + OutputStream out
 }
 
 interface Filter {
-  + boolean shouldProcess(SootClass class)
-  + boolean shouldProcess(SootMethod method)
-  + boolean shouldProcess(SootField field)
+ + boolean shouldProcess(SootClass class)
+ + boolean shouldProcess(SootMethod method)
+ + boolean shouldProcess(SootField field)
 }
 
 class PublicFilter implements Filter {
-  
+ 
 }
 
 class ProtectedFilter implements Filter {
 
 }
 
-interface Analyzer {
-  + AnalyzerBundle execute(AnalyzerBundle bundle)
+abstract class Analyzer {
+ - List<Filters> filters
+ - Configuration config
+ - AnalyzerBundle bundle
+ + Analyzer(List<Filter> filters, Configuration config)
+ + AnalyzerBundle execute(AnalyzerBundle bundle)
+ + void addFilter(Filter filter)
+ # boolean passesFilters(SootClass c)
+ # boolean passesFilters(SootMethod m)
+ # boolean passesFilters(SootField f)
 }
 
 Analyzer ..> AnalyzerBundle
 
-class SootAnalyzer implements Analyzer {
-  - List<Filters> filters
-  - Configuration config
-  - AnalyzerBundle bundle
-  + SootAnalyzer(List<Filters> filters, Configuration config)
+class SootAnalyzer extends Analyzer {
 }
 
 package SOOT <<Node>> {
- class SceneBuilder
+class SceneBuilder
 }
 
 SootAnalyzer ..> SOOT
 SootAnalyzer ..> SootClass
 
-class RelationshipAnalyzer implements Analyzer {
-  - List<Filters> filters
-  - Configuration config
-  - AnalyzerBundle bundle
-  + RelationshipAnalyzer(List<Filters> filters, Configuration config)
+class RelationshipAnalyzer extends Analyzer {
 }
 
 RelationshipAnalyzer ..> Relationship
@@ -80,9 +83,9 @@ RelationshipAnalyzer ..> Relation
 
 
 class Relationship {
-  + SootClass from
-  + SootClass to
-  + Relation rel
+ + SootClass from
+ + SootClass to
+ + Relation rel
 }
 
 Relationship --> Relation
@@ -91,29 +94,17 @@ Relationship --> SootClass
 enum Relation {
 }
 
-class FilterAnalyzer implements Analyzer {
-  - List<Filters> filters
-  - Configuration config
-  - AnalyzerBundle bundle
-  + FilterAnalyzer(List<Filters> filters, Configuration config)
+class FilterAnalyzer extends Analyzer {
 }
 
-class UMLAnalyzer implements Analyzer {
-  - List<Filters> filters
-  - Configuration config
-  - AnalyzerBundle bundle
-  + UMLAnalyzer(List<Filters> filters, Configuration config)
+class UMLAnalyzer extends Analyzer {
 }
 
-class AncestorAnalyzer implements Analyzer {
-  - List<Filters> filters
-  - Configuration config
-  - AnalyzerBundle bundle
-  + AncestorAnalyzer(List<Filters> filters, Configuration config)
+class AncestorAnalyzer extends Analyzer {
 }
 
 class Main {
-  + {static} void Main(String[] args)
+ + {static} void Main(String[] args)
 }
 
 Main ..> UMLGenerationApp
