@@ -2,6 +2,7 @@ package odyssey.app;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +13,7 @@ import soot.Modifier;
 public class Runner {
 
   public static void main(String[] args) {
+    System.out.println(Arrays.toString(args));
     if (args.length < 4) {
       System.out.println("Must provide directory and class names");
       return;
@@ -26,6 +28,10 @@ public class Runner {
     Configuration config = new Configuration();
     Map<String, List<String>> parsedArgs = parse(args);
     parsedArgs.forEach((key, value) -> addToConfiguration(key, value, config));
+    // parsedArgs.forEach((key, value) -> {
+    // System.out.println("key : " + key + " value: " +
+    // Arrays.deepToString(value.toArray()));
+    // });
     return config;
   }
 
@@ -63,7 +69,7 @@ public class Runner {
       config.classNames = values;
       return;
     case "-d":
-      config.directory = Paths.get(values.get(0).trim());
+      config.directory = Paths.get(values.get(0).trim(), "build", "classes", "main");
       return;
     case "-m":
       config.mainClassName = values.get(0);
