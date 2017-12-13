@@ -9,6 +9,7 @@ import odyssey.analyzers.AnalyzerBundle;
 import odyssey.analyzers.RelationshipAnalyzer;
 import odyssey.analyzers.SceneAnalyzer;
 import odyssey.analyzers.SootAnalyzer;
+import odyssey.analyzers.UMLAnalyzer;
 import odyssey.filters.Filter;
 import odyssey.filters.RelationshipFilter;
 
@@ -32,6 +33,7 @@ public class Processor {
     List<Filter> relationShipFilters = new ArrayList<Filter>();
     relationShipFilters.add(new RelationshipFilter(this.bundle));
     pipeline.add(new RelationshipAnalyzer(config, relationShipFilters));
+    pipeline.add(new UMLAnalyzer(config, Collections.emptyList()));
   }
 
 	public AnalyzerBundle executePipeline() {
