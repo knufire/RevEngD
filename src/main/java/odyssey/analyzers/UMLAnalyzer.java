@@ -2,6 +2,7 @@ package odyssey.analyzers;
 
 import java.util.List;
 
+import net.bytebuddy.dynamic.loading.MultipleParentClassLoader.Builder;
 import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import soot.Scene;
@@ -18,28 +19,51 @@ public class UMLAnalyzer extends Analyzer {
 	@Override
 	public AnalyzerBundle execute(AnalyzerBundle bundle) {
 		for (SootClass c : bundle.classes) {
-			for (SootMethod m : c.getMethods()) {
-				System.out.println(parseMethod(m));
-			}
+			System.out.print(parse(c));
 		}
 		return bundle;
 	}
 	
-	private String parseClass(SootClass c) {
-		return "";
+	private String parse(SootClass c) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(getClassType(c.getModifiers()));
+		builder.append(" ");
+		builder.append(c.getShortName());
+		builder.append(" {\n");
+		for (SootField f : c.getFields()) {
+			builder.append("  ");
+			builder.append(parse(f));
+			builder.append("\n");
+		}
+		for (SootMethod m : c.getMethods()) {
+			builder.append("  ");
+			builder.append(parse(m));
+			builder.append("\n");
+		}
+		builder.append("}\n");
+		return builder.toString();
 	}
 	
-	private String parseField(SootField f) {
-		return "";
+	private String parse(SootField f) {
+		//TODO: Does something weird with enums, might not be a problem here as parse(SootClass c) might 
+		//just not call this if the class is an enum.
+		StringBuilder builder = new StringBuilder();
+		builder.append(getAccessModifier(f.getModifiers()));
+		builder.append(" ");
+		builder.append(getStaticAbstractModifier(f.getModifiers()));
+		builder.append(parse(f.getType()));
+		builder.append(" ");
+		builder.append(f.getName());
+		return builder.toString();
 	}
 	
-	private String parseMethod (SootMethod m) {
+	private String parse(SootMethod m) {
 		List<Type> params = m.getParameterTypes();
 		StringBuilder builder = new StringBuilder();
 		builder.append(getAccessModifier(m.getModifiers()));
 		builder.append(" ");
-		builder.append(getMethodModifier(m.getModifiers()));
-		builder.append(trimQualifiedName(m.getReturnType().toQuotedString()));
+		builder.append(getStaticAbstractModifier(m.getModifiers()));
+		builder.append(parse(m.getReturnType()));
 		builder.append(" ");
 		
 		//TODO: Possibly deal with lambdas in methodName
@@ -58,6 +82,12 @@ public class UMLAnalyzer extends Analyzer {
 		}
 		builder.append(")");
 		return builder.toString();
+	}
+	
+	private String parse(Type t) {
+		//TODO: Doesn't get generics, not sure if it's available in SOOT.
+		return trimQualifiedName(t.toQuotedString());
+
 	}
 	
 	//TODO: This should probably be somewhere else since we'll need it somewhere else eventually.
@@ -79,7 +109,7 @@ public class UMLAnalyzer extends Analyzer {
 		return "~"; //Return package-level access by default
 	}
 	
-	private String getMethodModifier(int m) {
+	private String getStaticAbstractModifier(int m) {
 		if (soot.Modifier.isAbstract(m)) {
 			return "{abstract} ";
 		}
@@ -87,6 +117,19 @@ public class UMLAnalyzer extends Analyzer {
 			return "{static} ";
 		}
 		return "";
+	}
+	
+	private String getClassType(int m) {
+		if (soot.Modifier.isAbstract(m)) {
+			return "abstract";
+		}
+		if (soot.Modifier.isEnum(m)) {
+			return "enum";
+		}
+		if (soot.Modifier.isInterface(m)) {
+			return "interface";
+		}
+		return "class";
 	}
 	
 	

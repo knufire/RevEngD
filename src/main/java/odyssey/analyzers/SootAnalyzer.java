@@ -23,7 +23,7 @@ public class SootAnalyzer extends Analyzer {
     Chain<SootClass> classes = scene.getApplicationClasses();
     List<SootClass> filteredClasses = new ArrayList<>();
     for (SootClass c : classes) {
-      System.out.println(c.getName());
+      //System.out.println(c.getName());
       if (passesFilters(c)) {
         filteredClasses.add(c);
       }
