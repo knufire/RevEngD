@@ -2,8 +2,11 @@ package odyssey.analyzers;
 
 import java.util.List;
 
+import javax.management.relation.Relation;
+
 import net.bytebuddy.dynamic.loading.MultipleParentClassLoader.Builder;
 import odyssey.app.Configuration;
+import odyssey.app.Relationship;
 import odyssey.filters.Filter;
 import soot.Scene;
 import soot.SootClass;
@@ -18,9 +21,14 @@ public class UMLAnalyzer extends Analyzer {
 	}
 	@Override
 	public AnalyzerBundle execute(AnalyzerBundle bundle) {
+		//TODO: Probably want to do something other than printing to sysout.
 		for (SootClass c : bundle.classes) {
 			System.out.print(parse(c));
 		}
+		for (Relationship r : bundle.relationships) {
+			System.out.println(parse(r));
+		}
+		
 		return bundle;
 	}
 	
@@ -33,12 +41,10 @@ public class UMLAnalyzer extends Analyzer {
 		for (SootField f : c.getFields()) {
 			builder.append("  ");
 			builder.append(parse(f));
-			builder.append("\n");
 		}
 		for (SootMethod m : c.getMethods()) {
 			builder.append("  ");
 			builder.append(parse(m));
-			builder.append("\n");
 		}
 		builder.append("}\n");
 		return builder.toString();
@@ -54,6 +60,7 @@ public class UMLAnalyzer extends Analyzer {
 		builder.append(parse(f.getType()));
 		builder.append(" ");
 		builder.append(f.getName());
+		builder.append("\n");
 		return builder.toString();
 	}
 	
@@ -80,7 +87,7 @@ public class UMLAnalyzer extends Analyzer {
 				builder.append(",");				
 			}
 		}
-		builder.append(")");
+		builder.append(")\n");
 		return builder.toString();
 	}
 	
@@ -88,6 +95,32 @@ public class UMLAnalyzer extends Analyzer {
 		//TODO: Doesn't get generics, not sure if it's available in SOOT.
 		return trimQualifiedName(t.toQuotedString());
 
+	}
+	
+	private String parse(Relationship r) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(r.getFromClass().getShortName());
+		builder.append(" ");
+		builder.append(parse(r.getRelation()));
+		builder.append(" ");
+		builder.append(r.getToClass().getShortName());
+		return builder.toString();
+	}
+	
+	private String parse (odyssey.app.Relation r) {
+		switch(r) {
+		//TODO: Make sure that the arrows are right.
+			case ASSOCIATION:
+				return "-->";
+			case DEPENDENCY:
+				return "--*";
+			case EXTENDS:
+				return "--|>";
+			case IMPLEMENTS:
+				return "..|>";
+			default:
+				return "-->";
+		}
 	}
 	
 	//TODO: This should probably be somewhere else since we'll need it somewhere else eventually.
@@ -120,14 +153,14 @@ public class UMLAnalyzer extends Analyzer {
 	}
 	
 	private String getClassType(int m) {
-		if (soot.Modifier.isAbstract(m)) {
-			return "abstract";
-		}
 		if (soot.Modifier.isEnum(m)) {
 			return "enum";
 		}
 		if (soot.Modifier.isInterface(m)) {
 			return "interface";
+		}
+		if (soot.Modifier.isAbstract(m)) {
+			return "abstract";
 		}
 		return "class";
 	}
