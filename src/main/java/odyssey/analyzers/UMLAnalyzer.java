@@ -21,7 +21,9 @@ public class UMLAnalyzer extends Analyzer {
 	public AnalyzerBundle execute(AnalyzerBundle bundle) {
 		//TODO: Probably want to do something other than printing to sysout.
 		for (SootClass c : bundle.classes) {
-			System.out.print(parse(c));
+			if (passesFilters(c)) {
+				System.out.print(parse(c));
+			}
 		}
 		for (Relationship r : bundle.relationships) {
 			System.out.println(parse(r));
@@ -37,12 +39,16 @@ public class UMLAnalyzer extends Analyzer {
 		builder.append(c.getShortName());
 		builder.append(" {\n");
 		for (SootField f : c.getFields()) {
-			builder.append("  ");
-			builder.append(parse(f));
+			if (passesFilters(f)) {
+				builder.append("  ");
+				builder.append(parse(f));
+			}
 		}
 		for (SootMethod m : c.getMethods()) {
-			builder.append("  ");
-			builder.append(parse(m));
+			if (passesFilters(m)) {
+				builder.append("  ");
+				builder.append(parse(m));
+			}
 		}
 		builder.append("}\n");
 		return builder.toString();
