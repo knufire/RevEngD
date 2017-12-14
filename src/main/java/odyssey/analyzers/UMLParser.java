@@ -2,6 +2,7 @@ package odyssey.analyzers;
 
 import java.util.List;
 
+import odyssey.app.Relation;
 import odyssey.app.Relationship;
 import soot.Scene;
 import soot.SootClass;
@@ -19,16 +20,7 @@ public class UMLParser {
 		builder.append(getClassType(c.getModifiers()));
 		builder.append(" ");
 		builder.append(c.getShortName());
-		builder.append(" {\n");
-		for (SootField f : c.getFields()) {
-			builder.append("  ");
-			builder.append(parse(f));
-		}
-		for (SootMethod m : c.getMethods()) {
-			builder.append("  ");
-			builder.append(parse(m));
-		}
-		builder.append("}\n");
+		builder.append(" {");
 		return builder.toString();
 	}
 	
@@ -42,7 +34,6 @@ public class UMLParser {
 		builder.append(parse(f.getType()));
 		builder.append(" ");
 		builder.append(f.getName());
-		builder.append("\n");
 		return builder.toString();
 	}
 	
@@ -69,7 +60,7 @@ public class UMLParser {
 				builder.append(",");				
 			}
 		}
-		builder.append(")\n");
+		builder.append(")");
 		return builder.toString();
 	}
 	
@@ -89,7 +80,7 @@ public class UMLParser {
 		return builder.toString();
 	}
 	
-	public String parse (odyssey.app.Relation r) {
+	public String parse (Relation r) {
 		switch(r) {
 		//TODO: Make sure that the arrows are right.
 			case ASSOCIATION:
@@ -146,7 +137,4 @@ public class UMLParser {
 		}
 		return "class";
 	}
-	
-	
-
 }
