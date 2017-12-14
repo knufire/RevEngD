@@ -27,6 +27,7 @@ public class UMLAnalyzer extends Analyzer {
 		for (SootClass c : bundle.classes) {
 			if (passesFilters(c)) {
 				builder.append(parser.parse(c));
+				builder.append("\n");
 			}
 			for (SootField f : c.getFields()) {
 				if (passesFilters(f)) {
@@ -45,9 +46,10 @@ public class UMLAnalyzer extends Analyzer {
 			builder.append("}\n");
 		}
 		for (Relationship r : bundle.relationships) {
-			System.out.println(parser.parse(r));
+			builder.append((parser.parse(r)));
+			builder.append("\n");
 		}
-		
+		System.out.println(builder.toString());
 		return bundle;
 	}
 }

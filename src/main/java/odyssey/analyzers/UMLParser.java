@@ -72,11 +72,11 @@ public class UMLParser {
 	
 	public String parse(Relationship r) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(r.getFromClass().getShortName());
+		builder.append(r.getToClass().getShortName());
 		builder.append(" ");
 		builder.append(parse(r.getRelation()));
 		builder.append(" ");
-		builder.append(r.getToClass().getShortName());
+		builder.append(r.getFromClass().getShortName());
 		return builder.toString();
 	}
 	
@@ -84,13 +84,13 @@ public class UMLParser {
 		switch(r) {
 		//TODO: Make sure that the arrows are right.
 			case ASSOCIATION:
-				return "-->";
+				return "<..";
 			case DEPENDENCY:
-				return "--*";
+				return "<--";
 			case EXTENDS:
-				return "--|>";
+				return "<|--";
 			case IMPLEMENTS:
-				return "..|>";
+				return "<|..";
 			default:
 				return "-->";
 		}
