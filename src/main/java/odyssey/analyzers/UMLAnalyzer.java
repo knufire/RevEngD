@@ -3,6 +3,7 @@ package odyssey.analyzers;
 import java.util.List;
 
 import odyssey.app.Configuration;
+import odyssey.app.Relation;
 import odyssey.app.Relationship;
 import odyssey.filters.Filter;
 import soot.Scene;
@@ -20,7 +21,9 @@ public class UMLAnalyzer extends Analyzer {
 	public AnalyzerBundle execute(AnalyzerBundle bundle) {
 		//TODO: Probably want to do something other than printing to sysout.
 		for (SootClass c : bundle.classes) {
-			System.out.print(parse(c));
+			if (passesFilters(c)) {
+				System.out.print(parse(c));
+			}
 		}
 		for (Relationship r : bundle.relationships) {
 			System.out.println(parse(r));
@@ -36,12 +39,16 @@ public class UMLAnalyzer extends Analyzer {
 		builder.append(c.getShortName());
 		builder.append(" {\n");
 		for (SootField f : c.getFields()) {
-			builder.append("  ");
-			builder.append(parse(f));
+			if (passesFilters(f)) {
+				builder.append("  ");
+				builder.append(parse(f));
+			}
 		}
 		for (SootMethod m : c.getMethods()) {
-			builder.append("  ");
-			builder.append(parse(m));
+			if (passesFilters(m)) {
+				builder.append("  ");
+				builder.append(parse(m));
+			}
 		}
 		builder.append("}\n");
 		return builder.toString();
@@ -104,7 +111,7 @@ public class UMLAnalyzer extends Analyzer {
 		return builder.toString();
 	}
 	
-	private String parse (odyssey.app.Relation r) {
+	private String parse (Relation r) {
 		switch(r) {
 		//TODO: Make sure that the arrows are right.
 			case ASSOCIATION:

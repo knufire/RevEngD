@@ -10,6 +10,9 @@ import odyssey.analyzers.RelationshipAnalyzer;
 import odyssey.analyzers.SceneAnalyzer;
 import odyssey.analyzers.SootAnalyzer;
 import odyssey.analyzers.UMLAnalyzer;
+import odyssey.filters.ClassNameFilter;
+import odyssey.filters.ClinitFilter;
+import odyssey.filters.DollarSignFilter;
 import odyssey.filters.Filter;
 import odyssey.filters.RelationshipFilter;
 
@@ -26,15 +29,23 @@ public class Processor {
 	}
 
 	private void createPipeline() {
-    // TODO: Create the pipeline
-    pipeline = new ArrayList<>();
-    pipeline.add(new SceneAnalyzer(config, Collections.emptyList()));
-    pipeline.add(new SootAnalyzer(config, Collections.emptyList()));
-    List<Filter> relationShipFilters = new ArrayList<Filter>();
-    relationShipFilters.add(new RelationshipFilter(this.bundle));
-    pipeline.add(new RelationshipAnalyzer(config, relationShipFilters));
-    pipeline.add(new UMLAnalyzer(config, Collections.emptyList()));
-  }
+		// TODO: Create the pipeline
+		pipeline = new ArrayList<>();
+		pipeline.add(new SceneAnalyzer(config, Collections.emptyList()));
+
+		List<Filter> sootAnalyzerFilters = new ArrayList<Filter>();
+		sootAnalyzerFilters.add(new ClassNameFilter(config));
+		pipeline.add(new SootAnalyzer(config, sootAnalyzerFilters));
+
+		List<Filter> relationShipFilters = new ArrayList<Filter>();
+		relationShipFilters.add(new RelationshipFilter(this.bundle));
+		pipeline.add(new RelationshipAnalyzer(config, relationShipFilters));
+
+		List<Filter> UMLFilters = new ArrayList<Filter>();
+		UMLFilters.add(new DollarSignFilter());
+		UMLFilters.add(new ClinitFilter());
+		pipeline.add(new UMLAnalyzer(config, UMLFilters));
+	}
 
 	public AnalyzerBundle executePipeline() {
 		for (int i = 0; i < pipeline.size(); i++) {
