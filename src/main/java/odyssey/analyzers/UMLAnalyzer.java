@@ -3,6 +3,7 @@ package odyssey.analyzers;
 import java.util.List;
 
 import odyssey.app.Configuration;
+import odyssey.app.Relation;
 import odyssey.app.Relationship;
 import odyssey.filters.Filter;
 import soot.Scene;
@@ -104,7 +105,7 @@ public class UMLAnalyzer extends Analyzer {
 		return builder.toString();
 	}
 	
-	private String parse (odyssey.app.Relation r) {
+	private String parse (Relation r) {
 		switch(r) {
 		//TODO: Make sure that the arrows are right.
 			case ASSOCIATION:
