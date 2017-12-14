@@ -11,6 +11,7 @@ import odyssey.analyzers.RelationshipAnalyzer;
 import odyssey.analyzers.SceneAnalyzer;
 import odyssey.analyzers.SootAnalyzer;
 import odyssey.analyzers.UMLAnalyzer;
+import odyssey.analyzers.UMLParser;
 import odyssey.filters.ClassNameFilter;
 import odyssey.filters.ClinitFilter;
 import odyssey.filters.DollarSignFilter;
@@ -47,7 +48,7 @@ public class Processor {
 		List<Filter> UMLFilters = new ArrayList<Filter>();
 		UMLFilters.add(new DollarSignFilter());
 		UMLFilters.add(new ClinitFilter());
-		pipeline.add(new UMLAnalyzer(config, UMLFilters));
+		pipeline.add(new UMLAnalyzer(config, UMLFilters, new UMLParser()));
 		
 	}
 
