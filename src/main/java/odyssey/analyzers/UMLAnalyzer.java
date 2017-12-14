@@ -2,9 +2,6 @@ package odyssey.analyzers;
 
 import java.util.List;
 
-import javax.management.relation.Relation;
-
-import net.bytebuddy.dynamic.loading.MultipleParentClassLoader.Builder;
 import odyssey.app.Configuration;
 import odyssey.app.Relationship;
 import odyssey.filters.Filter;
