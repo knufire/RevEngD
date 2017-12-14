@@ -38,6 +38,9 @@ public class RelationshipAnalyzer extends Analyzer {
   }
   
   private void generateExtendsRelationships(SootClass c, List<Relationship> relationships) {
+	  if (c.getName().equals("java.lang.Object")) {
+		  return;
+	  }
 	  SootClass superClass = c.getSuperclass();
       if (this.passesFilters(superClass)) {
     	  Relationship rel = new Relationship(c, Relation.EXTENDS, superClass, 0);

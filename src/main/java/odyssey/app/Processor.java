@@ -6,6 +6,7 @@ import java.util.List;
 
 import odyssey.analyzers.Analyzer;
 import odyssey.analyzers.AnalyzerBundle;
+import odyssey.analyzers.AncestorAnalyzer;
 import odyssey.analyzers.RelationshipAnalyzer;
 import odyssey.analyzers.SceneAnalyzer;
 import odyssey.analyzers.SootAnalyzer;
@@ -36,6 +37,8 @@ public class Processor {
 		List<Filter> sootAnalyzerFilters = new ArrayList<Filter>();
 		sootAnalyzerFilters.add(new ClassNameFilter(config));
 		pipeline.add(new SootAnalyzer(config, sootAnalyzerFilters));
+		
+		pipeline.add(new AncestorAnalyzer(config, Collections.emptyList()));
 
 		List<Filter> relationShipFilters = new ArrayList<Filter>();
 		relationShipFilters.add(new RelationshipFilter(this.bundle));
@@ -45,6 +48,7 @@ public class Processor {
 		UMLFilters.add(new DollarSignFilter());
 		UMLFilters.add(new ClinitFilter());
 		pipeline.add(new UMLAnalyzer(config, UMLFilters));
+		
 	}
 
 	public AnalyzerBundle executePipeline() {
