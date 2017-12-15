@@ -43,6 +43,7 @@ public class AnalyzerFactory {
 
 	public Analyzer createRelationshipAnalyzer() {
 		List<Filter> relationShipFilters = new ArrayList<Filter>();
+		relationShipFilters.add(new DollarSignFilter());
 		relationShipFilters.add(new RelationshipFilter(this.bundle));
 		return new RelationshipAnalyzer(config, relationShipFilters);
 	}
