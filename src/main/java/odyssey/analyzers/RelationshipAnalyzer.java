@@ -24,10 +24,12 @@ public class RelationshipAnalyzer extends Analyzer {
     List<Relationship> relationships = new ArrayList<Relationship>();
     
     for (SootClass c : bundle.classes) {
+     if (passesFilters(c)) {
      // System.out.println(c.getName());
       generateExtendsRelationships(c, relationships);
       generateImplementsRelationships(c, relationships);
       //TODO: Add HAS-A and Dependency relationships
+     }
     }
     
     bundle.relationships = relationships;
