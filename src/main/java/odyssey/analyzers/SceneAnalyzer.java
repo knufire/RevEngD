@@ -10,27 +10,27 @@ import odyssey.filters.Filter;
 
 public class SceneAnalyzer extends Analyzer {
 
-  public SceneAnalyzer(Configuration configuration, List<Filter> filters) {
-    super(configuration, filters);
-  }
+	public SceneAnalyzer(Configuration configuration, List<Filter> filters) {
+		super(configuration, filters);
+	}
 
-  @Override
-  public AnalyzerBundle execute(AnalyzerBundle bundle) {
-    SceneBuilder sceneBuilder = SceneBuilder.create();
+	@Override
+	public AnalyzerBundle execute(AnalyzerBundle bundle) {
+		SceneBuilder sceneBuilder = SceneBuilder.create();
 
-    sceneBuilder = sceneBuilder.addDirectory(config.directory.toFile().getAbsolutePath());
+		sceneBuilder = sceneBuilder.addDirectory(config.projectDirectory.toFile().getAbsolutePath());
 
-    sceneBuilder = sceneBuilder.setEntryClass(config.mainClassName);
-    sceneBuilder = sceneBuilder.addEntryPointMatcher(new MainMethodMatcher(config.mainClassName));
+		sceneBuilder = sceneBuilder.setEntryClass(config.mainClassName);
+		sceneBuilder = sceneBuilder.addEntryPointMatcher(new MainMethodMatcher(config.mainClassName));
 
-    sceneBuilder = sceneBuilder.addExclusions(Arrays.asList("java.*", "javax.*", "sun.*"))
-        .addExclusions(Arrays.asList("soot.*", "polygot.*")).addExclusions(Arrays.asList("org.*", "com.*"));
+		sceneBuilder = sceneBuilder.addExclusions(Arrays.asList("java.*", "javax.*", "sun.*"))
+				.addExclusions(Arrays.asList("soot.*", "polygot.*")).addExclusions(Arrays.asList("org.*", "com.*"));
 
-    sceneBuilder = sceneBuilder.addClasses(config.classNames);
-    
-    bundle.scene = sceneBuilder.build();
+		sceneBuilder = sceneBuilder.addClasses(config.classNames);
 
-    return bundle;
-  }
+		bundle.scene = sceneBuilder.build();
+
+		return bundle;
+	}
 
 }

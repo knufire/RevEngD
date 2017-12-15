@@ -1,55 +1,31 @@
 package odyssey.app;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import odyssey.analyzers.Analyzer;
 import odyssey.analyzers.AnalyzerBundle;
-import odyssey.analyzers.AncestorAnalyzer;
-import odyssey.analyzers.RelationshipAnalyzer;
-import odyssey.analyzers.SceneAnalyzer;
-import odyssey.analyzers.SootAnalyzer;
-import odyssey.analyzers.UMLAnalyzer;
-import odyssey.analyzers.UMLParser;
-import odyssey.filters.ClassNameFilter;
-import odyssey.filters.ClinitFilter;
-import odyssey.filters.DollarSignFilter;
-import odyssey.filters.Filter;
-import odyssey.filters.RelationshipFilter;
+import odyssey.analyzers.AnalyzerFactory;
 
 public class Processor {
 
-	private Configuration config;
 	private List<Analyzer> pipeline;
 	private AnalyzerBundle bundle;
+	private AnalyzerFactory factory;
 
-	Processor(Configuration config) {
-		this.config = config;
-		this.bundle = new AnalyzerBundle();
+	Processor(AnalyzerBundle bundle, AnalyzerFactory analyzerFactory) {
+		this.bundle = bundle;
+		this.factory = analyzerFactory;
 		createPipeline();
 	}
 
 	private void createPipeline() {
-		// TODO: Create the pipeline
 		pipeline = new ArrayList<>();
-		pipeline.add(new SceneAnalyzer(config, Collections.emptyList()));
-
-		List<Filter> sootAnalyzerFilters = new ArrayList<Filter>();
-		sootAnalyzerFilters.add(new ClassNameFilter(config));
-		pipeline.add(new SootAnalyzer(config, sootAnalyzerFilters));
-		
-		pipeline.add(new AncestorAnalyzer(config, Collections.emptyList()));
-
-		List<Filter> relationShipFilters = new ArrayList<Filter>();
-		relationShipFilters.add(new RelationshipFilter(this.bundle));
-		pipeline.add(new RelationshipAnalyzer(config, relationShipFilters));
-
-		List<Filter> UMLFilters = new ArrayList<Filter>();
-		UMLFilters.add(new DollarSignFilter());
-		UMLFilters.add(new ClinitFilter());
-		pipeline.add(new UMLAnalyzer(config, UMLFilters, new UMLParser()));
-		
+		pipeline.add(factory.createSceneAnalyzer());
+		pipeline.add(factory.createSootAnalyzer());
+		pipeline.add(factory.createAncestorAnalyzer());
+		pipeline.add(factory.createRelationshipAnalyzer());
+		pipeline.add(factory.createUMLAnalyzer());
 	}
 
 	public AnalyzerBundle executePipeline() {
@@ -60,7 +36,8 @@ public class Processor {
 	}
 
 	public static Processor getProcessor(Configuration config) {
-		return new Processor(config);
+		AnalyzerBundle bundle = new AnalyzerBundle();
+		return new Processor(bundle, new AnalyzerFactory(config, bundle));
 	}
 
 }

@@ -1,7 +1,5 @@
 package odyssey.filters;
 
-import java.util.Arrays;
-
 import odyssey.analyzers.AnalyzerBundle;
 import soot.SootClass;
 import soot.SootField;

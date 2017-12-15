@@ -25,8 +25,6 @@ public class UMLParser {
 	}
 	
 	public String parse(SootField f) {
-		//TODO: Does something weird with enums, might not be a problem here as parse(SootClass c) might 
-		//just not call this if the class is an enum.
 		StringBuilder builder = new StringBuilder();
 		builder.append(getAccessModifier(f.getModifiers()));
 		builder.append(" ");
@@ -46,7 +44,6 @@ public class UMLParser {
 		builder.append(parse(m.getReturnType()));
 		builder.append(" ");
 		
-		//TODO: Possibly deal with lambdas in methodName
 		String methodName = Scene.v().quotedNameOf(m.getName()); 
 		if (methodName.contains("<init>")) {
 			builder.append(trimQualifiedName(Scene.v().quotedNameOf(m.getDeclaringClass().getName())));
@@ -65,7 +62,7 @@ public class UMLParser {
 	}
 	
 	public String parse(Type t) {
-		//TODO: Doesn't get generics, not sure if it's available in SOOT.
+		//TODO: Doesn't get generic, not sure if it's available in SOOT.
 		return trimQualifiedName(t.toQuotedString());
 
 	}
@@ -82,7 +79,6 @@ public class UMLParser {
 	
 	public String parse (Relation r) {
 		switch(r) {
-		//TODO: Make sure that the arrows are right.
 			case ASSOCIATION:
 				return "<..";
 			case DEPENDENCY:
@@ -92,11 +88,10 @@ public class UMLParser {
 			case IMPLEMENTS:
 				return "<|..";
 			default:
-				return "-->";
+				return "<--";
 		}
 	}
 	
-	//TODO: This should probably be somewhere else since we'll need it somewhere else eventually.
 	public String trimQualifiedName(String s) {
 		String[] parts = s.split("\\.");
 		return parts[parts.length-1];

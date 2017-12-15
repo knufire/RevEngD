@@ -1,0 +1,13 @@
+Project with Public
+-d "C:\Users\moorect\eclipse-workspace\CSSE374\Project\RevEngD" -m odyssey.app.Runner -i "C:\Users\moorect\Documents\plant_uml.svg" -c odyssey.app.Runner csse374.revengd.soot.IEntryPointMatcher csse374.revengd.soot.MainMethodMatcher csse374.revengd.soot.SceneBuilder odyssey.analyzers.Analyzer odyssey.analyzers.AnalyzerBundle odyssey.analyzers.RelationshipAnalyzer odyssey.analyzers.SceneAnalyzer odyssey.analyzers.SootAnalyzer odyssey.analyzers.UMLParser odyssey.analyzers.EmptyAnalyzer odyssey.analyzers.AnalyzerFactory odyssey.analyzers.AncestorAnalyzer odyssey.analyzers.UMLAnalyzer odyssey.app.Configuration odyssey.app.Processor odyssey.app.Relation odyssey.app.Relationship odyssey.app.UMLGenerationApp odyssey.filters.Filter odyssey.filters.ProtectedFilter odyssey.filters.PublicFilter odyssey.filters.RelationshipFilter odyssey.filters.PackagePrivateFilter odyssey.filters.DollarSignFilter odyssey.filters.ClinitFilter odyssey.filters.ClassNameFilter --include-ancestors -a public
+
+
+java.lang.String
+-d "C:\Users\moorect\eclipse-workspace\CSSE374\Project\RevEngD" -m odyssey.app.Runner -i "C:\Users\moorect\Documents\plant_uml.svg" -c java.lang.String --include-ancestors --include-Object
+
+javax.swing.JComponent
+-d "C:\Users\moorect\eclipse-workspace\CSSE374\Project\RevEngD" -m odyssey.app.Runner -i "C:\Users\moorect\Documents\plant_uml.svg" -c javax.swing.JComponent --include-ancestors
+
+Duck Strategy
+-d "C:\Users\moorect\eclipse-workspace\CSSE374\Lab 1-1" -m headfirst.designpatterns.strategy.MiniDuckSimulator -i "C:\Users\moorect\Documents\plant_uml.svg" -c headfirst.designpatterns.strategy.DecoyDuck headfirst.designpatterns.strategy.Duck headfirst.designpatterns.strategy.FakeQuack headfirst.designpatterns.strategy.FlyBehavior headfirst.designpatterns.strategy.FlyNoWay headfirst.designpatterns.strategy.FlyRocketPowered headfirst.designpatterns.strategy.FlyWithWings headfirst.designpatterns.strategy.MallardDuck headfirst.designpatterns.strategy.MiniDuckSimulator headfirst.designpatterns.strategy.MiniDuckSimulator1 headfirst.designpatterns.strategy.ModelDuck headfirst.designpatterns.strategy.MuteQuack headfirst.designpatterns.strategy.Quack headfirst.designpatterns.strategy.QuackBehavior headfirst.designpatterns.strategy.RedHeadDuck headfirst.designpatterns.strategy.RubberDuck headfirst.designpatterns.strategy.Squeak --include-ancestors
+

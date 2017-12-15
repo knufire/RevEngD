@@ -1,7 +1,6 @@
 package odyssey.analyzers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import odyssey.app.Configuration;
@@ -9,7 +8,6 @@ import odyssey.app.Relation;
 import odyssey.app.Relationship;
 import odyssey.filters.Filter;
 import soot.SootClass;
-import soot.SootField;
 import soot.util.Chain;
 
 public class RelationshipAnalyzer extends Analyzer {

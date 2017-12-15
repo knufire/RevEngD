@@ -1,7 +1,6 @@
 package odyssey.analyzers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,18 +22,24 @@ public class AncestorAnalyzer extends Analyzer {
 	@Override
 	public AnalyzerBundle execute(AnalyzerBundle bundle) {
 		// ensures base case, Object has no superClass
-		processedClasses.add(bundle.scene.getSootClass("java.lang.Object"));
+		SootClass objectClass = bundle.scene.getSootClass("java.lang.Object");
+		processedClasses.add(objectClass);
 		for (SootClass c: bundle.classes) {
 			if (passesFilters(c)) {
 				ancestorHelper(c);
 			}
 		}
+		// This is to remove the java.lang.Object from the UML, set in the configuration
+		if (!config.includeObject) {
+			processedClasses.remove(objectClass);
+		}
+		
 		List<SootClass> newClasses = new ArrayList<>(processedClasses);
 		bundle.classes = newClasses;
 		return bundle;
 	}
 	
-	public void ancestorHelper(SootClass clazz) {
+	private void ancestorHelper(SootClass clazz) {
 		if (processedClasses.contains(clazz)) {
 			return;
 		}
@@ -44,8 +49,10 @@ public class AncestorAnalyzer extends Analyzer {
 		for (SootClass i: interfaces) {
 			ancestorHelper(i);
 		}
-		SootClass superClass = clazz.getSuperclass();
-		ancestorHelper(superClass);
+		if (clazz.hasSuperclass()) {
+			SootClass superClass = clazz.getSuperclass();
+			ancestorHelper(superClass);
+		}
 	}
 
 }

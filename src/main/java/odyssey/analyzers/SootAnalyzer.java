@@ -20,10 +20,9 @@ public class SootAnalyzer extends Analyzer {
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     scene = bundle.scene;
-    Chain<SootClass> classes = scene.getApplicationClasses();
+    Chain<SootClass> classes = scene.getClasses();
     List<SootClass> filteredClasses = new ArrayList<>();
     for (SootClass c : classes) {
-      //System.out.println(c.getName());
       if (passesFilters(c)) {
         filteredClasses.add(c);
       }

@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import soot.Modifier;
-
 public class Runner {
 
   public static void main(String[] args) {
@@ -28,10 +26,6 @@ public class Runner {
     Configuration config = new Configuration();
     Map<String, List<String>> parsedArgs = parse(args);
     parsedArgs.forEach((key, value) -> addToConfiguration(key, value, config));
-    // parsedArgs.forEach((key, value) -> {
-    // System.out.println("key : " + key + " value: " +
-    // Arrays.deepToString(value.toArray()));
-    // });
     return config;
   }
 
@@ -69,26 +63,37 @@ public class Runner {
       config.classNames = values;
       return;
     case "-d":
-      config.directory = Paths.get(values.get(0).trim(), "build", "classes", "main");
+      config.projectDirectory = Paths.get(values.get(0).trim(), "build", "classes", "main");
       return;
+    case "-i":
+    	config.imageLocation = Paths.get(values.get(0).trim());
+    	return;
     case "-m":
       config.mainClassName = values.get(0);
       return;
     case "--include-ancestors":
       config.parseAncestors = true;
       return;
+    case "--include-Object":
+    	config.includeObject = true;
+    	return;
+    default:
+    	return;
     }
   }
 
-  private static int parseModifier(String string) {
+  private static String parseModifier(String string) {
     String lower = string.toLowerCase();
     if (lower.equals("public")) {
-      return Modifier.PUBLIC;
+      return "public";
     }
     if (lower.equals("protected")) {
-      return Modifier.PROTECTED;
+      return "protected";
     }
-    return Modifier.PRIVATE;
+    if (lower.equals("package")) {
+    	return "package";
+    }
+    return "private";
   }
 
 }
