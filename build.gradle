@@ -38,7 +38,7 @@ compileJava {
     options.compilerArgs << '-g'
 }
 
-mainClassName = "odyssey.app.RevEngDApp"
+mainClassName = "odyssey.app.Runner"
 applicationDefaultJvmArgs = ["-Xms512m", "-Xmx1024m"]
 run {
 	standardInput = System.in
