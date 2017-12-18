@@ -80,6 +80,7 @@ class RelationshipFilter {
   + boolean shouldProcess(SootMethod)
   + boolean shouldProcess(SootField)
 }
+
 class ClassNameFilter {
   ~ Configuration config
   + void ClassNameFilter(Configuration)
@@ -95,8 +96,14 @@ class SootAnalyzer {
 class RelationshipAnalyzer {
   + void RelationshipAnalyzer(Configuration,List<Filter>)
   + AnalyzerBundle execute(AnalyzerBundle)
-  - void generateExtendsRelationships(SootClass,List<RelationShip>)
-  - void generateImplementsRelationships(SootClass,List<RelationShip>)
+  - void generateExtendsRelationships(SootClass,List<Relationship>)
+  - void generateImplementsRelationships(SootClass,List<Relationship>)
+  - void generateAssociationRelationships(SootClass, List<Relationship>)
+  - void generateDependencyRelationships(SootClass, List<Relationship>)
+}
+class SequenceAnalyzer {
+  + void SequenceAnalyzer(Configuration,List<Filter>)
+  + AnalyzerBundle execute(AnalyzerBundle)
 }
 class EmptyAnalyzer {
   + void EmptyAnalyzer(Configuration,List<Filter>)
@@ -227,6 +234,7 @@ Filter <|.. ClassNameFilter
 Analyzer <|-- SootAnalyzer
 Analyzer <|-- RelationshipAnalyzer
 Analyzer <|-- EmptyAnalyzer
+Analyzer <|-- SequenceAnalyzer
 Filter <|.. PackagePrivateFilter
 Filter <|.. PublicFilter
 Analyzer <|-- AncestorAnalyzer
@@ -243,7 +251,7 @@ UMLGenerationApp --> Configuration
 UMLGenerationApp --> Processor
 UMLGenerationApp --> AnalyzerBundle
 
-AnalyzerBundle --> RelationShips
+AnalyzerBundle --> Relationship
 AnalyzerFactory --> Configuration
 AnalyzerFactory --> AnalyzerBundle
 AnalyzerFactory ..> SceneAnalyzer
@@ -258,7 +266,7 @@ Processor --> AnalyzerBundle
 Processor --> AnalyzerFactory
 Processor ..> Configuration
 
-UMLParser ..> RelationShip
+UMLParser ..> Relationship
 UMLParser ..> Relation
 
 Relationship --> Relation
@@ -267,7 +275,7 @@ Analyzer --> Filter
 Analyzer --> Configuration
 Analyzer --> AnalyzerBundle
 
-RelationshipAnalyzer ..> RelationShip
+RelationshipAnalyzer ..> Relationship
 
 UMLAnalyzer --> UMLParser
 
