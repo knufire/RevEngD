@@ -17,7 +17,7 @@ public class DependencyAnalyzer extends Analyzer {
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     
-    List<Relationship> relationships = new ArrayList<Relationship>();
+    List<Relationship> relationships = bundle.relationships;
     
     for (SootClass c : bundle.classes) {
       if (passesFilters(c)) {

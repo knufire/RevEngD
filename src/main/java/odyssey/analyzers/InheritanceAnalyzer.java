@@ -22,7 +22,7 @@ public class InheritanceAnalyzer extends Analyzer {
     // System.out.println("Bundle! " +
     // Arrays.deepToString(bundle.classes.toArray()));
 
-    List<Relationship> relationships = new ArrayList<Relationship>();
+    List<Relationship> relationships = bundle.relationships;
     
     for (SootClass c : bundle.classes) {
       if (passesFilters(c)) {

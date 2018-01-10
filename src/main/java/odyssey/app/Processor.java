@@ -7,6 +7,8 @@ import java.util.List;
 import odyssey.analyzers.Analyzer;
 import odyssey.analyzers.AnalyzerBundle;
 import odyssey.analyzers.AncestorAnalyzer;
+import odyssey.analyzers.AssociationAnalyzer;
+import odyssey.analyzers.DependencyAnalyzer;
 import odyssey.analyzers.EmptyAnalyzer;
 import odyssey.analyzers.InheritanceAnalyzer;
 import odyssey.analyzers.SceneAnalyzer;
@@ -40,6 +42,8 @@ public class Processor {
 		pipeline.add(createSootAnalyzer());
 		pipeline.add(createAncestorAnalyzer());
 		pipeline.add(createInheritanceAnalyzer());
+		pipeline.add(createAssociationAnalyzer());
+		pipeline.add(createDependencyAnalyzer());
 		pipeline.add(createUMLAnalyzer());
 	}
 
@@ -55,31 +59,45 @@ public class Processor {
 		return new Processor(bundle, config);
 	}
 	
-  public Analyzer createSceneAnalyzer() {
+  private Analyzer createSceneAnalyzer() {
     return new SceneAnalyzer(config, Collections.emptyList());
   }
 
-  public Analyzer createSootAnalyzer() {
+  private Analyzer createSootAnalyzer() {
     List<Filter> sootAnalyzerFilters = new ArrayList<Filter>();
     sootAnalyzerFilters.add(new ClassNameFilter(config));
     return new SootAnalyzer(config, sootAnalyzerFilters);
   }
 
-  public Analyzer createAncestorAnalyzer() {
+  private Analyzer createAncestorAnalyzer() {
     if (config.parseAncestors) {
       return new AncestorAnalyzer(config, Collections.emptyList());
     }
     return new EmptyAnalyzer(config, Collections.emptyList());
   }
 
-  public Analyzer createInheritanceAnalyzer() {
+  private Analyzer createInheritanceAnalyzer() {
     List<Filter> relationShipFilters = new ArrayList<Filter>();
     relationShipFilters.add(new DollarSignFilter());
     relationShipFilters.add(new RelationshipFilter(this.bundle));
     return new InheritanceAnalyzer(config, relationShipFilters);
   }
-
-  public Analyzer createUMLAnalyzer() {
+  
+  private Analyzer createDependencyAnalyzer() {
+    List<Filter> relationShipFilters = new ArrayList<Filter>();
+    relationShipFilters.add(new DollarSignFilter());
+    relationShipFilters.add(new RelationshipFilter(this.bundle));
+    return new DependencyAnalyzer(config, relationShipFilters);
+  }
+  
+  private Analyzer createAssociationAnalyzer() {
+    List<Filter> relationShipFilters = new ArrayList<Filter>();
+    relationShipFilters.add(new DollarSignFilter());
+    relationShipFilters.add(new RelationshipFilter(this.bundle));
+    return new AssociationAnalyzer(config, relationShipFilters);
+  }
+  
+  private Analyzer createUMLAnalyzer() {
     List<Filter> UMLFilters = new ArrayList<Filter>();
     addModifierFilter(UMLFilters);
     UMLFilters.add(new DollarSignFilter());
