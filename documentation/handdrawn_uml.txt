@@ -74,12 +74,27 @@ class SootAnalyzer {
   + void SootAnalyzer(Configuration,List<Filter>)
   + AnalyzerBundle execute(AnalyzerBundle)
 }
-class RelationshipAnalyzer {
+
+
+class InheritanceAnalyzer {
   - void generateExtendsRelationships(SootClass,List<Relationship>)
   - void generateImplementsRelationships(SootClass,List<Relationship>)
+  
+}
+
+class AssociationAnalyzer {
   - void generateAssociationRelationships(SootClass, List<Relationship>)
+}
+
+class DependencyAnalyzer{
   - void generateDependencyRelationships(SootClass, List<Relationship>)
 }
+
+
+
+
+
+
 class SequenceAnalyzer {
 }
 
@@ -140,7 +155,9 @@ Filter <|.. ClinitFilter
 Filter <|.. RelationshipFilter
 Filter <|.. ClassNameFilter
 Analyzer <|-- SootAnalyzer
-Analyzer <|-- RelationshipAnalyzer
+Analyzer <|-- InheritanceAnalyzer
+Analyzer <|-- AssociationAnalyzer
+Analyzer <|-- DependencyAnalyzer
 Analyzer <|-- SequenceAnalyzer
 Filter <|.. PackagePrivateFilter
 Filter <|.. PublicFilter
@@ -163,7 +180,9 @@ Processor --> AnalyzerBundle
 Processor ..> SceneAnalyzer
 Processor ..> SootAnalyzer
 Processor ..> AncestorAnalyzer
-Processor ..> RelationshipAnalyzer
+Processor ..> InheritanceAnalyzer
+Processor ..> AssociationAnalyzer
+Processor ..> DependencyAnalyzer
 Processor ..> UMLAnalyzer
 Processor ..> Filter
 Processor --> Analyzer
@@ -179,7 +198,9 @@ Analyzer --> Filter
 Analyzer --> Configuration
 Analyzer --> AnalyzerBundle
 
-RelationshipAnalyzer ..> Relationship
+InheritanceAnalyzer ..> Relationship
+AssociationAnalyzer ..> Relationship
+DependencyAnalyzer ..> Relationship
 
 UMLAnalyzer --> UMLParser
 
