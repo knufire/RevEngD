@@ -9,11 +9,15 @@ import odyssey.app.Relation;
 import odyssey.app.Relationship;
 import odyssey.filters.Filter;
 import soot.Body;
-import soot.Local;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Type;
-import soot.util.Chain;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.NewExpr;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
 
 public class DependencyAnalyzer extends Analyzer {
 
@@ -47,24 +51,31 @@ public class DependencyAnalyzer extends Analyzer {
   }
 
   private void checkBody(SootClass clazz, Body body, Set<Relationship> relationships) {
-    Chain<Local> locals = body.getLocals();
-    SootClass localClass;
-    for (Local l : locals) {
-      localClass = findClassForLocal(l);
-      if (localClass != null && !localClass.equals(clazz)) {
-        relationships.add(new Relationship(clazz, Relation.DEPENDENCY, localClass, 0));
+    UnitGraph graph = new ExceptionalUnitGraph(body);
+    graph.forEach(u -> {
+      if (u instanceof InvokeStmt) {
+        //TODO: DO SOMETHING
+      } else if (u instanceof AssignStmt) {
+        Value rightOp = ((AssignStmt) u).getRightOp();
+        if(rightOp instanceof InvokeExpr) {
+          InvokeExpr invkExpr = (InvokeExpr)rightOp;
+          SootMethod method = invkExpr.getMethod();
+          //TODO: Generics and arrays
+          SootClass returnType = bundle.scene.getSootClass(method.getReturnType().toString());
+          if (passesFilters(returnType)) {
+            relationships.add(new Relationship(clazz, Relation.DEPENDENCY, returnType, 0));
+          }
+        }
+        if(rightOp instanceof NewExpr) {
+          NewExpr newExpr = (NewExpr)rightOp; 
+          //TODO: Generics and arrays
+          SootClass returnType = bundle.scene.getSootClass(newExpr.getType().toString());
+          if (passesFilters(returnType)) {
+            relationships.add(new Relationship(clazz, Relation.DEPENDENCY, returnType, 0));
+          }
+        }
       }
-    }
-  }
-
-  private SootClass findClassForLocal(Local l) {
-    String classNameOflocal = l.getType().toString();
-    for (SootClass c : bundle.classes) {
-      if (c.getName().equals(classNameOflocal) && passesFilters(c)) {
-        return c;
-      }
-    }
-    return null;
+    });
   }
 
   /*
