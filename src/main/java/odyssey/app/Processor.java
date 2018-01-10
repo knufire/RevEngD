@@ -29,10 +29,12 @@ public class Processor {
 	private List<Analyzer> pipeline;
 	private AnalyzerBundle bundle;
 	private Configuration config;
+	private Relationship[] a = new Relationship[20];
 
 	Processor(AnalyzerBundle bundle, Configuration config) {
 		this.bundle = bundle;
 		this.config = config;
+		a[1] = new Relationship(null, null, null, 1);
 		createPipeline();
 	}
 

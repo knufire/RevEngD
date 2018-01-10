@@ -71,18 +71,20 @@ public class UMLParser {
 		StringBuilder builder = new StringBuilder();
 		builder.append(r.getToClass().getShortName());
 		builder.append(" ");
+		builder.append(parseCardinality(r.getCardinality()));
+		builder.append(" ");
 		builder.append(parse(r.getRelation()));
 		builder.append(" ");
 		builder.append(r.getFromClass().getShortName());
 		return builder.toString();
 	}
 	
-	public String parse (Relation r) {
+	private String parse (Relation r) {
 		switch(r) {
 			case ASSOCIATION:
-				return "<..";
-			case DEPENDENCY:
 				return "<--";
+			case DEPENDENCY:
+				return "<..";
 			case EXTENDS:
 				return "<|--";
 			case IMPLEMENTS:
@@ -91,6 +93,16 @@ public class UMLParser {
 				return "<--";
 		}
 	}
+	
+	private String parseCardinality(int cardinality) {
+    if (cardinality == -1) {
+      return "\"*\"";
+    }
+    if (cardinality == 0) {
+      return "";
+    }
+    return "\""+ cardinality + "\"";
+  }
 	
 	public String trimQualifiedName(String s) {
 		String[] parts = s.split("\\.");

@@ -29,7 +29,7 @@ public class Relationship {
 	}
 
 	public int getCardinality() {
-		return cardinality;
+	  return cardinality;
 	}
 
 	@Override

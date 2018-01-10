@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Set;
 
 import odyssey.app.Configuration;
+import odyssey.app.Relation;
 import odyssey.app.Relationship;
 import odyssey.filters.Filter;
 import soot.SootClass;
@@ -41,32 +42,36 @@ public class AssociationAnalyzer extends Analyzer {
     for (SootField f : fields) {
       Tag signatureTag = f.getTag("SignatureTag");
       if(signatureTag != null) {
-        // Use SignatureEvaluator API for parsing the field signature
         String signature = signatureTag.toString();
         FieldEvaluator fieldEvaluator = new FieldEvaluator(signature);
         GenericType fieldType = fieldEvaluator.getType();
-//        System.out.println(fieldType);
         
+        SootClass containerClass;
+
         Set<String> containerTypes = fieldType.getAllContainerTypes();
+        for (String s : containerTypes) {
+          containerClass = bundle.scene.getSootClass(s);
+          if (passesFilters(containerClass)) {
+            Relationship rel = new Relationship(c, Relation.ASSOCIATION, containerClass, 0);
+            relationships.add(rel);
+          }
+        }
         
-        
-        
-        // TODO: Try playing with the following methods
-//        fieldType.getContainerType();
-//        fieldType.getElementTypes();
-//        fieldType.getAllContainerTypes();
-//        fieldType.getAllElementTypes();
-//        fieldType.isArray();
-//        fieldType.getDimension();
-       
+        Set<String> genericTypes = fieldType.getAllElementTypes();
+        SootClass genericClass;
+        for (String s : genericTypes) {
+          genericClass = bundle.scene.getSootClass(s);
+          if (passesFilters(genericClass)) {
+            Relationship rel = new Relationship(c, Relation.ASSOCIATION, genericClass, -1);
+            relationships.add(rel);
+          }
+        }
       }
       else {
-        // Bytecode signature for this field is unavailable, so let's use soot API
-        // System.out.println(f.getType().toString());
-      }
-
-      if (passesFilters(f.getDeclaringClass())) {
-        //relationships.add(new Relationship(c, Relation.ASSOCIATION, , 0));
+        SootClass fieldClass = bundle.scene.getSootClass(f.getType().toString());
+        if (passesFilters(fieldClass)) {
+          relationships.add(new Relationship(c, Relation.ASSOCIATION, fieldClass, 0));
+        }
       }
     }
   }

@@ -15,10 +15,7 @@ public class RelationshipFilter implements Filter {
 
 	@Override
 	public boolean shouldProcess(SootClass clazz) {
-		if (bundle.classes.contains(clazz)) {
-			return true;
-		}
-		return false;
+		return bundle.classes.contains(clazz);
 	}
 
 	@Override
