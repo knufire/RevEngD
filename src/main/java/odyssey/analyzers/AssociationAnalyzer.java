@@ -1,5 +1,6 @@
 package odyssey.analyzers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -53,7 +54,7 @@ public class AssociationAnalyzer extends Analyzer {
           containerClass = bundle.scene.getSootClass(s);
           if (passesFilters(containerClass)) {
             Relationship rel = new Relationship(c, Relation.ASSOCIATION, containerClass, 0);
-            relationships.add(rel);
+            addRelationship(rel);
           }
         }
 
@@ -63,7 +64,7 @@ public class AssociationAnalyzer extends Analyzer {
           genericClass = bundle.scene.getSootClass(s);
           if (passesFilters(genericClass)) {
             Relationship rel = new Relationship(c, Relation.ASSOCIATION, genericClass, -1);
-            relationships.add(rel);
+            addRelationship(rel);
           }
         }
       } else {
@@ -71,10 +72,25 @@ public class AssociationAnalyzer extends Analyzer {
         Type baseType = f.getType().makeArrayType().baseType;
         SootClass fieldClass = bundle.scene.getSootClass(baseType.toString());
         if (passesFilters(fieldClass) && !c.equals(fieldClass)) {
-          relationships.add(new Relationship(c, Relation.ASSOCIATION, fieldClass, isArray ? -1 : 0));
+          addRelationship(new Relationship(c, Relation.ASSOCIATION, fieldClass, isArray ? -1 : 0));
         }
       }
     }
   }
-
+  
+  
+  private void addRelationship(Relationship newRelationship) {
+    List<Relationship> toRemove = new ArrayList<>();
+    for (Relationship r : bundle.relationships) {
+      if (r.getToClass().equals(newRelationship.getToClass())) {
+        if (r.getFromClass().equals(newRelationship.getFromClass())) {
+          if (r.getRelation() == Relation.DEPENDENCY) {
+            toRemove.add(r);
+          }
+        }
+      }
+    }
+    bundle.relationships.add(newRelationship);
+    bundle.relationships.removeAll(toRemove);
+  }
 }

@@ -29,7 +29,6 @@ public class DependencyAnalyzer extends Analyzer {
     Set<Relationship> foundRelationships = new HashSet<>();
     for (SootClass c : bundle.classes) {
       if (passesFilters(c)) {
-        // System.out.println(c.getName());
         generateDependencyRelationships(c, foundRelationships);
       }
     }
@@ -41,15 +40,10 @@ public class DependencyAnalyzer extends Analyzer {
   private void generateDependencyRelationships(SootClass clazz, Set<Relationship> relationships) {
     List<SootMethod> methods = clazz.getMethods();
     methods.forEach(m -> {
-      checkParameterTypes(clazz, m.getParameterTypes());
       if (m.hasActiveBody()) {
         checkBody(clazz, m.getActiveBody(), relationships);
       }
     });
-  }
-
-  private void checkParameterTypes(SootClass clazz, List<Type> parameterTypes) {
-
   }
 
   private void checkBody(SootClass clazz, Body body, Set<Relationship> relationships) {
