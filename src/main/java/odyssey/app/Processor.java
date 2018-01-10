@@ -1,31 +1,46 @@
 package odyssey.app;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import odyssey.analyzers.Analyzer;
 import odyssey.analyzers.AnalyzerBundle;
-import odyssey.analyzers.AnalyzerFactory;
+import odyssey.analyzers.AncestorAnalyzer;
+import odyssey.analyzers.EmptyAnalyzer;
+import odyssey.analyzers.InheritanceAnalyzer;
+import odyssey.analyzers.SceneAnalyzer;
+import odyssey.analyzers.SootAnalyzer;
+import odyssey.analyzers.UMLAnalyzer;
+import odyssey.analyzers.UMLParser;
+import odyssey.filters.ClassNameFilter;
+import odyssey.filters.ClinitFilter;
+import odyssey.filters.DollarSignFilter;
+import odyssey.filters.Filter;
+import odyssey.filters.PackagePrivateFilter;
+import odyssey.filters.ProtectedFilter;
+import odyssey.filters.PublicFilter;
+import odyssey.filters.RelationshipFilter;
 
 public class Processor {
 
 	private List<Analyzer> pipeline;
 	private AnalyzerBundle bundle;
-	private AnalyzerFactory factory;
+	private Configuration config;
 
-	Processor(AnalyzerBundle bundle, AnalyzerFactory analyzerFactory) {
+	Processor(AnalyzerBundle bundle, Configuration config) {
 		this.bundle = bundle;
-		this.factory = analyzerFactory;
+		this.config = config;
 		createPipeline();
 	}
 
 	private void createPipeline() {
 		pipeline = new ArrayList<>();
-		pipeline.add(factory.createSceneAnalyzer());
-		pipeline.add(factory.createSootAnalyzer());
-		pipeline.add(factory.createAncestorAnalyzer());
-		pipeline.add(factory.createRelationshipAnalyzer());
-		pipeline.add(factory.createUMLAnalyzer());
+		pipeline.add(createSceneAnalyzer());
+		pipeline.add(createSootAnalyzer());
+		pipeline.add(createAncestorAnalyzer());
+		pipeline.add(createInheritanceAnalyzer());
+		pipeline.add(createUMLAnalyzer());
 	}
 
 	public AnalyzerBundle executePipeline() {
@@ -37,7 +52,57 @@ public class Processor {
 
 	public static Processor getProcessor(Configuration config) {
 		AnalyzerBundle bundle = new AnalyzerBundle();
-		return new Processor(bundle, new AnalyzerFactory(config, bundle));
+		return new Processor(bundle, config);
 	}
+	
+  public Analyzer createSceneAnalyzer() {
+    return new SceneAnalyzer(config, Collections.emptyList());
+  }
+
+  public Analyzer createSootAnalyzer() {
+    List<Filter> sootAnalyzerFilters = new ArrayList<Filter>();
+    sootAnalyzerFilters.add(new ClassNameFilter(config));
+    return new SootAnalyzer(config, sootAnalyzerFilters);
+  }
+
+  public Analyzer createAncestorAnalyzer() {
+    if (config.parseAncestors) {
+      return new AncestorAnalyzer(config, Collections.emptyList());
+    }
+    return new EmptyAnalyzer(config, Collections.emptyList());
+  }
+
+  public Analyzer createInheritanceAnalyzer() {
+    List<Filter> relationShipFilters = new ArrayList<Filter>();
+    relationShipFilters.add(new DollarSignFilter());
+    relationShipFilters.add(new RelationshipFilter(this.bundle));
+    return new InheritanceAnalyzer(config, relationShipFilters);
+  }
+
+  public Analyzer createUMLAnalyzer() {
+    List<Filter> UMLFilters = new ArrayList<Filter>();
+    addModifierFilter(UMLFilters);
+    UMLFilters.add(new DollarSignFilter());
+    UMLFilters.add(new ClinitFilter());
+    return new UMLAnalyzer(config, UMLFilters, new UMLParser());
+  }
+
+  private void addModifierFilter(List<Filter> filters) {
+    String mod = config.accessModifier;
+    switch (mod) {
+    case "protected":
+      filters.add(new ProtectedFilter());
+      return;
+    case "public":
+      filters.add(new PublicFilter());
+      return;
+    case "package":
+      filters.add(new PackagePrivateFilter());
+      return;
+    default: // "private" by default, therefore no filter
+      return;
+    }
+
+  }
 
 }
