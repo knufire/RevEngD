@@ -11,6 +11,7 @@ import odyssey.app.Relationship;
 import odyssey.filters.Filter;
 import soot.SootClass;
 import soot.SootField;
+import soot.Type;
 import soot.tagkit.Tag;
 import soot.util.Chain;
 
@@ -66,21 +67,14 @@ public class AssociationAnalyzer extends Analyzer {
           }
         }
       } else {
-        SootClass fieldClass = bundle.scene.getSootClass(f.getType().toString());
-        if (passesFilters(fieldClass) && !baseClassSame(c, fieldClass)) {
-          int cardinality = 0;
-          if (fieldClass.getName().contains("[")) {
-            cardinality = -1;
-          }
-          relationships.add(new Relationship(c, Relation.ASSOCIATION, fieldClass, cardinality));
+        boolean isArray = f.getType().toString().contains("[");
+        Type baseType = f.getType().makeArrayType().baseType;
+        SootClass fieldClass = bundle.scene.getSootClass(baseType.toString());
+        if (passesFilters(fieldClass) && !c.equals(fieldClass)) {
+          relationships.add(new Relationship(c, Relation.ASSOCIATION, fieldClass, isArray ? -1 : 0));
         }
       }
     }
-  }
-
-  // Do not let something have arrays of itself
-  private boolean baseClassSame(SootClass c1, SootClass c2) {
-    return c1.getName().replaceAll("\\[\\]", "").equals(c2.getName().replaceAll("\\[\\]", ""));
   }
 
 }
