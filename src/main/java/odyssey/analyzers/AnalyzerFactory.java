@@ -45,7 +45,7 @@ public class AnalyzerFactory {
 		List<Filter> relationShipFilters = new ArrayList<Filter>();
 		relationShipFilters.add(new DollarSignFilter());
 		relationShipFilters.add(new RelationshipFilter(this.bundle));
-		return new RelationshipAnalyzer(config, relationShipFilters);
+		return new InheritanceAnalyzer(config, relationShipFilters);
 	}
 
 	public Analyzer createUMLAnalyzer() {
