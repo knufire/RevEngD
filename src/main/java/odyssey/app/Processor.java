@@ -26,41 +26,39 @@ import odyssey.filters.RelationshipFilter;
 
 public class Processor {
 
-	private List<Analyzer> pipeline;
-	private AnalyzerBundle bundle;
-	private Configuration config;
-	private Relationship[] a = new Relationship[20];
+  private List<Analyzer> pipeline;
+  private AnalyzerBundle bundle;
+  private Configuration config;
 
-	Processor(AnalyzerBundle bundle, Configuration config) {
-		this.bundle = bundle;
-		this.config = config;
-		a[1] = new Relationship(null, null, null, 1);
-		createPipeline();
-	}
+  Processor(AnalyzerBundle bundle, Configuration config) {
+    this.bundle = bundle;
+    this.config = config;
+    createPipeline();
+  }
 
-	private void createPipeline() {
-		pipeline = new ArrayList<>();
-		pipeline.add(createSceneAnalyzer());
-		pipeline.add(createSootAnalyzer());
-		pipeline.add(createAncestorAnalyzer());
-		pipeline.add(createInheritanceAnalyzer());
-		pipeline.add(createAssociationAnalyzer());
-//		pipeline.add(createDependencyAnalyzer());
-		pipeline.add(createUMLAnalyzer());
-	}
+  private void createPipeline() {
+    pipeline = new ArrayList<>();
+    pipeline.add(createSceneAnalyzer());
+    pipeline.add(createSootAnalyzer());
+    pipeline.add(createAncestorAnalyzer());
+    pipeline.add(createInheritanceAnalyzer());
+    pipeline.add(createAssociationAnalyzer());
+//    pipeline.add(createDependencyAnalyzer());
+    pipeline.add(createUMLAnalyzer());
+  }
 
-	public AnalyzerBundle executePipeline() {
-		for (int i = 0; i < pipeline.size(); i++) {
-			this.bundle = pipeline.get(i).execute(bundle);
-		}
-		return bundle;
-	}
+  public AnalyzerBundle executePipeline() {
+    for (int i = 0; i < pipeline.size(); i++) {
+      this.bundle = pipeline.get(i).execute(bundle);
+    }
+    return bundle;
+  }
 
-	public static Processor getProcessor(Configuration config) {
-		AnalyzerBundle bundle = new AnalyzerBundle();
-		return new Processor(bundle, config);
-	}
-	
+  public static Processor getProcessor(Configuration config) {
+    AnalyzerBundle bundle = new AnalyzerBundle();
+    return new Processor(bundle, config);
+  }
+
   private Analyzer createSceneAnalyzer() {
     return new SceneAnalyzer(config, Collections.emptyList());
   }
@@ -84,21 +82,21 @@ public class Processor {
     relationShipFilters.add(new RelationshipFilter(this.bundle));
     return new InheritanceAnalyzer(config, relationShipFilters);
   }
-  
+
   private Analyzer createDependencyAnalyzer() {
     List<Filter> relationShipFilters = new ArrayList<Filter>();
     relationShipFilters.add(new DollarSignFilter());
     relationShipFilters.add(new RelationshipFilter(this.bundle));
     return new DependencyAnalyzer(config, relationShipFilters);
   }
-  
+
   private Analyzer createAssociationAnalyzer() {
     List<Filter> relationShipFilters = new ArrayList<Filter>();
     relationShipFilters.add(new DollarSignFilter());
     relationShipFilters.add(new RelationshipFilter(this.bundle));
     return new AssociationAnalyzer(config, relationShipFilters);
   }
-  
+
   private Analyzer createUMLAnalyzer() {
     List<Filter> UMLFilters = new ArrayList<Filter>();
     addModifierFilter(UMLFilters);

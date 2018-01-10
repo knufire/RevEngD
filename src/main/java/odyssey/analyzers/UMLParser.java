@@ -69,7 +69,7 @@ public class UMLParser {
 	
 	public String parse(Relationship r) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(r.getToClass().getShortName());
+		builder.append(r.getToClass().getShortName().replaceAll("\\[\\]", ""));
 		builder.append(" ");
 		builder.append(parseCardinality(r.getCardinality()));
 		builder.append(" ");
