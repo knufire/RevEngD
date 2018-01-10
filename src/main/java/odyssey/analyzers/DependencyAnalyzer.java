@@ -55,6 +55,11 @@ public class DependencyAnalyzer extends Analyzer {
     graph.forEach(u -> {
       if (u instanceof InvokeStmt) {
         //TODO: DO SOMETHING
+        InvokeStmt stmt = (InvokeStmt) u;
+        InvokeExpr exp = stmt.getInvokeExpr();
+        //System.err.println(exp.getMethod().getDeclaringClass().getName());
+        SootClass declaringClass = exp.getMethod().getDeclaringClass();
+        addRelationship(clazz, declaringClass, relationships);
       } else if (u instanceof AssignStmt) {
         Value rightOp = ((AssignStmt) u).getRightOp();
         if(rightOp instanceof InvokeExpr) {
@@ -62,20 +67,24 @@ public class DependencyAnalyzer extends Analyzer {
           SootMethod method = invkExpr.getMethod();
           //TODO: Generics and arrays
           SootClass returnType = bundle.scene.getSootClass(method.getReturnType().toString());
-          if (passesFilters(returnType)) {
-            relationships.add(new Relationship(clazz, Relation.DEPENDENCY, returnType, 0));
-          }
+          addRelationship(clazz, returnType, relationships);
         }
         if(rightOp instanceof NewExpr) {
           NewExpr newExpr = (NewExpr)rightOp; 
           //TODO: Generics and arrays
           SootClass returnType = bundle.scene.getSootClass(newExpr.getType().toString());
-          if (passesFilters(returnType)) {
-            relationships.add(new Relationship(clazz, Relation.DEPENDENCY, returnType, 0));
-          }
+          addRelationship(clazz, returnType, relationships);
         }
       }
     });
+  }
+  
+  private void addRelationship(SootClass from, SootClass to, Set<Relationship> relationships) {
+    if (passesFilters(to)) {
+      if (!from.equals(to)) {        
+        relationships.add(new Relationship(from, Relation.DEPENDENCY, to, 0));
+      }
+    }
   }
 
   /*
