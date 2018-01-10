@@ -29,9 +29,13 @@ dependencies {
 	compile 'ca.mcgill.sable:soot:3.+'
 	compile 'org.apache.logging.log4j:log4j-api:2.+'
 	compile 'org.apache.logging.log4j:log4j-core:2.+'
-    compile 'net.sourceforge.plantuml:plantuml:1.+'
-    testCompile 'junit:junit:4.+'
-    testCompile "org.mockito:mockito-core:2.+"
+  compile 'net.sourceforge.plantuml:plantuml:1.+'
+  compile 'edu.rosehulman.jvm:SignatureEvaluator:1.0.+'
+  compile 'com.google.inject:guice:4.1.+'
+  compile 'com.google.guava:guava:22.+' 
+  
+  testCompile 'junit:junit:4.+'
+  testCompile "org.mockito:mockito-core:2.+"
 }
 
 compileJava {
