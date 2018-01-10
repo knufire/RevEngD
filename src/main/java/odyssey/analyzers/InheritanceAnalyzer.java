@@ -1,6 +1,5 @@
 package odyssey.analyzers;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import odyssey.app.Configuration;
@@ -18,22 +17,17 @@ public class InheritanceAnalyzer extends Analyzer {
 
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
-    // TODO: Get the classes, look through the classes, build relationships
-    // System.out.println("Bundle! " +
-    // Arrays.deepToString(bundle.classes.toArray()));
 
     List<Relationship> relationships = bundle.relationships;
     
     for (SootClass c : bundle.classes) {
       if (passesFilters(c)) {
-        // System.out.println(c.getName());
         generateExtendsRelationships(c, relationships);
         generateImplementsRelationships(c, relationships);
       }
     }
 
     bundle.relationships = relationships;
-    // System.out.println(Arrays.deepToString(bundle.relationships.toArray()));
     return bundle;
   }
 

@@ -12,7 +12,7 @@ public abstract class Analyzer {
 
   List<Filter> filters;
   Configuration config;
-  AnalyzerBundle bundle;
+  
 
   public Analyzer(Configuration configuration, List<Filter> filters){
     this.config = configuration;

@@ -43,7 +43,7 @@ public class Processor {
 		pipeline.add(createAncestorAnalyzer());
 		pipeline.add(createInheritanceAnalyzer());
 		pipeline.add(createAssociationAnalyzer());
-		pipeline.add(createDependencyAnalyzer());
+//		pipeline.add(createDependencyAnalyzer());
 		pipeline.add(createUMLAnalyzer());
 	}
 
