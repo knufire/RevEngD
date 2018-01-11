@@ -132,15 +132,27 @@ public class DependencyAnalyzer extends Analyzer {
   }
 
   private void processInvokeExpr(SootClass clazz, InvokeExpr invkExpr) {
-    SootMethod method = invkExpr.getMethod();
-    // TODO: Generics and arrays
-
-    SootClass returnType = bundle.scene.getSootClass(method.getReturnType().toString());
-    addRelationship(clazz, returnType);
+    SootMethod method = invkExpr.getMethod(); 
+    Tag signatureTag = method.getTag("SignatureTag");
+    if (signatureTag != null) {
+      MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());
+      try {
+        processGenericType(clazz, evaluator.getReturnType());
+        List<GenericType> paramTypes = evaluator.getParameterTypes();
+        for (GenericType type : paramTypes) {
+          processGenericType(clazz, type);
+        }
+      } catch (IllegalStateException e) {
+        SootClass returnType = bundle.scene.getSootClass(method.getReturnType().toString());
+        addRelationship(clazz, returnType);
+      }
+    } else {
+      SootClass returnType = bundle.scene.getSootClass(method.getReturnType().toString());
+      addRelationship(clazz, returnType);
+    }
   }
 
   private void processNewExpr(SootClass clazz, NewExpr newExpr) {
-    // TODO: Generics & arrays
     SootClass returnType = bundle.scene.getSootClass(newExpr.getType().toString());
     addRelationship(clazz, returnType);
   }
