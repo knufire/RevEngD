@@ -12,6 +12,7 @@ import odyssey.analyzers.DependencyAnalyzer;
 import odyssey.analyzers.EmptyAnalyzer;
 import odyssey.analyzers.InheritanceAnalyzer;
 import odyssey.analyzers.SceneAnalyzer;
+import odyssey.analyzers.SequenceAnalyzer;
 import odyssey.analyzers.SootAnalyzer;
 import odyssey.analyzers.UMLAnalyzer;
 import odyssey.analyzers.UMLParser;
@@ -103,6 +104,18 @@ public class Processor {
     UMLFilters.add(new DollarSignFilter());
     UMLFilters.add(new ClinitFilter());
     return new UMLAnalyzer(config, UMLFilters, new UMLParser());
+  }
+  
+  private Analyzer createSequenceAnalyzer() {
+    if (config.entryMethodName.length() > 0) {
+      List<Filter> sequenceFilters = new ArrayList<Filter>();
+      addModifierFilter(sequenceFilters);
+      sequenceFilters.add(new DollarSignFilter());
+      sequenceFilters.add(new ClinitFilter());
+      return new SequenceAnalyzer(config, sequenceFilters);
+    } else {
+      return new EmptyAnalyzer(config, Collections.emptyList());
+    }
   }
 
   private void addModifierFilter(List<Filter> filters) {
