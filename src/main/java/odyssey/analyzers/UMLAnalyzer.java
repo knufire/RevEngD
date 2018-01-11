@@ -68,9 +68,9 @@ public class UMLAnalyzer extends Analyzer {
 	private void generateUMLImage(String umlString) {
 		SourceStringReader reader = new SourceStringReader(umlString);
 		try {
-			Files.createDirectories(config.imageLocation.getParent());
+			Files.createDirectories(config.umlImageLocation.getParent());
 
-			OutputStream outStream = new FileOutputStream(config.imageLocation.toFile());
+			OutputStream outStream = new FileOutputStream(config.umlImageLocation.toFile());
 			FileFormatOption option = new FileFormatOption(FileFormat.SVG, false);
 			reader.outputImage(outStream, option);
 		} catch (Exception e) {

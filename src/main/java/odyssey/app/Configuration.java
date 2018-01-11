@@ -18,11 +18,12 @@ public class Configuration {
 	public boolean parseAncestors;
 	public String accessModifier;
 	public boolean display;
-	public Path imageLocation;
+	public Path umlImageLocation;
 	public boolean includeObject;
 	public boolean expandJDK;
 	public String entryMethodName;
 	public int maxCallDepth;
+  public Path seqImageLocation;
 
 	public Configuration() {
 		classNames = Collections.emptyList();
@@ -31,13 +32,14 @@ public class Configuration {
 		parseAncestors = false;
 		accessModifier = "private";
 		display = true;
-		imageLocation = Paths.get(System.getProperty("user.dir"), "build", "plantuml", "diagram.svg");
+		umlImageLocation = Paths.get(System.getProperty("user.dir"), "build", "plantuml", "uml.svg");
 		includeObject = false;
 		
 		//Sequence Diagrams
 		expandJDK = false;
 		entryMethodName = "";
 		maxCallDepth = 5;
+		seqImageLocation = Paths.get(System.getProperty("user.dir"), "build", "plantuml", "sequence.svg");
 	}
 
 }
