@@ -1,4 +1,4 @@
-package odyssey.app;
+package odyssey.models;
 
 import soot.SootClass;
 

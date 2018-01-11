@@ -24,6 +24,9 @@ public class Configuration {
 	public String entryMethodName;
 	public int maxCallDepth;
   public Path seqImageLocation;
+  public boolean showInheritance;
+  public boolean showDependence;
+  public boolean showAssociation;
 
 	public Configuration() {
 		classNames = Collections.emptyList();
@@ -34,6 +37,10 @@ public class Configuration {
 		display = true;
 		umlImageLocation = Paths.get(System.getProperty("user.dir"), "build", "plantuml", "uml.svg");
 		includeObject = false;
+		
+		showInheritance = false;
+		showDependence = false;
+		showAssociation = false;
 		
 		//Sequence Diagrams
 		expandJDK = false;

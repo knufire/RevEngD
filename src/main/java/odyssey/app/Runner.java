@@ -89,6 +89,15 @@ public class Runner {
     case "--expand-jdk":
       config.expandJDK = true;
       return;
+    case "--show-inheritance":
+      config.showInheritance = true;
+      return;
+    case "--show-dependence":
+      config.showDependence = true;
+      return;
+    case "--show-association":
+      config.showAssociation = true;
+      return;
     default:
     	return;
     }
