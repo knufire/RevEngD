@@ -20,6 +20,7 @@ import odyssey.filters.ClassNameFilter;
 import odyssey.filters.ClinitFilter;
 import odyssey.filters.DollarSignFilter;
 import odyssey.filters.Filter;
+import odyssey.filters.JDKFilter;
 import odyssey.filters.PackagePrivateFilter;
 import odyssey.filters.ProtectedFilter;
 import odyssey.filters.PublicFilter;
@@ -113,7 +114,9 @@ public class Processor {
       addModifierFilter(sequenceFilters);
       sequenceFilters.add(new DollarSignFilter());
       sequenceFilters.add(new ClinitFilter());
-      //TODO: Add filter based on JDK flag
+      if (!config.expandJDK) {
+        sequenceFilters.add(new JDKFilter());
+      }
       return new SequenceAnalyzer(config, sequenceFilters);
     } else {
       return new EmptyAnalyzer(config, Collections.emptyList());

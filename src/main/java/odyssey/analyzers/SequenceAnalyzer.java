@@ -42,7 +42,9 @@ public class SequenceAnalyzer extends Analyzer {
         if (targetMethod != null && passesFilters(targetMethod)) {
           Call newCall = new Call(method.getDeclaringClass(), targetMethod);
           bundle.calls.add(newCall);
-          processMethod(targetMethod, depth+1);
+          if (passesFilters(targetMethod.getDeclaringClass())) {
+            processMethod(targetMethod, depth+1);
+          }
         }
       }
     } else {//Method has no active body
