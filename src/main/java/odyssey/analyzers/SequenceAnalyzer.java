@@ -29,6 +29,7 @@ public class SequenceAnalyzer extends Analyzer {
     System.out.println("Entry Method:\t" + config.entryMethodName);
     SootMethod entryMethod = this.bundle.scene.getMethod(config.entryMethodName);
     processMethod(entryMethod, 0);
+    parseCalls();
     return this.bundle;
   }
   
@@ -40,8 +41,6 @@ public class SequenceAnalyzer extends Analyzer {
         SootMethod targetMethod = resolveUsingCallGraph(u);
         if (targetMethod != null && passesFilters(targetMethod)) {
           Call newCall = new Call(method.getDeclaringClass(), targetMethod);
-          System.err.print(newCall);
-          System.err.println(" at depth " + (depth+1));
           bundle.calls.add(newCall);
           processMethod(targetMethod, depth+1);
         }
@@ -63,5 +62,15 @@ public class SequenceAnalyzer extends Analyzer {
     }
     return null;
    
+  }
+  
+  private void parseCalls() {
+    /*for (Call c: bundle.calls) {
+      System.err.println(c);
+    }*/
+    
+    for (Call c: bundle.calls) {
+      System.out.println(c.getPlantUMLString());
+    }
   }
 }

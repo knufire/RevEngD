@@ -38,4 +38,14 @@ public class Call {
     return getCallingClass() + " calls " + getRecievingClass() + "." + getMethodName();
   }
   
+  public String getPlantUMLString() {
+    if (getMethodName().equals("<init>")) {
+      if (caller.getSuperclass().equals(method.getDeclaringClass())) {
+        return getCallingClass() + " -> " + getRecievingClass() + " : " + "super()";
+      }
+      return getCallingClass() + " -> " + getRecievingClass() + " : " + "new " + getRecievingClass() + "()";
+    }
+    return getCallingClass() + " -> " + getRecievingClass() + " : " + getMethodName() + "()";
+  }
+  
 }
