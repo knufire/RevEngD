@@ -20,6 +20,9 @@ public class Configuration {
 	public boolean display;
 	public Path imageLocation;
 	public boolean includeObject;
+	public boolean expandJDK;
+	public String entryMethodName;
+	public int maxCallDepth;
 
 	public Configuration() {
 		classNames = Collections.emptyList();
@@ -30,6 +33,11 @@ public class Configuration {
 		display = true;
 		imageLocation = Paths.get(System.getProperty("user.dir"), "build", "plantuml", "diagram.svg");
 		includeObject = false;
+		
+		//Sequence Diagrams
+		expandJDK = false;
+		entryMethodName = "";
+		maxCallDepth = 5;
 	}
 
 }

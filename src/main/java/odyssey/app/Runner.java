@@ -77,6 +77,15 @@ public class Runner {
     case "--include-Object":
     	config.includeObject = true;
     	return;
+    case "-e":
+      config.entryMethodName = values.get(0);
+      return;
+    case "-max-depth": 
+      config.maxCallDepth = Integer.parseInt(values.get(0));
+      return;
+    case "--expand-jdk":
+      config.expandJDK = true;
+      return;
     default:
     	return;
     }
