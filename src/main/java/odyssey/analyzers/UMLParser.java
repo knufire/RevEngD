@@ -2,6 +2,9 @@ package odyssey.analyzers;
 
 import java.util.List;
 
+import edu.rosehulman.jvm.sigevaluator.FieldEvaluator;
+import edu.rosehulman.jvm.sigevaluator.GenericType;
+import edu.rosehulman.jvm.sigevaluator.MethodEvaluator;
 import odyssey.app.Relation;
 import odyssey.app.Relationship;
 import soot.Scene;
@@ -9,6 +12,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
+import soot.tagkit.Tag;
 
 public class UMLParser {
 
@@ -29,7 +33,17 @@ public class UMLParser {
     builder.append(getAccessModifier(f.getModifiers()));
     builder.append(" ");
     builder.append(getStaticAbstractModifier(f.getModifiers()));
-    builder.append(parse(f.getType()));
+    
+    Tag signatureTag = f.getTag("SignatureTag");
+    if (signatureTag != null) {
+      String signature = signatureTag.toString();
+      FieldEvaluator fieldEvaluator = new FieldEvaluator(signature);
+      GenericType fieldType = fieldEvaluator.getType();
+      builder.append(parse(fieldType));
+    } else {
+      builder.append(parse(f.getType()));
+    }
+    
     builder.append(" ");
     builder.append(f.getName());
     return builder.toString();
@@ -41,15 +55,32 @@ public class UMLParser {
     builder.append(getAccessModifier(m.getModifiers()));
     builder.append(" ");
     builder.append(getStaticAbstractModifier(m.getModifiers()));
-    builder.append(parse(m.getReturnType()));
+    
+    //Return Type
+    Tag signatureTag = m.getTag("SignatureTag");
+    if (signatureTag != null) {
+      try {
+        MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());
+        builder.append(parse(evaluator.getReturnType()));
+      } catch (Exception e) {       
+        builder.append(parse(m.getReturnType()));
+      }
+    } else {
+      builder.append(parse(m.getReturnType()));
+    }
+    
     builder.append(" ");
-
+    
+    
+    //Method Name
     String methodName = Scene.v().quotedNameOf(m.getName());
     if (methodName.contains("<init>")) {
       builder.append(trimQualifiedName(Scene.v().quotedNameOf(m.getDeclaringClass().getName())));
     } else {
       builder.append(methodName);
     }
+    
+    //Parameters
     builder.append("(");
     for (int i = 0; i < params.size(); i++) {
       builder.append(trimQualifiedName(params.get(i).toQuotedString()));
@@ -62,9 +93,32 @@ public class UMLParser {
   }
 
   public String parse(Type t) {
-    // TODO: Doesn't get generic, not sure if it's available in SOOT.
     return trimQualifiedName(t.toQuotedString());
+  }
+  
+  private String parse(GenericType fieldType) {
+    StringBuilder builder = new StringBuilder();
+    builder.append(trimQualifiedName(fieldType.getContainerType()));
+    List<GenericType> elementTypes = fieldType.getElementTypes();
+    if (!elementTypes.isEmpty()) {
+      builder.append("<");
+      for (int i = 0; i < elementTypes.size(); ++i) {
+        builder.append(parse(elementTypes.get(i)));
 
+        if (i != elementTypes.size() - 1) {
+          builder.append(",");
+        }
+      }
+      builder.append(">");
+    }
+    
+    if(fieldType.isArray()) {
+      for(int i = 0; i < fieldType.getDimension(); ++i) {
+        builder.append("[]");
+      }
+    }
+
+    return builder.toString();
   }
 
   public String parse(Relationship r) {
