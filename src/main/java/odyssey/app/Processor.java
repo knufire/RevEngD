@@ -45,7 +45,8 @@ public class Processor {
     pipeline.add(createInheritanceAnalyzer());
     pipeline.add(createAssociationAnalyzer());
     pipeline.add(createDependencyAnalyzer());
-    pipeline.add(createUMLAnalyzer());
+    pipeline.add(createSequenceAnalyzer());
+    //pipeline.add(createUMLAnalyzer());
   }
 
   public AnalyzerBundle executePipeline() {
@@ -112,6 +113,7 @@ public class Processor {
       addModifierFilter(sequenceFilters);
       sequenceFilters.add(new DollarSignFilter());
       sequenceFilters.add(new ClinitFilter());
+      //TODO: Add filter based on JDK flag
       return new SequenceAnalyzer(config, sequenceFilters);
     } else {
       return new EmptyAnalyzer(config, Collections.emptyList());

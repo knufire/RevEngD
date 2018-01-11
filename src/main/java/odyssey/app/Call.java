@@ -30,7 +30,12 @@ public class Call {
   }
   
   public String getMethodName() {
-    return method.getSignature();
+    return method.getName();
+  }
+  
+  @Override
+  public String toString() {
+    return getCallingClass() + " calls " + getRecievingClass() + "." + getMethodName();
   }
   
 }
