@@ -14,12 +14,12 @@ import odyssey.filters.Filter;
  */
 public class EmptyAnalyzer extends Analyzer {
 
-	public EmptyAnalyzer(Configuration configuration, List<Filter> filters) {
-		super(configuration, filters);
-	}
+  public EmptyAnalyzer(Configuration configuration, List<Filter> filters) {
+    super(configuration, filters);
+  }
 
-	public AnalyzerBundle execute(AnalyzerBundle bundle) {
-		return bundle;
-	}
+  public AnalyzerBundle execute(AnalyzerBundle bundle) {
+    return bundle;
+  }
 
 }
