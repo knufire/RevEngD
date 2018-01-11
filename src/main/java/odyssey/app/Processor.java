@@ -47,7 +47,7 @@ public class Processor {
     pipeline.add(createAssociationAnalyzer());
     pipeline.add(createDependencyAnalyzer());
     pipeline.add(createSequenceAnalyzer());
-    //pipeline.add(createUMLAnalyzer());
+    pipeline.add(createUMLAnalyzer());
   }
 
   public AnalyzerBundle executePipeline() {

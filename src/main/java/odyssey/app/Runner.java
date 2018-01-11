@@ -66,8 +66,11 @@ public class Runner {
       config.projectDirectory = Paths.get(values.get(0).trim(), "build", "classes", "main");
       return;
     case "-i":
-    	config.imageLocation = Paths.get(values.get(0).trim());
+    	config.umlImageLocation = Paths.get(values.get(0).trim());
     	return;
+    case "-s":
+      config.seqImageLocation = Paths.get(values.get(0).trim());
+      return;
     case "-m":
       config.mainClassName = values.get(0);
       return;

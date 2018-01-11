@@ -1,8 +1,16 @@
 package odyssey.analyzers;
 
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.logging.log4j.Level;
+
+import net.sourceforge.plantuml.FileFormat;
+import net.sourceforge.plantuml.FileFormatOption;
+import net.sourceforge.plantuml.SourceStringReader;
 import odyssey.app.Call;
 import odyssey.app.Configuration;
 import odyssey.filters.Filter;
@@ -29,7 +37,8 @@ public class SequenceAnalyzer extends Analyzer {
     System.out.println("Entry Method:\t" + config.entryMethodName);
     SootMethod entryMethod = this.bundle.scene.getMethod(config.entryMethodName);
     processMethod(entryMethod, 0);
-    parseCalls();
+    String parseString = parseCalls();
+    generateUMLImage(parseString);
     return this.bundle;
   }
   
@@ -47,8 +56,6 @@ public class SequenceAnalyzer extends Analyzer {
           }
         }
       }
-    } else {//Method has no active body
-      //TODO: Do something when we don't have the active body
     }
   }
   
@@ -66,13 +73,32 @@ public class SequenceAnalyzer extends Analyzer {
    
   }
   
-  private void parseCalls() {
+  private String parseCalls() {
     /*for (Call c: bundle.calls) {
       System.err.println(c);
     }*/
-    
+    StringBuilder builder = new StringBuilder();
+    builder.append("@startuml\n");
     for (Call c: bundle.calls) {
-      System.out.println(c.getPlantUMLString());
+      builder.append(c.getPlantUMLString());
+      builder.append("\n");
     }
+    builder.append("@enduml\n");
+    config.logger.log(Level.INFO, "Generated Sequence Diagram\n" + builder.toString());
+    return builder.toString();
+  }
+  
+  private void generateUMLImage(String umlString) {
+    SourceStringReader reader = new SourceStringReader(umlString);
+    try {
+      Files.createDirectories(config.seqImageLocation.getParent());
+
+      OutputStream outStream = new FileOutputStream(config.seqImageLocation.toFile());
+      FileFormatOption option = new FileFormatOption(FileFormat.SVG, false);
+      reader.outputImage(outStream, option);
+    } catch (Exception e) {
+      config.logger.error("Cannot create file to store the UML diagram.\n" + e);
+    }
+
   }
 }
