@@ -1,5 +1,6 @@
 package odyssey.analyzers;
 
+import java.util.Collection;
 import java.util.List;
 
 import edu.rosehulman.jvm.sigevaluator.FieldEvaluator;
@@ -50,56 +51,92 @@ public class UMLParser {
   }
 
   public String parse(SootMethod m) {
-    List<Type> params = m.getParameterTypes();
     StringBuilder builder = new StringBuilder();
     builder.append(getAccessModifier(m.getModifiers()));
     builder.append(" ");
     builder.append(getStaticAbstractModifier(m.getModifiers()));
-    
-    //Return Type
+    builder.append(parseReturnType(m));
+    builder.append(" ");
+    builder.append(parseMethodName(m));
+    builder.append(parseMethodParameters(m));
+    return builder.toString();
+  }
+  
+  public String parseReturnType(SootMethod m) {
+    StringBuilder builder = new StringBuilder();
     Tag signatureTag = m.getTag("SignatureTag");
     if (signatureTag != null) {
+      MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());
       try {
-        MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());
         builder.append(parse(evaluator.getReturnType()));
-      } catch (Exception e) {       
+      } catch (IllegalStateException e) {       
         builder.append(parse(m.getReturnType()));
       }
     } else {
       builder.append(parse(m.getReturnType()));
     }
-    
-    builder.append(" ");
-    
-    
-    //Method Name
+    return builder.toString();
+  }
+  
+  public String parseMethodName(SootMethod m) {
     String methodName = Scene.v().quotedNameOf(m.getName());
     if (methodName.contains("<init>")) {
-      builder.append(trimQualifiedName(Scene.v().quotedNameOf(m.getDeclaringClass().getName())));
+      return trimQualifiedName(Scene.v().quotedNameOf(m.getDeclaringClass().getName()));
     } else {
-      builder.append(methodName);
+     return methodName;
     }
-    
-    //Parameters
+  }
+  
+  public String parseMethodParameters(SootMethod m) {
+    StringBuilder builder = new StringBuilder();
+    Tag signatureTag = m.getTag("SignatureTag");
+    List<Type> params = m.getParameterTypes();
+    if (signatureTag != null) {
+      MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());
+      try {
+        builder.append(parse(evaluator.getParameterTypes()));
+      } catch (IllegalStateException e){
+        builder.append(parse(params));
+      }
+
+    } else {
+      builder.append(parse(params));
+    }
+    return builder.toString();
+  }
+
+  public String parse(Collection<GenericType> parameterTypes) {
+    StringBuilder builder = new StringBuilder();
     builder.append("(");
-    for (int i = 0; i < params.size(); i++) {
-      builder.append(trimQualifiedName(params.get(i).toQuotedString()));
-      if (i < params.size() - 1) {
+    for (GenericType t : parameterTypes) {
+      builder.append(parse(t));
+      builder.append(",");
+    }
+    return builder.substring(0, builder.length()-1) + ")";
+    
+  }
+  
+  public String parse(List<Type> types) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("(");
+    for (int i = 0; i < types.size(); i++) {
+      builder.append(parse(types.get(i)));
+      if (i < types.size() - 1) {
         builder.append(",");
       }
     }
     builder.append(")");
     return builder.toString();
   }
-
+  
   public String parse(Type t) {
     return trimQualifiedName(t.toQuotedString());
   }
   
-  private String parse(GenericType fieldType) {
+  public String parse(GenericType type) {
     StringBuilder builder = new StringBuilder();
-    builder.append(trimQualifiedName(fieldType.getContainerType()));
-    List<GenericType> elementTypes = fieldType.getElementTypes();
+    builder.append(trimQualifiedName(type.getContainerType()));
+    List<GenericType> elementTypes = type.getElementTypes();
     if (!elementTypes.isEmpty()) {
       builder.append("<");
       for (int i = 0; i < elementTypes.size(); ++i) {
@@ -112,8 +149,8 @@ public class UMLParser {
       builder.append(">");
     }
     
-    if(fieldType.isArray()) {
-      for(int i = 0; i < fieldType.getDimension(); ++i) {
+    if(type.isArray()) {
+      for(int i = 0; i < type.getDimension(); ++i) {
         builder.append("[]");
       }
     }
@@ -133,7 +170,7 @@ public class UMLParser {
     return builder.toString();
   }
 
-  private String parse(Relation r) {
+  public String parse(Relation r) {
     switch (r) {
     case ASSOCIATION:
       return "<--";
@@ -148,7 +185,7 @@ public class UMLParser {
     }
   }
 
-  private String parseCardinality(int cardinality) {
+  public String parseCardinality(int cardinality) {
     if (cardinality == -1) {
       return "\"1..*\"";
     }
