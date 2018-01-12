@@ -52,10 +52,13 @@ public class SequenceAnalyzer extends Analyzer {
       UnitGraph graph = new ExceptionalUnitGraph(method.getActiveBody());
       for (Unit u : graph) {
         SootMethod targetMethod = resolveUsingCallGraph(u);
+
         if (targetMethod != null && passesFilters(targetMethod)) {
-          CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod,
-              parser.parseMethodParameters(method));
-          bundle.calls.add(newCall);
+          if (config.showSuper || !isSuperCall(method, targetMethod)) {
+            CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod,
+                parser.parseMethodParameters(targetMethod));
+            bundle.calls.add(newCall);
+          }
           if (passesFilters(targetMethod.getDeclaringClass())) {
             processMethod(targetMethod, depth + 1);
           }
@@ -69,6 +72,15 @@ public class SequenceAnalyzer extends Analyzer {
     } else {
       System.err.println("Unalbe to load method body: " + method.getName());
     }
+  }
+
+  private boolean isSuperCall(SootMethod method, SootMethod targetMethod) {
+    if (targetMethod.toString().contains("<init>")) {
+      if (method.getDeclaringClass().getSuperclass().equals(targetMethod.getDeclaringClass())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   private SootMethod resolveUsingCallGraph(Unit stmt) {

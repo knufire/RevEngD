@@ -17,9 +17,6 @@ public class CallMessage extends Message {
   }
 
   private String getParametersString() {
-    if (parameters.isEmpty()) {
-      return "";
-    }
     return parameters;
   }
 

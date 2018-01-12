@@ -85,7 +85,7 @@ public class DependencyAnalyzer extends Analyzer {
     for (String s : containerTypes) {
       toClass = bundle.scene.getSootClass(s);
       if (passesFilters(toClass)) {
-        addRelationship(fromClass, toClass);
+        addRelationship(fromClass, toClass, 1);
       }
     }
 
@@ -93,7 +93,7 @@ public class DependencyAnalyzer extends Analyzer {
     for (String s : genericTypes) {
       toClass = bundle.scene.getSootClass(s);
       if (passesFilters(toClass)) {
-        addRelationship(fromClass, toClass);
+        addRelationship(fromClass, toClass, -1);
       }
     }
   }
@@ -103,7 +103,7 @@ public class DependencyAnalyzer extends Analyzer {
       Type baseType = t.makeArrayType().baseType;
       SootClass toClass = bundle.scene.getSootClass(baseType.toString());
       if (passesFilters(toClass) && !fromClass.equals(toClass)) {
-        addRelationship(fromClass, toClass);
+        addRelationship(fromClass, toClass, isArray(t) ? -1 : 0);
       }
     }
   }
@@ -128,11 +128,11 @@ public class DependencyAnalyzer extends Analyzer {
   private void processInvokeStmt(SootClass clazz, InvokeStmt stmt) {
     InvokeExpr exp = stmt.getInvokeExpr();
     SootClass declaringClass = exp.getMethod().getDeclaringClass();
-    addRelationship(clazz, declaringClass);
+    addRelationship(clazz, declaringClass, 0);
   }
 
   private void processInvokeExpr(SootClass clazz, InvokeExpr invkExpr) {
-    SootMethod method = invkExpr.getMethod(); 
+    SootMethod method = invkExpr.getMethod();
     Tag signatureTag = method.getTag("SignatureTag");
     if (signatureTag != null) {
       MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());
@@ -143,21 +143,29 @@ public class DependencyAnalyzer extends Analyzer {
           processGenericType(clazz, type);
         }
       } catch (IllegalStateException e) {
-        SootClass returnType = bundle.scene.getSootClass(method.getReturnType().toString());
-        addRelationship(clazz, returnType);
+        processReturnType(clazz, method);
       }
     } else {
-      SootClass returnType = bundle.scene.getSootClass(method.getReturnType().toString());
-      addRelationship(clazz, returnType);
+      processReturnType(clazz, method);
     }
+  }
+
+  private boolean isArray(Type type) {
+    return type.toString().contains("[");
+  }
+
+  private void processReturnType(SootClass clazz, SootMethod method) {
+    Type returnType = method.getReturnType();
+    SootClass returnClass = bundle.scene.getSootClass(returnType.toString());
+    addRelationship(clazz, returnClass, isArray(returnType) ? -1 : 0);
   }
 
   private void processNewExpr(SootClass clazz, NewExpr newExpr) {
     SootClass returnType = bundle.scene.getSootClass(newExpr.getType().toString());
-    addRelationship(clazz, returnType);
+    addRelationship(clazz, returnType, 0);
   }
 
-  private void addRelationship(SootClass from, SootClass to) {
+  private void addRelationship(SootClass from, SootClass to, int cardinality) {
     if (from.hasSuperclass()) {
       if (from.getSuperclass().equals(to)) {
         return;
@@ -168,7 +176,7 @@ public class DependencyAnalyzer extends Analyzer {
     }
     if (passesFilters(to)) {
       if (!from.equals(to)) {
-        relationships.add(new Relationship(from, Relation.DEPENDENCY, to, 0));
+        relationships.add(new Relationship(from, Relation.DEPENDENCY, to, cardinality));
       }
     }
   }

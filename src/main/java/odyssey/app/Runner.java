@@ -66,8 +66,8 @@ public class Runner {
       config.projectDirectory = Paths.get(values.get(0).trim(), "build", "classes", "main");
       return;
     case "-i":
-    	config.umlImageLocation = Paths.get(values.get(0).trim());
-    	return;
+      config.umlImageLocation = Paths.get(values.get(0).trim());
+      return;
     case "-s":
       config.seqImageLocation = Paths.get(values.get(0).trim());
       return;
@@ -78,12 +78,12 @@ public class Runner {
       config.parseAncestors = true;
       return;
     case "--include-Object":
-    	config.includeObject = true;
-    	return;
+      config.includeObject = true;
+      return;
     case "-e":
       config.entryMethodName = values.get(0);
       return;
-    case "-max-depth": 
+    case "-max-depth":
       config.maxCallDepth = Integer.parseInt(values.get(0));
       return;
     case "--expand-jdk":
@@ -98,8 +98,11 @@ public class Runner {
     case "--show-association":
       config.showAssociation = true;
       return;
+    case "--include-super":
+      config.showSuper = true;
+      return;
     default:
-    	return;
+      return;
     }
   }
 
@@ -112,7 +115,7 @@ public class Runner {
       return "protected";
     }
     if (lower.equals("package")) {
-    	return "package";
+      return "package";
     }
     return "private";
   }
