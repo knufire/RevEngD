@@ -49,6 +49,7 @@ public class DependencyAnalyzer extends Analyzer {
   private void generateDependencyRelationships(SootClass clazz) {
     List<SootMethod> methods = clazz.getMethods();
     methods.forEach(m -> {
+      if (!passesFilters(m)) return;
       Tag signatureTag = m.getTag("SignatureTag");
       if (signatureTag != null) {
         try {
@@ -127,12 +128,15 @@ public class DependencyAnalyzer extends Analyzer {
 
   private void processInvokeStmt(SootClass clazz, InvokeStmt stmt) {
     InvokeExpr exp = stmt.getInvokeExpr();
-    SootClass declaringClass = exp.getMethod().getDeclaringClass();
+    SootMethod method = exp.getMethod();
+    if (!passesFilters(method)) return;
+    SootClass declaringClass = method.getDeclaringClass();
     addRelationship(clazz, declaringClass, 0);
   }
 
   private void processInvokeExpr(SootClass clazz, InvokeExpr invkExpr) {
     SootMethod method = invkExpr.getMethod();
+    if (!passesFilters(method)) return;
     Tag signatureTag = method.getTag("SignatureTag");
     if (signatureTag != null) {
       MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());

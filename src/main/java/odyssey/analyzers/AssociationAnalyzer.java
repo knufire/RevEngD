@@ -41,6 +41,7 @@ public class AssociationAnalyzer extends Analyzer {
   private void generateAssociationRelationships(SootClass c, List<Relationship> relationships) {
     Chain<SootField> fields = c.getFields();
     for (SootField f : fields) {
+      if (!passesFilters(f)) continue;
       Tag signatureTag = f.getTag("SignatureTag");
       if (signatureTag != null) {
         String signature = signatureTag.toString();

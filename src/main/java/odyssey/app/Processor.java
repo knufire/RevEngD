@@ -59,7 +59,8 @@ public class Processor {
 
   public static Processor getProcessor(Configuration config) {
     AnalyzerBundle bundle = new AnalyzerBundle();
-    return new Processor(bundle, config);
+    Processor p = new Processor(bundle, config);
+    return p;
   }
 
   private Analyzer createSceneAnalyzer() {
@@ -88,6 +89,7 @@ public class Processor {
 
   private Analyzer createDependencyAnalyzer() {
     List<Filter> relationShipFilters = new ArrayList<Filter>();
+    addModifierFilter(relationShipFilters);
     relationShipFilters.add(new DollarSignFilter());
     relationShipFilters.add(new RelationshipFilter(this.bundle));
     return new DependencyAnalyzer(config, relationShipFilters);
@@ -95,6 +97,7 @@ public class Processor {
 
   private Analyzer createAssociationAnalyzer() {
     List<Filter> relationShipFilters = new ArrayList<Filter>();
+    addModifierFilter(relationShipFilters);
     relationShipFilters.add(new DollarSignFilter());
     relationShipFilters.add(new RelationshipFilter(this.bundle));
     return new AssociationAnalyzer(config, relationShipFilters);
