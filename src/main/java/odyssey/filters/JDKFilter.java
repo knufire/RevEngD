@@ -13,7 +13,7 @@ public class JDKFilter implements Filter {
 
   @Override
   public boolean shouldProcess(SootMethod method) {
-    return true;
+    return shouldProcess(method.getDeclaringClass());
   }
 
   @Override
