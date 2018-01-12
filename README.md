@@ -17,22 +17,46 @@ This is a repository for our **Software Design - CSSE 374** term project. This a
   -a : The most secure level of access to look at. Defaults to private.  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In order of most restricting, the options are "public", "protected", "package", "private"  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Any option in the above list will display itself and anything to its left   
-  -i : The path to output the SVG representation of the UML. EX: "C:/Users/User/Pictures/MyFavoriteUML.svg"   
-  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default directory is "./build/plantuml/diagram.svg"  
-  --include-ancestors : The presence of this flag tells the application to output all interfaces and supertypes it finds  
-  --include-Object : The presence of this flag tells the application to include java.lang.Object in the output  
+  -i : The path to output the SVG representation of the UML. EX: "C:/Users/User/Pictures/MyFavoriteUML.svg" 
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Default directory is "./build/plantuml/diagram.svg"    
+  --include-ancestors : The presence of this flag tells the application to output all interfaces and supertypes it finds    
+  --include-Object : The presence of this flag tells the application to include java.lang.Object in the output    
+  -e : The fully qualified starting method to draw a sequence diagram of. EX: "<odyssey.app.Runner: void main(java.lang.String[])>"  
+  -s : The path to output the SVG representation of the Sequence Diagram. EX: "C:/Users/User/Pictures/MySeqDiagram.svg"  
+  -max-depth : A number representing the maximum call depth the sequence diagram should output, defaults to 5. EX: 20  
+  --expand-jdk : The presence of this flag tells the application to step inside of method calls to JDK objects and output them in the sequence diagram.   
+  --include-super : The presence of this flag will cause the application to output super calls in the sequence diagram   
+## Example of Running
+One way to run the project would be to build the project using gradle and run the RevEngD.bat file located in
+"build/distributions/RevEngD-SNAPSHOT.zip/bin" using the command line and passing the above arguments in. An example command to run the program would be  
+```
+./RevEngD.bat -d "C:/Projects/coolProject" -m app.main -c app.main app.otherClass
+ ```
+ The other way would be to modify the build.gradle file to pass the arguments in via the args array. Then the application can be run using the gradle run task.  
+ An example 
+ ```
+ run {
+     args = ['-d', "C:/Projects/MyCoolProject/CoolProject" , '-m', 'app.AwesomeMainClass', '-c', 'app.CoolClass1', 'app.BestClassEver']
+ }
+```
 
 # Who Drove When
+-----M1-----  
 Hand Drawn UML Creation -- Collin    
 Relation/Relationship -- Collin     
 Filters -- Collin   
 Analyzers -- Mostly Rahul/Collin/Christopher  
-Configuration -- Rahul/Collin/Christopher   
-UML Parser -- Rahul  
-Runner/Startup Logic -- Christopher   
-AnalyzerFactory -- Christopher   
-Processor -- Christopher   
-README.MD -- Christopher
+Configuration -- Rahul/Collin/Christopher    
+UML Parser -- Rahul   
+Runner/Startup Logic -- Christopher     
+Processor -- Christopher     
+README.MD -- Christopher  
+-----M2-----  
+AssociationAnalyzer -- Collin/Rahul  
+DependencyAnalyzer -- Christopher/Collin/Rahul  
+SequenceAnalyzer -- Collin/Rahul  
+Message Hirearchy -- Christopher  
+README.MD -- Christopher  
 
 # Cloning the Repo
 You can clone the repo locally using Git Bash/Shell as follows:
