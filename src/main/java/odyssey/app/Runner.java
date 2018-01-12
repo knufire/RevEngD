@@ -17,9 +17,18 @@ public class Runner {
       return;
     }
 
-    Configuration config = populateConfiguration(args);
+    String[] processedArgs = preprocessArgs(args);
+    Configuration config = populateConfiguration(processedArgs);
     UMLGenerationApp app = new UMLGenerationApp(config);
     app.generate();
+  }
+
+  private static String[] preprocessArgs(String[] args) {
+    String[] processed = new String[args.length];
+    for (int i = 0; i < processed.length; i++) {
+      processed[i] = args[i].trim();
+    }
+    return processed;
   }
 
   private static Configuration populateConfiguration(String[] args) {
@@ -63,13 +72,13 @@ public class Runner {
       config.classNames = values;
       return;
     case "-d":
-      config.projectDirectory = Paths.get(values.get(0).trim(), "build", "classes", "main");
+      config.projectDirectory = Paths.get(values.get(0), "build", "classes", "main");
       return;
     case "-i":
-      config.umlImageLocation = Paths.get(values.get(0).trim());
+      config.umlImageLocation = Paths.get(values.get(0));
       return;
     case "-s":
-      config.seqImageLocation = Paths.get(values.get(0).trim());
+      config.seqImageLocation = Paths.get(values.get(0));
       return;
     case "-m":
       config.mainClassName = values.get(0);

@@ -37,7 +37,7 @@ public class SequenceAnalyzer extends Analyzer {
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     this.bundle = bundle;
-    System.out.println("Entry Method:\t" + config.entryMethodName);
+    System.out.println("Processesing Entry Method:\t" + config.entryMethodName);
     SootMethod entryMethod = this.bundle.scene.getMethod(config.entryMethodName);
     processMethod(entryMethod, 0);
     String parseString = parseCalls();
@@ -63,7 +63,6 @@ public class SequenceAnalyzer extends Analyzer {
             processMethod(targetMethod, depth + 1);
           }
           if (!targetMethod.getReturnType().toString().contains("void")) {
-            System.err.println(targetMethod.getReturnType().toString());
             bundle.calls
                 .add(new ReturnMessage(method.getDeclaringClass(), targetMethod, parser.parseReturnType(targetMethod)));
           }
