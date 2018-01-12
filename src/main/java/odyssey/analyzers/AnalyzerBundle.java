@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import odyssey.models.CallMessage;
+import odyssey.models.Message;
 import odyssey.models.Relationship;
 import soot.Scene;
 import soot.SootClass;
@@ -16,7 +16,7 @@ public class AnalyzerBundle {
   public String UML;
   public Scene scene;
   public OutputStream out;
-  public List<CallMessage> calls;
+  public List<Message> calls;
 
   public AnalyzerBundle() {
     classes = new ArrayList<>();

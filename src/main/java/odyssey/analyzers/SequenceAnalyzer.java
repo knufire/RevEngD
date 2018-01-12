@@ -3,7 +3,6 @@ package odyssey.analyzers;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,6 +14,8 @@ import net.sourceforge.plantuml.SourceStringReader;
 import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import odyssey.models.CallMessage;
+import odyssey.models.Message;
+import odyssey.models.ReturnMessage;
 import soot.MethodOrMethodContext;
 import soot.SootMethod;
 import soot.Unit;
@@ -26,9 +27,11 @@ import soot.toolkits.graph.UnitGraph;
 public class SequenceAnalyzer extends Analyzer {
 
   private AnalyzerBundle bundle;
+  private UMLParser parser;
 
-  public SequenceAnalyzer(Configuration configuration, List<Filter> filters) {
+  public SequenceAnalyzer(Configuration configuration, List<Filter> filters, UMLParser parser) {
     super(configuration, filters);
+    this.parser = parser;
   }
 
   @Override
@@ -50,13 +53,17 @@ public class SequenceAnalyzer extends Analyzer {
       for (Unit u : graph) {
         SootMethod targetMethod = resolveUsingCallGraph(u);
         if (targetMethod != null && passesFilters(targetMethod)) {
-          //TODO: new method for string rep of parameters
-          CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod, "");
+          CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod,
+              parser.parseMethodParameters(method));
           bundle.calls.add(newCall);
           if (passesFilters(targetMethod.getDeclaringClass())) {
             processMethod(targetMethod, depth + 1);
           }
-          // TODO: Send return type back
+          if (!targetMethod.getReturnType().toString().contains("void")) {
+            System.err.println(targetMethod.getReturnType().toString());
+            bundle.calls
+                .add(new ReturnMessage(method.getDeclaringClass(), targetMethod, parser.parseReturnType(targetMethod)));
+          }
         }
       }
     } else {
@@ -79,12 +86,9 @@ public class SequenceAnalyzer extends Analyzer {
   }
 
   private String parseCalls() {
-    /*
-     * for (Call c: bundle.calls) { System.err.println(c); }
-     */
     StringBuilder builder = new StringBuilder();
     builder.append("@startuml\n");
-    for (CallMessage c : bundle.calls) {
+    for (Message c : bundle.calls) {
       builder.append(c.getPlantUMLString());
       builder.append("\n");
     }

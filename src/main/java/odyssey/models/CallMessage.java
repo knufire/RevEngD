@@ -20,7 +20,7 @@ public class CallMessage extends Message {
     if (parameters.isEmpty()) {
       return "";
     }
-    return "HEY IM NOT IMPLEMENTED";
+    return parameters;
   }
 
   public String getPlantUMLString() {
@@ -28,11 +28,10 @@ public class CallMessage extends Message {
       if (getMethodCallingClass().getSuperclass().equals(getMethod().getDeclaringClass())) {
         return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + "super()";
       }
-      return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + "new " + getRecievingClass() + "("
-          + getParametersString() + ")";
+      return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + "new " + getRecievingClass()
+          + getParametersString();
     }
-    return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + getMethodName() + "(" + getParametersString()
-        + ")";
+    return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + getMethodName() + getParametersString();
   }
 
 }

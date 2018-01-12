@@ -107,7 +107,7 @@ public class Processor {
     UMLFilters.add(new ClinitFilter());
     return new UMLAnalyzer(config, UMLFilters, new UMLParser());
   }
-  
+
   private Analyzer createSequenceAnalyzer() {
     if (config.entryMethodName.length() > 0) {
       List<Filter> sequenceFilters = new ArrayList<Filter>();
@@ -117,7 +117,7 @@ public class Processor {
       if (!config.expandJDK) {
         sequenceFilters.add(new JDKFilter());
       }
-      return new SequenceAnalyzer(config, sequenceFilters);
+      return new SequenceAnalyzer(config, sequenceFilters, new UMLParser());
     } else {
       return new EmptyAnalyzer(config, Collections.emptyList());
     }
