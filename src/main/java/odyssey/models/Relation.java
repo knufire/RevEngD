@@ -1,4 +1,4 @@
-package odyssey.app;
+package odyssey.models;
 /**
  * ASSOCIATION: A has a B
  * 

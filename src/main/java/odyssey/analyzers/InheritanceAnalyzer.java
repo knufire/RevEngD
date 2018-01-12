@@ -3,9 +3,9 @@ package odyssey.analyzers;
 import java.util.List;
 
 import odyssey.app.Configuration;
-import odyssey.app.Relation;
-import odyssey.app.Relationship;
 import odyssey.filters.Filter;
+import odyssey.models.Relation;
+import odyssey.models.Relationship;
 import soot.SootClass;
 import soot.util.Chain;
 

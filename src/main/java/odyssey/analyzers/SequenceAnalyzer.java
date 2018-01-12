@@ -3,6 +3,7 @@ package odyssey.analyzers;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -11,9 +12,9 @@ import org.apache.logging.log4j.Level;
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
-import odyssey.app.Call;
 import odyssey.app.Configuration;
 import odyssey.filters.Filter;
+import odyssey.models.CallMessage;
 import soot.MethodOrMethodContext;
 import soot.SootMethod;
 import soot.Unit;
@@ -25,7 +26,6 @@ import soot.toolkits.graph.UnitGraph;
 public class SequenceAnalyzer extends Analyzer {
 
   private AnalyzerBundle bundle;
-  
 
   public SequenceAnalyzer(Configuration configuration, List<Filter> filters) {
     super(configuration, filters);
@@ -38,48 +38,53 @@ public class SequenceAnalyzer extends Analyzer {
     SootMethod entryMethod = this.bundle.scene.getMethod(config.entryMethodName);
     processMethod(entryMethod, 0);
     String parseString = parseCalls();
-    generateUMLImage(parseString);
+    generateSeqImage(parseString);
     return this.bundle;
   }
-  
+
   private void processMethod(SootMethod method, int depth) {
-    if (depth >= config.maxCallDepth) return;
+    if (depth >= config.maxCallDepth)
+      return;
     if (method.hasActiveBody()) {
       UnitGraph graph = new ExceptionalUnitGraph(method.getActiveBody());
       for (Unit u : graph) {
         SootMethod targetMethod = resolveUsingCallGraph(u);
         if (targetMethod != null && passesFilters(targetMethod)) {
-          Call newCall = new Call(method.getDeclaringClass(), targetMethod);
+          //TODO: new method for string rep of parameters
+          CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod, "");
           bundle.calls.add(newCall);
           if (passesFilters(targetMethod.getDeclaringClass())) {
-            processMethod(targetMethod, depth+1);
+            processMethod(targetMethod, depth + 1);
           }
+          // TODO: Send return type back
         }
       }
+    } else {
+      System.err.println("Unalbe to load method body: " + method.getName());
     }
   }
-  
+
   private SootMethod resolveUsingCallGraph(Unit stmt) {
     CallGraph callGraph = this.bundle.scene.getCallGraph();
     Iterator<Edge> itr = callGraph.edgesOutOf(stmt);
     while (itr.hasNext()) {
       MethodOrMethodContext methodOrCntxt = itr.next().getTgt();
       SootMethod targetMethod = methodOrCntxt.method();
-      if(targetMethod != null) {
+      if (targetMethod != null) {
         return targetMethod;
       }
     }
     return null;
-   
+
   }
-  
+
   private String parseCalls() {
-    /*for (Call c: bundle.calls) {
-      System.err.println(c);
-    }*/
+    /*
+     * for (Call c: bundle.calls) { System.err.println(c); }
+     */
     StringBuilder builder = new StringBuilder();
     builder.append("@startuml\n");
-    for (Call c: bundle.calls) {
+    for (CallMessage c : bundle.calls) {
       builder.append(c.getPlantUMLString());
       builder.append("\n");
     }
@@ -87,8 +92,8 @@ public class SequenceAnalyzer extends Analyzer {
     config.logger.log(Level.INFO, "Generated Sequence Diagram\n" + builder.toString());
     return builder.toString();
   }
-  
-  private void generateUMLImage(String umlString) {
+
+  private void generateSeqImage(String umlString) {
     SourceStringReader reader = new SourceStringReader(umlString);
     try {
       Files.createDirectories(config.seqImageLocation.getParent());
