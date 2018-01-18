@@ -7,7 +7,7 @@ import soot.SootMethod;
 
 public class ClassNameFilter implements Filter {
 
-  Configuration config;
+  private Configuration config;
 
   public ClassNameFilter(Configuration config) {
     this.config = config;

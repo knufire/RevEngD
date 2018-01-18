@@ -1,171 +1,171 @@
 @startuml
-class Runner {
-  + void Runner()
-  + {static} void main(String[])
-  - {static} Configuration populateConfiguration(String[])
-  - {static} Map parse(String[])
-  - {static} void addToConfiguration(String,List<String>,Configuration)
-  - {static} String parseModifier(String)
-}
-class Configuration {
-  + Logger logger
-  + List<String> classNames
-  + String mainClassName
-  + Path projectDirectory
-  + boolean parseAncestors
-  + String accessModifier
-  + boolean display
-  + Path imageLocation
-  + boolean includeObject
-  + void Configuration()
-}
-class UMLGenerationApp {
-  - Configuration config
-  - Processor processor
-  - AnalyzerBundle bundle
-  + void UMLGenerationApp(Configuration)
-  + void generate()
-  + List<SootClass> getClasses()
-}
-class Processor {
-  - List<Analyzer> pipeline
-  - AnalyzerBundle bundle
-  - AnalyzerFactory factory
-  ~ void Processor(AnalyzerBundle,AnalyzerFactory)
-  - void createPipeline()
-  + AnalyzerBundle executePipeline()
-  + {static} Processor getProcessor(Configuration)
+skinparam linetype ortho
 
-  - Analyzer createAnalyzer(String type)
-  - void addModifierFilter(List<Filter>)
+package App {
+	class Runner {
+	  + void Runner()
+	  + {static} void main(String[])
+	  - {static} Configuration populateConfiguration(String[])
+	  - {static} Map parse(String[])
+	  - {static} void addToConfiguration(String,List<String>,Configuration)
+	  - {static} String parseModifier(String)
+	}
+	class Configuration {
+	  + Logger logger
+	  + List<String> classNames
+	  + String mainClassName
+	  + Path projectDirectory
+	  + boolean parseAncestors
+	  + String accessModifier
+	  + boolean display
+	  + Path imageLocation
+	  + boolean includeObject
+	  + void Configuration()
+	}
+	class UMLGenerationApp {
+	  - Configuration config
+	  - Processor processor
+	  - AnalyzerBundle bundle
+	  + void UMLGenerationApp(Configuration)
+	  + void generate()
+	  + List<SootClass> getClasses()
+	}
+	class Processor {
+	  - List<Analyzer> pipeline
+	  - AnalyzerBundle bundle
+	  + AnalyzerBundle executePipeline()
+	}
 }
+package Analyzer {
+	abstract Analyzer {
+	  ~ List<Filter> filters
+	  ~ Configuration config
+	  ~ AnalyzerBundle bundle
+	  + void Analyzer(Configuration,List<Filter>)
+	  + {abstract} AnalyzerBundle execute(AnalyzerBundle)
+	  + void addFilter(Filter)
+	  # boolean passesFilters(SootClass)
+	  # boolean passesFilters(SootMethod)
+	  # boolean passesFilters(SootField)
+	}
 
-
-class AnalyzerBundle {
-  + List<SootClass> classes
-  + List<Relationship> relationships
-  + String UML
-  + Scene scene
-  + OutputStream out
-  + void AnalyzerBundle(List,List,String)
-  + void AnalyzerBundle()
-}
-
-abstract Analyzer {
-  ~ List<Filter> filters
-  ~ Configuration config
-  ~ AnalyzerBundle bundle
-  + void Analyzer(Configuration,List<Filter>)
-  + {abstract} AnalyzerBundle execute(AnalyzerBundle)
-  + void addFilter(Filter)
-  # boolean passesFilters(SootClass)
-  # boolean passesFilters(SootMethod)
-  # boolean passesFilters(SootField)
-}
-class ClinitFilter {
-}
-class RelationshipFilter {
-}
-
-class ClassNameFilter {
-}
-class SootAnalyzer {
-  - Scene scene
-  + void SootAnalyzer(Configuration,List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-}
+	class AnalyzerBundle {
+	  + List<SootClass> classes
+	  + List<Relationship> relationships
+	  + String UML
+	  + Scene scene
+	  + OutputStream out
+	  + void AnalyzerBundle(List,List,String)
+	  + void AnalyzerBundle()
+	}
 
 
-class InheritanceAnalyzer {
-  - void generateExtendsRelationships(SootClass,List<Relationship>)
-  - void generateImplementsRelationships(SootClass,List<Relationship>)
-  
+	class SootAnalyzer extends Analyzer {
+	  + void SootAnalyzer(Configuration,List<Filter>)
+	  + AnalyzerBundle execute(AnalyzerBundle)
+	}
+
+	class InheritanceAnalyzer extends Analyzer {
+	  - void generateExtendsRelationships(SootClass,List<Relationship>)
+	  - void generateImplementsRelationships(SootClass,List<Relationship>)
+	}
+
+	class AssociationAnalyzer extends Analyzer {
+	}
+
+	class DependencyAnalyzer extends Analyzer {
+	}
+
+	class SequenceAnalyzer extends Analyzer {
+	}
+
+	class AncestorAnalyzer extends Analyzer {
+	}
+	class UMLAnalyzer extends Analyzer {
+	  ~ UMLParser parser
+	  - String parse(AnalyzerBundle)
+	  - void generateUMLImage(String)
+	}
+	class SceneAnalyzer extends Analyzer {
+	}
+	class UMLParser {
+	  + void UMLParser()
+	  + String parse(SootClass)
+	  + String parse(SootField)
+	  + String parse(SootMethod)
+	  + String parse(Type)
+	  + String parse(Relationship)
+	  + String parse(Relation)
+	  + String trimQualifiedName(String)
+	  + String getAccessModifier(int)
+	  + String getStaticAbstractModifier(int)
+	  + String getClassType(int)
+	}
 }
 
-class AssociationAnalyzer {
-  - void generateAssociationRelationships(SootClass, List<Relationship>)
+package Filters {
+	interface Filter {
+		+ {abstract} boolean shouldProcess(SootClass)
+		+ {abstract} boolean shouldProcess(SootMethod)
+		+ {abstract} boolean shouldProcess(SootField)
+	}
+	class PackagePrivateFilter implements Filter{
+	}
+	class PublicFilter implements Filter{
+	}
+	class ProtectedFilter implements Filter{
+	}
+	class DollarSignFilter implements Filter{
+	}
+	class ClinitFilter implements Filter{
+	}
+	class RelationshipFilter implements Filter{
+	  - AnalyzerBundle bundle 
+	  + @Inject RelationshipFilter(AnalyzerBundle bundle)
+	}
+	RelationshipFilter --> AnalyzerBundle
+	
+	class ClassNameFilter implements Filter{
+	  - Configuration config
+	  + @Inject ClassNameFilter(Configuration config)
+	}
+	ClassNameFilter --> Configuration
+	
+	class JDKFilter implements Filter{
+	}
 }
 
-class DependencyAnalyzer{
-  - void generateDependencyRelationships(SootClass, List<Relationship>)
+package Models {
+	enum Relation {
+	  + {static} Relation ASSOCIATION
+	  + {static} Relation EXTENDS
+	  + {static} Relation IMPLEMENTS
+	  + {static} Relation DEPENDENCY
+	}
+	class Relationship {
+	  - SootClass from
+	  - SootClass to
+	  - Relation relation
+	  - int cardinality
+	  + void Relationship(SootClass,Relation,SootClass,int)
+	}
+	class ReturnMessage extends Message{
+	  - String returnType
+	}
+	abstract Message {
+	  - SootClass methodCallingClass
+	  - SootMethod method
+	  + {abstract} getPlantUMLString();
+	}
+	class CallMessage extends Message{
+	  - String parameters;
+	}
+}
+package Soot {
+	class SceneBuilder {
+	}
 }
 
-
-
-
-
-
-class SequenceAnalyzer {
-}
-
-class PackagePrivateFilter {
-}
-class UMLParser {
-  + void UMLParser()
-  + String parse(SootClass)
-  + String parse(SootField)
-  + String parse(SootMethod)
-  + String parse(Type)
-  + String parse(Relationship)
-  + String parse(Relation)
-  + String trimQualifiedName(String)
-  + String getAccessModifier(int)
-  + String getStaticAbstractModifier(int)
-  + String getClassType(int)
-}
-class PublicFilter {
-}
-class AncestorAnalyzer {
-  - Set<SootClass> processedClasses
-  - void ancestorHelper(SootClass)
-}
-class UMLAnalyzer {
-  ~ UMLParser parser
-  - String parse(AnalyzerBundle)
-  - void generateUMLImage(String)
-}
-class ProtectedFilter {
-}
-class DollarSignFilter {
-}
-class SceneAnalyzer {
-}
-interface Filter {
-  + {abstract} boolean shouldProcess(SootClass)
-  + {abstract} boolean shouldProcess(SootMethod)
-  + {abstract} boolean shouldProcess(SootField)
-}
-enum Relation {
-  + {static} Relation ASSOCIATION
-  + {static} Relation EXTENDS
-  + {static} Relation IMPLEMENTS
-  + {static} Relation DEPENDENCY
-}
-class Relationship {
-  - SootClass from
-  - SootClass to
-  - Relation relation
-  - int cardinality
-  + void Relationship(SootClass,Relation,SootClass,int)
-}
-class SceneBuilder {
-}
-
-Filter <|.. ClinitFilter
-Filter <|.. RelationshipFilter
-Filter <|.. ClassNameFilter
-Analyzer <|-- SootAnalyzer
-Analyzer <|-- InheritanceAnalyzer
-Analyzer <|-- AssociationAnalyzer
-Analyzer <|-- DependencyAnalyzer
-Analyzer <|-- SequenceAnalyzer
-Filter <|.. PackagePrivateFilter
-Filter <|.. PublicFilter
-Analyzer <|-- AncestorAnalyzer
-Analyzer <|-- UMLAnalyzer
-Filter <|.. ProtectedFilter
-Filter <|.. DollarSignFilter
-Analyzer <|-- SceneAnalyzer
 
 Runner ..> Configuration
 Runner ..> UMLGenerationApp
@@ -175,18 +175,9 @@ UMLGenerationApp --> Processor
 UMLGenerationApp --> AnalyzerBundle
 
 AnalyzerBundle --> Relationship
-Processor --> Configuration
 Processor --> AnalyzerBundle
-Processor ..> SceneAnalyzer
-Processor ..> SootAnalyzer
-Processor ..> AncestorAnalyzer
-Processor ..> InheritanceAnalyzer
-Processor ..> AssociationAnalyzer
-Processor ..> DependencyAnalyzer
-Processor ..> UMLAnalyzer
-Processor ..> Filter
 Processor --> Analyzer
-Processor ..> SequenceAnalyzer 
+
 
 
 UMLParser ..> Relationship
@@ -206,7 +197,5 @@ UMLAnalyzer --> UMLParser
 
 SceneAnalyzer ..> SceneBuilder
 
-RelationshipFilter --> AnalyzerBundle
 
-ClassNameFilter --> Configuration
 @enduml

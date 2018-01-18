@@ -16,19 +16,15 @@ public class CallMessage extends Message {
     return parameters;
   }
 
-  private String getParametersString() {
-    return parameters;
-  }
-
   public String getPlantUMLString() {
     if (getMethodName().equals("<init>")) {
       if (getMethodCallingClass().getSuperclass().equals(getMethod().getDeclaringClass())) {
         return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + "super()";
       }
       return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + "new " + getRecievingClass()
-          + getParametersString();
+          + getParameters();
     }
-    return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + getMethodName() + getParametersString();
+    return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + getMethodName() + getParameters();
   }
 
 }
