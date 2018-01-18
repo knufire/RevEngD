@@ -66,13 +66,13 @@ public class SequenceAnalyzer extends Analyzer {
           if (config.showSuper || !isSuperCall(method, targetMethod)) {
             CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod,
                 parser.parseMethodParameters(targetMethod));
-            bundle.calls.add(newCall);
+            bundle.messages.add(newCall);
           }
           
           processMethod(targetMethod, depth + 1);
           
           if (!targetMethod.getReturnType().toString().contains("void")) {
-            bundle.calls
+            bundle.messages
                 .add(new ReturnMessage(method.getDeclaringClass(), targetMethod, parser.parseReturnType(targetMethod)));
           }
         } else {
@@ -126,7 +126,7 @@ public class SequenceAnalyzer extends Analyzer {
   private String parseCalls() {
     StringBuilder builder = new StringBuilder();
     builder.append("@startuml\n");
-    for (Message c : bundle.calls) {
+    for (Message c : bundle.messages) {
       builder.append(c.getPlantUMLString());
       builder.append("\n");
     }

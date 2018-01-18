@@ -13,12 +13,12 @@ public class AnalyzerBundle {
   public List<SootClass> classes;
   public List<Relationship> relationships;
   public Scene scene;
-  public List<Message> calls;
+  public List<Message> messages;
 
   public AnalyzerBundle() {
     classes = new ArrayList<>();
     relationships = new ArrayList<>();
-    calls = new LinkedList<>();
+    messages = new LinkedList<>();
   }
 
 }
