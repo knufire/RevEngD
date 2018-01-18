@@ -22,26 +22,19 @@ package App {
 	  + boolean includeObject
 	  + void Configuration()
 	}
-	class UMLGenerationApp {
-	  - Configuration config
-	  - Processor processor
-	  - AnalyzerBundle bundle
-	  + void UMLGenerationApp(Configuration)
-	  + void generate()
-	  + List<SootClass> getClasses()
-	}
 	class Processor {
 	  - List<Analyzer> pipeline
 	  - AnalyzerBundle bundle
 	  + AnalyzerBundle executePipeline()
 	}
 }
+
 package Analyzer {
 	abstract Analyzer {
 	  ~ List<Filter> filters
 	  ~ Configuration config
 	  ~ AnalyzerBundle bundle
-	  + void Analyzer(Configuration,List<Filter>)
+	  # @Inject void Analyzer(Configuration config, List<Filter> filters)
 	  + {abstract} AnalyzerBundle execute(AnalyzerBundle)
 	  + void addFilter(Filter)
 	  # boolean passesFilters(SootClass)
@@ -49,16 +42,12 @@ package Analyzer {
 	  # boolean passesFilters(SootField)
 	}
 
-	class AnalyzerBundle {
+	class AnalyzerBundle <<Singleton>> {
 	  + List<SootClass> classes
 	  + List<Relationship> relationships
-	  + String UML
+	  + List<Message> messages
 	  + Scene scene
-	  + OutputStream out
-	  + void AnalyzerBundle(List,List,String)
-	  + void AnalyzerBundle()
 	}
-
 
 	class SootAnalyzer extends Analyzer {
 	  + void SootAnalyzer(Configuration,List<Filter>)
@@ -82,24 +71,20 @@ package Analyzer {
 	class AncestorAnalyzer extends Analyzer {
 	}
 	class UMLAnalyzer extends Analyzer {
-	  ~ UMLParser parser
-	  - String parse(AnalyzerBundle)
-	  - void generateUMLImage(String)
 	}
 	class SceneAnalyzer extends Analyzer {
 	}
 	class UMLParser {
-	  + void UMLParser()
-	  + String parse(SootClass)
-	  + String parse(SootField)
-	  + String parse(SootMethod)
-	  + String parse(Type)
-	  + String parse(Relationship)
-	  + String parse(Relation)
-	  + String trimQualifiedName(String)
-	  + String getAccessModifier(int)
-	  + String getStaticAbstractModifier(int)
-	  + String getClassType(int)
+	  + {static} String parse(SootClass)
+	  + {static} String parse(SootField)
+	  + {static} String parse(SootMethod)
+	  + {static} String parse(Type)
+	  + {static} String parse(Relationship)
+	  + {static} String parse(Relation)
+	  + {static} String trimQualifiedName(String)
+	  + {static} String getAccessModifier(int)
+	  + {static} String getStaticAbstractModifier(int)
+	  + {static} String getClassType(int)
 	}
 }
 
@@ -123,13 +108,11 @@ package Filters {
 	  - AnalyzerBundle bundle 
 	  + @Inject RelationshipFilter(AnalyzerBundle bundle)
 	}
-	RelationshipFilter --> AnalyzerBundle
 	
 	class ClassNameFilter implements Filter{
 	  - Configuration config
 	  + @Inject ClassNameFilter(Configuration config)
 	}
-	ClassNameFilter --> Configuration
 	
 	class JDKFilter implements Filter{
 	}
@@ -161,41 +144,55 @@ package Models {
 	  - String parameters;
 	}
 }
+
 package Soot {
 	class SceneBuilder {
 	}
 }
 
+package Modules {
+	abstract PipelineModule {
+	  + {abstract} @Provides @Named("analyzers") List<Analyzer> getUserAnalyzers()
+	  + @Provides @Named("Resolution") MethodResolver getMethodResolver() 
+	}
+	class DefaultPipelineModule extends PipelineModule{
+	}
+	class ProcessorModule {
+	  + @Provides @Named("pipeline") List<Analyzer> getPipeline(@Named("analyzers") List<Analyzers> userAnalyzers)
+	}	
+}
 
+'-----------------App relationships----------------
 Runner ..> Configuration
-Runner ..> UMLGenerationApp
-
-UMLGenerationApp --> Configuration
-UMLGenerationApp --> Processor
-UMLGenerationApp --> AnalyzerBundle
-
-AnalyzerBundle --> Relationship
+Runner ..> Processor
 Processor --> AnalyzerBundle
 Processor --> Analyzer
+'---------------------------------------------------
 
-
-
-UMLParser ..> Relationship
-UMLParser ..> Relation
-
-Relationship --> Relation
-
+'----------------Analyzer relationships-------------
 Analyzer --> Filter
 Analyzer --> Configuration
 Analyzer --> AnalyzerBundle
-
+AnalyzerBundle --> Relationship
+AnalyzerBundle --> Message
 InheritanceAnalyzer ..> Relationship
 AssociationAnalyzer ..> Relationship
 DependencyAnalyzer ..> Relationship
-
-UMLAnalyzer --> UMLParser
-
 SceneAnalyzer ..> SceneBuilder
+SequenceAnalyzer ..> UMLParser
+UMLAnalyzer ..> UMLParser
+UMLParser ..> Relationship
+UMLParser ..> Relation
+'---------------------------------------------------
+
+'----------------Filter Relationships---------------
+RelationshipFilter --> AnalyzerBundle
+ClassNameFilter --> Configuration
+'---------------------------------------------------
+
+'-----------------Model Relationships---------------
+Relationship --> Relation
+'---------------------------------------------------
 
 
 @enduml
