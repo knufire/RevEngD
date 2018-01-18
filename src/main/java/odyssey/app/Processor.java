@@ -15,7 +15,6 @@ import odyssey.analyzers.SceneAnalyzer;
 import odyssey.analyzers.SequenceAnalyzer;
 import odyssey.analyzers.SootAnalyzer;
 import odyssey.analyzers.UMLAnalyzer;
-import odyssey.analyzers.UMLParser;
 import odyssey.filters.ClassNameFilter;
 import odyssey.filters.ClinitFilter;
 import odyssey.filters.DollarSignFilter;
@@ -108,7 +107,7 @@ public class Processor {
     addModifierFilter(UMLFilters);
     UMLFilters.add(new DollarSignFilter());
     UMLFilters.add(new ClinitFilter());
-    return new UMLAnalyzer(config, UMLFilters, new UMLParser());
+    return new UMLAnalyzer(config, UMLFilters);
   }
 
   private Analyzer createSequenceAnalyzer() {
@@ -120,7 +119,7 @@ public class Processor {
       if (!config.expandJDK) {
         sequenceFilters.add(new JDKFilter());
       }
-      return new SequenceAnalyzer(config, sequenceFilters, new UMLParser());
+      return new SequenceAnalyzer(config, sequenceFilters);
     } else {
       return new EmptyAnalyzer(config, Collections.emptyList());
     }

@@ -19,9 +19,10 @@ public class Runner {
 
     String[] processedArgs = preprocessArgs(args);
     Configuration config = populateConfiguration(processedArgs);
-    UMLGenerationApp app = new UMLGenerationApp(config);
-    app.generate();
+    Processor p = Processor.getProcessor(config);
+    p.executePipeline();
   }
+  
 
   private static String[] preprocessArgs(String[] args) {
     String[] processed = new String[args.length];
