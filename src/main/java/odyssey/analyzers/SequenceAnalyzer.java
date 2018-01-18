@@ -32,11 +32,9 @@ import soot.toolkits.graph.UnitGraph;
 public class SequenceAnalyzer extends Analyzer {
 
   private AnalyzerBundle bundle;
-  private UMLParser parser;
-
-  public SequenceAnalyzer(Configuration configuration, List<Filter> filters, UMLParser parser) {
+  
+  public SequenceAnalyzer(Configuration configuration, List<Filter> filters) {
     super(configuration, filters);
-    this.parser = parser;
   }
 
   @Override
@@ -65,7 +63,7 @@ public class SequenceAnalyzer extends Analyzer {
         if (targetMethod != null && passesFilters(targetMethod)) {
           if (config.showSuper || !isSuperCall(method, targetMethod)) {
             CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod,
-                parser.parseMethodParameters(targetMethod));
+                UMLParser.parseMethodParameters(targetMethod));
             bundle.messages.add(newCall);
           }
           
@@ -73,7 +71,7 @@ public class SequenceAnalyzer extends Analyzer {
           
           if (!targetMethod.getReturnType().toString().contains("void")) {
             bundle.messages
-                .add(new ReturnMessage(method.getDeclaringClass(), targetMethod, parser.parseReturnType(targetMethod)));
+                .add(new ReturnMessage(method.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
           }
         } else {
           //System.err.println("\nNot useful Statement: " + u + "\n");
@@ -148,45 +146,4 @@ public class SequenceAnalyzer extends Analyzer {
     }
 
   }
-  
-  /*public void printStatementType(Unit u) {
-    System.out.println(u);
-    if (u instanceof InvokeStmt) {
-      System.out.println("\t InvokeStatement \n");
-    } else if (u instanceof BreakpointStmt) {
-      System.out.println("\t BreakpointStmt \n");
-    } else if (u instanceof DefinitionStmt) {
-      if (u instanceof AssignStmt) {
-        System.out.println("\t AssignStmt \n");
-      } else if (u instanceof IdentityStmt) {
-        System.out.println("\t IdentityStmt \n");
-      }
-    } else if (u instanceof GotoStmt) {
-      System.out.println("\t GotoStmt \n");
-    } else if (u instanceof IfStmt) {
-      System.out.println("\t IfStmt \n");
-    } else if (u instanceof MonitorStmt) {
-      if (u instanceof EnterMonitorStmt) {
-        System.out.println("\t EnterMonitorStmt \n");
-      } else if (u instanceof ExitMonitorStmt) {
-        System.out.println("\t ExitMonitorStmt \n");
-      } 
-    } else if (u instanceof NopStmt) {
-      System.out.println("\t NopStmt \n");
-    } else if (u instanceof RetStmt) {
-      System.out.println("\t RetStmt \n");
-    } else if (u instanceof ReturnVoidStmt) {
-      System.out.println("\t ReturnVoidStmt \n");
-    } else if (u instanceof SwitchStmt) {
-      if (u instanceof LookupSwitchStmt) {
-        System.out.println("\t LookupSwitchStmt \n");
-      } else if (u instanceof TableSwitchStmt) {
-        System.out.println("\t TableSwitchStmt \n");
-      }
-    } else if (u instanceof ThrowStmt) {
-      System.out.println("\t ThrowStmt \n");
-    } else {
-      System.out.println("\t NOT A STMT IN LIST \n");
-    }
-  }*/
 }

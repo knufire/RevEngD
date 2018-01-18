@@ -19,11 +19,8 @@ import soot.SootMethod;
 
 public class UMLAnalyzer extends Analyzer {
 
-	UMLParser parser;
-
-	public UMLAnalyzer(Configuration configuration, List<Filter> filters, UMLParser parser) {
+	public UMLAnalyzer(Configuration configuration, List<Filter> filters) {
 		super(configuration, filters);
-		this.parser = parser;
 	}
 
 	@Override
@@ -37,19 +34,19 @@ public class UMLAnalyzer extends Analyzer {
 		builder.append("@startuml\n");
 		for (SootClass c : bundle.classes) {
 			if (passesFilters(c)) {
-				builder.append(parser.parse(c));
+				builder.append(UMLParser.parse(c));
 				builder.append("\n");
 				for (SootField f : c.getFields()) {
 					if (passesFilters(f)) {
 						builder.append("  ");
-						builder.append(parser.parse(f));
+						builder.append(UMLParser.parse(f));
 						builder.append("\n");
 					}
 				}
 				for (SootMethod m : c.getMethods()) {
 					if (passesFilters(m)) {
 						builder.append("  ");
-						builder.append(parser.parse(m));
+						builder.append(UMLParser.parse(m));
 						builder.append("\n");
 					}
 				}
@@ -57,7 +54,7 @@ public class UMLAnalyzer extends Analyzer {
 			}
 		}
 		for (Relationship r : bundle.relationships) {
-			builder.append((parser.parse(r)));
+			builder.append((UMLParser.parse(r)));
 			builder.append("\n");
 		}
 		builder.append("@enduml\n");

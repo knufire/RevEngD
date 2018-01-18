@@ -17,10 +17,7 @@ import soot.tagkit.Tag;
 
 public class UMLParser {
 
-  public UMLParser() {
-  }
-
-  public String parse(SootClass c) {
+  public static String parse(SootClass c) {
     StringBuilder builder = new StringBuilder();
     builder.append(getClassType(c.getModifiers()));
     builder.append(" ");
@@ -29,7 +26,7 @@ public class UMLParser {
     return builder.toString();
   }
 
-  public String parse(SootField f) {
+  public static String parse(SootField f) {
     StringBuilder builder = new StringBuilder();
     builder.append(getAccessModifier(f.getModifiers()));
     builder.append(" ");
@@ -50,7 +47,7 @@ public class UMLParser {
     return builder.toString();
   }
 
-  public String parse(SootMethod m) {
+  public static String parse(SootMethod m) {
     StringBuilder builder = new StringBuilder();
     builder.append(getAccessModifier(m.getModifiers()));
     builder.append(" ");
@@ -62,7 +59,7 @@ public class UMLParser {
     return builder.toString();
   }
   
-  public String parseReturnType(SootMethod m) {
+  public static String parseReturnType(SootMethod m) {
     StringBuilder builder = new StringBuilder();
     Tag signatureTag = m.getTag("SignatureTag");
     if (signatureTag != null) {
@@ -78,7 +75,7 @@ public class UMLParser {
     return builder.toString();
   }
   
-  public String parseMethodName(SootMethod m) {
+  public static String parseMethodName(SootMethod m) {
     String methodName = Scene.v().quotedNameOf(m.getName());
     if (methodName.contains("<init>")) {
       return trimQualifiedName(Scene.v().quotedNameOf(m.getDeclaringClass().getName()));
@@ -87,7 +84,7 @@ public class UMLParser {
     }
   }
   
-  public String parseMethodParameters(SootMethod m) {
+  public static String parseMethodParameters(SootMethod m) {
     StringBuilder builder = new StringBuilder();
     Tag signatureTag = m.getTag("SignatureTag");
     List<Type> params = m.getParameterTypes();
@@ -105,7 +102,7 @@ public class UMLParser {
     return builder.toString();
   }
 
-  public String parse(Collection<GenericType> parameterTypes) {
+  public static String parse(Collection<GenericType> parameterTypes) {
     StringBuilder builder = new StringBuilder();
     builder.append("(");
     for (GenericType t : parameterTypes) {
@@ -116,7 +113,7 @@ public class UMLParser {
     
   }
   
-  public String parse(List<Type> types) {
+  public static String parse(List<Type> types) {
     StringBuilder builder = new StringBuilder();
     builder.append("(");
     for (int i = 0; i < types.size(); i++) {
@@ -129,11 +126,11 @@ public class UMLParser {
     return builder.toString();
   }
   
-  public String parse(Type t) {
+  public static String parse(Type t) {
     return trimQualifiedName(t.toQuotedString());
   }
   
-  public String parse(GenericType type) {
+  public static String parse(GenericType type) {
     StringBuilder builder = new StringBuilder();
     builder.append(trimQualifiedName(type.getContainerType()));
     List<GenericType> elementTypes = type.getElementTypes();
@@ -158,7 +155,7 @@ public class UMLParser {
     return builder.toString();
   }
 
-  public String parse(Relationship r) {
+  public static String parse(Relationship r) {
     StringBuilder builder = new StringBuilder();
     builder.append(r.getToClass().getShortName().replaceAll("\\[\\]", ""));
     builder.append(" ");
@@ -170,7 +167,7 @@ public class UMLParser {
     return builder.toString();
   }
 
-  public String parse(Relation r) {
+  public static  String parse(Relation r) {
     switch (r) {
     case ASSOCIATION:
       return "<--";
@@ -185,7 +182,7 @@ public class UMLParser {
     }
   }
 
-  public String parseCardinality(int cardinality) {
+  public static String parseCardinality(int cardinality) {
     if (cardinality == -1) {
       return "\"1..*\"";
     }
@@ -195,12 +192,12 @@ public class UMLParser {
     return "\"" + cardinality + "\"";
   }
 
-  public String trimQualifiedName(String s) {
+  public static String trimQualifiedName(String s) {
     String[] parts = s.split("\\.");
     return parts[parts.length - 1];
   }
 
-  public String getAccessModifier(int m) {
+  public static String getAccessModifier(int m) {
     if (soot.Modifier.isPublic(m)) {
       return "+";
     }
@@ -213,7 +210,7 @@ public class UMLParser {
     return "~"; // Return package-level access by default
   }
 
-  public String getStaticAbstractModifier(int m) {
+  public static String getStaticAbstractModifier(int m) {
     if (soot.Modifier.isAbstract(m)) {
       return "{abstract} ";
     }
@@ -223,7 +220,7 @@ public class UMLParser {
     return "";
   }
 
-  public String getClassType(int m) {
+  public static String getClassType(int m) {
     if (soot.Modifier.isEnum(m)) {
       return "enum";
     }
