@@ -14,7 +14,7 @@ public abstract class Analyzer {
   Configuration config;
   
 
-  public Analyzer(Configuration configuration, List<Filter> filters){
+  protected Analyzer(Configuration configuration, List<Filter> filters){
     this.config = configuration;
     this.filters = filters;
   }
