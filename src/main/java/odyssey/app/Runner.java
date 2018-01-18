@@ -72,7 +72,7 @@ public class Runner {
       config.classNames = values;
       return;
     case "-d":
-      config.projectDirectory = Paths.get(values.get(0), "build", "classes", "main");
+      config.projectDirectory = Paths.get(values.get(0)); //, "build", "classes", "main");
       return;
     case "-i":
       config.umlImageLocation = Paths.get(values.get(0));
