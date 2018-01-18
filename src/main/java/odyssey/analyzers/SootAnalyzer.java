@@ -7,7 +7,6 @@ import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import soot.Scene;
 import soot.SootClass;
-import soot.SootMethod;
 import soot.util.Chain;
 
 public class SootAnalyzer extends Analyzer {
