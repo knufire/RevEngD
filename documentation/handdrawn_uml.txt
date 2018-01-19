@@ -1,27 +1,25 @@
 @startuml
 skinparam linetype ortho
 
+
+package Soot {
+	class SceneBuilder {
+	}
+	class SootClass{
+	}
+}
+
 package App {
 	class Runner {
-	  + void Runner()
 	  + {static} void main(String[])
-	  - {static} Configuration populateConfiguration(String[])
-	  - {static} Map parse(String[])
-	  - {static} void addToConfiguration(String,List<String>,Configuration)
-	  - {static} String parseModifier(String)
 	}
-	class Configuration {
-	  + Logger logger
-	  + List<String> classNames
-	  + String mainClassName
-	  + Path projectDirectory
-	  + boolean parseAncestors
-	  + String accessModifier
-	  + boolean display
-	  + Path imageLocation
-	  + boolean includeObject
-	  + void Configuration()
+	class PropertiesSetter{
+	  - String propfile
+	  - String[] cliArgs;
+	  + PropertiesSetter(String propfile, String[] cliArgs)
+	  - void setSystemProperties()
 	}
+	
 	class Processor {
 	  - List<Analyzer> pipeline
 	  - AnalyzerBundle bundle
@@ -32,9 +30,8 @@ package App {
 package Analyzer {
 	abstract Analyzer {
 	  ~ List<Filter> filters
-	  ~ Configuration config
 	  ~ AnalyzerBundle bundle
-	  # @Inject void Analyzer(Configuration config, List<Filter> filters)
+	  + Analyzer(List<Filter> filters)
 	  + {abstract} AnalyzerBundle execute(AnalyzerBundle)
 	  + void addFilter(Filter)
 	  # boolean passesFilters(SootClass)
@@ -42,21 +39,19 @@ package Analyzer {
 	  # boolean passesFilters(SootField)
 	}
 
-	class AnalyzerBundle <<Singleton>> {
-	  + List<SootClass> classes
-	  + List<Relationship> relationships
-	  + List<Message> messages
+	class AnalyzerBundle {
+	  + List<OdysseyClass> classes
+	  + List<OdysseyRelationship> relationships
+	  + List<OdysseyMessage> messages
 	  + Scene scene
 	}
 
 	class SootAnalyzer extends Analyzer {
-	  + void SootAnalyzer(Configuration,List<Filter>)
-	  + AnalyzerBundle execute(AnalyzerBundle)
 	}
 
 	class InheritanceAnalyzer extends Analyzer {
-	  - void generateExtendsRelationships(SootClass,List<Relationship>)
-	  - void generateImplementsRelationships(SootClass,List<Relationship>)
+	  - void generateExtendsRelationships(SootClass,List<OdysseyRelationship>)
+	  - void generateImplementsRelationships(SootClass,List<OdysseyRelationship>)
 	}
 
 	class AssociationAnalyzer extends Analyzer {
@@ -66,6 +61,8 @@ package Analyzer {
 	}
 
 	class SequenceAnalyzer extends Analyzer {
+	  - MethodResolver resolver
+	  + SequenceAnalyzer(MethodResolver resolver)
 	}
 
 	class AncestorAnalyzer extends Analyzer {
@@ -74,6 +71,9 @@ package Analyzer {
 	}
 	class SceneAnalyzer extends Analyzer {
 	}
+	class DIPAnalyzer extends Analyzer {
+	}
+	
 	class UMLParser {
 	  + {static} String parse(SootClass)
 	  + {static} String parse(SootField)
@@ -85,6 +85,20 @@ package Analyzer {
 	  + {static} String getAccessModifier(int)
 	  + {static} String getStaticAbstractModifier(int)
 	  + {static} String getClassType(int)
+	}
+	interface MethodResolver {
+	  + SootMethod resolveMethod(Unit methodUnit, Scene scene)
+	}
+	class GreedyMethodResolver implements MethodResolver{
+	}		
+}
+
+package SomeoneElsesProject{
+	class ChainMethodResolver implements MethodResolver{
+	}
+	class UnionMethodResolver implements MethodResolver{
+	}
+	class IntersectionMethodResolver implements MethodResolver{
 	}
 }
 
@@ -109,9 +123,7 @@ package Filters {
 	  + @Inject RelationshipFilter(AnalyzerBundle bundle)
 	}
 	
-	class ClassNameFilter implements Filter{
-	  - Configuration config
-	  + @Inject ClassNameFilter(Configuration config)
+	class ClassNameFilter implements Filter{	  
 	}
 	
 	class JDKFilter implements Filter{
@@ -125,29 +137,76 @@ package Models {
 	  + {static} Relation IMPLEMENTS
 	  + {static} Relation DEPENDENCY
 	}
-	class Relationship {
+	interface OdysseyRelationship{
+	  + SootClass getFromClass()
+	  + SootClass getToClass()
+	  + Relation getRelation()
+	  + int getCardinality()
+	  + String toUMLString()
+	}
+	abstract AbstractOdsseyRelationship implements OdysseyRelationship{
+	  - OdysseyRelationship inner
+	  + AbstractOdsseyRelationship(OdysseyRelationship inner)
+	  + {abstract} String toUMLString()
+	}	
+	class Relationship implements OdysseyRelationship{
 	  - SootClass from
 	  - SootClass to
 	  - Relation relation
 	  - int cardinality
 	  + void Relationship(SootClass,Relation,SootClass,int)
 	}
+	class DIPViolationOdysseyRelationship extends AbstractOdsseyRelationship{
+	}
+	
+	interface OdysseyMessage{
+	  + SootClass getMethodCallingClass()
+	  + SootMethod getMethod()
+	  + SootClass getReceivingClass()
+	  + toUMLString()
+	}
+	
+	abstract AbstractOdysseyMessage implements OdysseyMessage{
+	  - OdysseyMessage inner
+	  + AbstractOdysseyMessage(OdysseyMessage inner)
+	  + {abstract} String toUMLString()
+	}
+	
 	class ReturnMessage extends Message{
 	  - String returnType
 	}
-	abstract Message {
+	
+	abstract Message implements OdysseyMessage{
 	  - SootClass methodCallingClass
 	  - SootMethod method
-	  + {abstract} getPlantUMLString();
+	  # String getCallingClassName()
+	  # String getReceivingClassName()
+	  # String getMethodName()
+	  + {abstract} String toUMLString()
 	}
 	class CallMessage extends Message{
 	  - String parameters;
 	}
-}
 
-package Soot {
-	class SceneBuilder {
+	
+	interface OdysseyClass {
+		+ SootClass getSootClass()
+		+ String toUMLString()
 	}
+	abstract AbstractOdysseyClass implements OdysseyClass{
+		- OdysseyClass inner
+		+ OdysseyClass(OdysseyClass inner)
+		+ {abstract} toUMLString()
+	}
+	class OdysseyRootClass implements OdysseyClass{
+	    - SootClass
+		+ OdysseyRootClass(SootClass clazz)
+	}
+	class SingletonOdysseyClass extends AbstractOdysseyClass{
+	}
+	class DIPViolationOdysseyClass extends AbstractOdysseyClass{
+	}
+	
 }
 
 package Modules {
@@ -158,12 +217,12 @@ package Modules {
 	class DefaultPipelineModule extends PipelineModule{
 	}
 	class ProcessorModule {
-	  + @Provides @Named("pipeline") List<Analyzer> getPipeline(@Named("analyzers") List<Analyzers> userAnalyzers)
+	  + @Provides @Named("pipeline") List<Analyzer> getPipeline(@Named("analyzers") Queue<Analyzers> userAnalyzers)
 	}	
 }
 
 '-----------------App relationships----------------
-Runner ..> Configuration
+Runner ..> PropertiesSetter
 Runner ..> Processor
 Processor --> AnalyzerBundle
 Processor --> Analyzer
@@ -171,27 +230,31 @@ Processor --> Analyzer
 
 '----------------Analyzer relationships-------------
 Analyzer --> Filter
-Analyzer --> Configuration
 Analyzer --> AnalyzerBundle
-AnalyzerBundle --> Relationship
-AnalyzerBundle --> Message
+AnalyzerBundle --> OdysseyClass
+AnalyzerBundle --> OdysseyRelationship
+AnalyzerBundle --> OdysseyMessage
 InheritanceAnalyzer ..> Relationship
 AssociationAnalyzer ..> Relationship
 DependencyAnalyzer ..> Relationship
 SceneAnalyzer ..> SceneBuilder
 SequenceAnalyzer ..> UMLParser
+SequenceAnalyzer ..> MethodResolver
 UMLAnalyzer ..> UMLParser
-UMLParser ..> Relationship
+UMLParser ..> OdysseyRelationship
 UMLParser ..> Relation
+SootAnalyzer ..> OdysseyRootClass
+DIPAnalyzer --> DIPViolationOdysseyClass
+DIPAnalyzer --> DIPViolationOdysseyRelationship
 '---------------------------------------------------
 
 '----------------Filter Relationships---------------
 RelationshipFilter --> AnalyzerBundle
-ClassNameFilter --> Configuration
 '---------------------------------------------------
 
 '-----------------Model Relationships---------------
 Relationship --> Relation
+OdysseyRootClass --> SootClass
 '---------------------------------------------------
 
 
