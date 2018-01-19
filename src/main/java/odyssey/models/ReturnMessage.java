@@ -18,7 +18,7 @@ public class ReturnMessage extends Message {
 
   @Override
   public String getPlantUMLString() {
-    return getRecievingClass() + " --> " + getMethodCallingClassName() + " : " + getReturnType();
+    return getReceivingClassName() + " --> " + getMethodCallingClassName() + " : " + getReturnType();
   }
 
 }

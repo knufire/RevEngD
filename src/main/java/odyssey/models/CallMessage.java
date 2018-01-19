@@ -19,12 +19,12 @@ public class CallMessage extends Message {
   public String getPlantUMLString() {
     if (getMethodName().equals("<init>")) {
       if (getMethodCallingClass().getSuperclass().equals(getMethod().getDeclaringClass())) {
-        return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + "super()";
+        return getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + "super()";
       }
-      return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + "new " + getRecievingClass()
+      return getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + "new " + getReceivingClassName()
           + getParameters();
     }
-    return getMethodCallingClassName() + " -> " + getRecievingClass() + " : " + getMethodName() + getParameters();
+    return getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + getMethodName() + getParameters();
   }
 
 }

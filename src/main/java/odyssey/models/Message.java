@@ -19,21 +19,24 @@ public abstract class Message {
   public SootMethod getMethod() {
     return method;
   }
+  public SootClass getReceivingClass() {
+    return method.getDeclaringClass();
+  }
   
-  public String getMethodCallingClassName() {
+  protected String getMethodCallingClassName() {
     return methodCallingClass.getShortName();
   }
   
-  public String getRecievingClass() {
+  protected String getReceivingClassName() {
     return method.getDeclaringClass().getShortName();
   }
   
-  public String getMethodName() {
+  protected String getMethodName() {
     return method.getName();
   }
   
   public String toString() {
-    return getMethodCallingClassName() + " calls " + getRecievingClass() + "." + getMethodName();
+    return getMethodCallingClassName() + " calls " + getReceivingClassName() + "." + getMethodName();
   }
   
   public abstract String getPlantUMLString();
