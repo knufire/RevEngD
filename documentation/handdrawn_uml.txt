@@ -40,9 +40,11 @@ package Analyzer {
 	}
 
 	class AnalyzerBundle {
-	  + List<OdysseyClass> classes
-	  + List<OdysseyRelationship> relationships
-	  + List<OdysseyMessage> messages
+	  + Map<String, Object> bundle
+	  + List<SootClass> classes
+	  + List<Relationship> relationships
+	  + List<Message> messages
+	  + List<Pattern> patterns
 	  + Scene scene
 	}
 
@@ -50,8 +52,8 @@ package Analyzer {
 	}
 
 	class InheritanceAnalyzer extends Analyzer {
-	  - void generateExtendsRelationships(SootClass,List<OdysseyRelationship>)
-	  - void generateImplementsRelationships(SootClass,List<OdysseyRelationship>)
+	  - void generateExtendsRelationships(SootClass,List<Relationship>)
+	  - void generateImplementsRelationships(SootClass,List<Relationship>)
 	}
 
 	class AssociationAnalyzer extends Analyzer {
@@ -61,13 +63,13 @@ package Analyzer {
 	}
 
 	class SequenceAnalyzer extends Analyzer {
-	  - MethodResolver resolver
-	  + SequenceAnalyzer(MethodResolver resolver)
+	  + SequenceAnalyzer(MethodResolver methodResolver)
 	}
 
 	class AncestorAnalyzer extends Analyzer {
 	}
 	class UMLAnalyzer extends Analyzer {
+	  +  UMLAnalyzer(Map<String, Class ? extends PatternRenderer> renderers)
 	}
 	class SceneAnalyzer extends Analyzer {
 	}
@@ -85,21 +87,7 @@ package Analyzer {
 	  + {static} String getAccessModifier(int)
 	  + {static} String getStaticAbstractModifier(int)
 	  + {static} String getClassType(int)
-	}
-	interface MethodResolver {
-	  + SootMethod resolveMethod(Unit methodUnit, Scene scene)
-	}
-	class GreedyMethodResolver implements MethodResolver{
 	}		
-}
-
-package SomeoneElsesProject{
-	class ChainMethodResolver implements MethodResolver{
-	}
-	class UnionMethodResolver implements MethodResolver{
-	}
-	class IntersectionMethodResolver implements MethodResolver{
-	}
 }
 
 package Filters {
@@ -137,88 +125,82 @@ package Models {
 	  + {static} Relation IMPLEMENTS
 	  + {static} Relation DEPENDENCY
 	}
-	interface OdysseyRelationship{
-	  + SootClass getFromClass()
-	  + SootClass getToClass()
-	  + Relation getRelation()
-	  + int getCardinality()
-	  + String toUMLString()
-	}
-	abstract AbstractOdsseyRelationship implements OdysseyRelationship{
-	  - OdysseyRelationship inner
-	  + AbstractOdsseyRelationship(OdysseyRelationship inner)
-	  + {abstract} String toUMLString()
-	}	
-	class Relationship implements OdysseyRelationship{
+	class Relationship {
 	  - SootClass from
 	  - SootClass to
 	  - Relation relation
 	  - int cardinality
 	  + void Relationship(SootClass,Relation,SootClass,int)
 	}
-	class DIPViolationOdysseyRelationship extends AbstractOdsseyRelationship{
-	}
-	
-	interface OdysseyMessage{
-	  + SootClass getMethodCallingClass()
-	  + SootMethod getMethod()
-	  + SootClass getReceivingClass()
-	  + toUMLString()
-	}
-	
-	abstract AbstractOdysseyMessage implements OdysseyMessage{
-	  - OdysseyMessage inner
-	  + AbstractOdysseyMessage(OdysseyMessage inner)
-	  + {abstract} String toUMLString()
-	}
-	
 	class ReturnMessage extends Message{
 	  - String returnType
 	}
-	
-	abstract Message implements OdysseyMessage{
+	abstract Message {
 	  - SootClass methodCallingClass
 	  - SootMethod method
-	  # String getCallingClassName()
-	  # String getReceivingClassName()
-	  # String getMethodName()
-	  + {abstract} String toUMLString()
+	  + {abstract} getPlantUMLString()
 	}
 	class CallMessage extends Message{
-	  - String parameters;
+	  - String parameters
+	}
+	class CommentedOutMessage extends Message {
+	  -String parameters
+	}
+	
+	class Pattern {
+	  +  SetMultimap<String, Relationship> relationships
+	  +  SetMultimap<String, SootClass> classes
+	  +  String name
+	}
+}
+
+package Renderers {
+	interface PatternRenderer {
+	  + String render(Pattern pattern)
+	}
+}
+
+package MethodResolution {
+	interface Algorithm {
+	  + List<SootMethod> resolve(Unit u, Scene scene)
+	}
+	
+	class HierarchyAlgorithm implements Algorithm {
+	}
+	class CallGraphAlgorithm implements Algorithm {
 	}
 
+	abstract MethodResolver {
+	  # List<Algorithm> algorithms
 	
-	interface OdysseyClass {
-		+ SootClass getSootClass()
-		+ String toUMLString()
+	  + MethodResolver(List<Algorithm> algorithms)
+	  + {abstract} List<SootMethod> resolve(Unit u, Scene scene)
 	}
-	abstract AbstractOdysseyClass implements OdysseyClass{
-		- OdysseyClass inner
-		+ OdysseyClass(OdysseyClass inner)
-		+ {abstract} toUMLString()
+	class SingleMethodResolver extends MethodResolver {
+		+ List<SootMethod> resolve(Unit u, Scene scene)
 	}
-	class OdysseyRootClass implements OdysseyClass{
-	    - SootClass
-		+ OdysseyRootClass(SootClass clazz)
-	}
-	class SingletonOdysseyClass extends AbstractOdysseyClass{
-	}
-	class DIPViolationOdysseyClass extends AbstractOdysseyClass{
+}
+
+package Modules {
+	class PipelineModule {
+	  + {abstract} @Provides @Named("analyzers") List<Analyzer> getUserAnalyzers()
+	  + @Provides @Named("Resolution") MethodResolver getMethodResolver() 
+	  + @Provides @Named("pipeline") List<Analyzer> getPipeline(@Named("analyzers") Queue<Analyzers> userAnalyzers)
+	  + @Provides @Named("renderers") Map<String, Class <? extends PatternRenderer>> getRenderers()
 	}
 	
 }
 
-package Modules {
-	abstract PipelineModule {
-	  + {abstract} @Provides @Named("analyzers") List<Analyzer> getUserAnalyzers()
-	  + @Provides @Named("Resolution") MethodResolver getMethodResolver() 
+package SomeoneElsesProject{
+	class IntersectionMethodResolver extends MethodResolver {
+	  + List<SootMethod> resolve(Unit u, Scene scene)
 	}
-	class DefaultPipelineModule extends PipelineModule{
+	class ChainMethodResolver extends MethodResolver {
+	  + List<SootMethod> resolve(Unit u, Scene scene)
 	}
-	class ProcessorModule {
-	  + @Provides @Named("pipeline") List<Analyzer> getPipeline(@Named("analyzers") Queue<Analyzers> userAnalyzers)
-	}	
+	class UnionMethodResolver extends MethodResolver {
+	  + List<SootMethod> resolve(Unit u, Scene scene)
+	}
 }
 
 '-----------------App relationships----------------
@@ -231,21 +213,19 @@ Processor --> Analyzer
 '----------------Analyzer relationships-------------
 Analyzer --> Filter
 Analyzer --> AnalyzerBundle
-AnalyzerBundle --> OdysseyClass
-AnalyzerBundle --> OdysseyRelationship
-AnalyzerBundle --> OdysseyMessage
+AnalyzerBundle --> Relationship
+AnalyzerBundle --> Message
 InheritanceAnalyzer ..> Relationship
 AssociationAnalyzer ..> Relationship
 DependencyAnalyzer ..> Relationship
 SceneAnalyzer ..> SceneBuilder
 SequenceAnalyzer ..> UMLParser
-SequenceAnalyzer ..> MethodResolver
+SequenceAnalyzer --> MethodResolver
 UMLAnalyzer ..> UMLParser
-UMLParser ..> OdysseyRelationship
+UMLAnalyzer ..> Pattern
+UMLAnalyzer ..> PatternRenderer
+UMLParser ..> Relationship
 UMLParser ..> Relation
-SootAnalyzer ..> OdysseyRootClass
-DIPAnalyzer --> DIPViolationOdysseyClass
-DIPAnalyzer --> DIPViolationOdysseyRelationship
 '---------------------------------------------------
 
 '----------------Filter Relationships---------------
@@ -254,7 +234,6 @@ RelationshipFilter --> AnalyzerBundle
 
 '-----------------Model Relationships---------------
 Relationship --> Relation
-OdysseyRootClass --> SootClass
 '---------------------------------------------------
 
 
