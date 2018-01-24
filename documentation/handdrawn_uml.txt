@@ -165,7 +165,7 @@ package Renderers {
 
 package MethodResolution {
 	interface Algorithm {
-	  + List<SootMethod> resolve(SootMethod m, Scene scene)
+	  + List<SootMethod> resolve(Unit u, SootMethod m, Scene scene)
 	}
 	
 	class HierarchyAlgorithm implements Algorithm {
@@ -179,7 +179,7 @@ package MethodResolution {
 	class AggregateAlgorithm implements Algorithm {
 	  # List<Algorithm> algorithms
 	  # AggregationStrategy strat
-	  + {abstract} List<SootMethod> resolve(Unit u, Scene scene)
+	  + {abstract} List<SootMethod> resolve(Unit u, SootMethod m, Scene scene)
 	}
 	
 	
@@ -198,13 +198,13 @@ package Modules {
 package SomeoneElsesProject{
 
 	class IntersectionMethodResolver implements AggregationStrategy {
-	  + List<SootMethod> resolve(Unit u, Scene scene)
+	  + List<SootMethod> resolve(Unit u, SootMethod m, Scene scene)
 	}
 	class ChainMethodResolver implements AggregationStrategy {
-	  + List<SootMethod> resolve(Unit u, Scene scene)
+	  + List<SootMethod> resolve(Unit u, SootMethod m, Scene scene)
 	}
 	class UnionMethodResolver implements AggregationStrategy {
-	  + List<SootMethod> resolve(Unit u, Scene scene)
+	  + List<SootMethod> resolve(Unit u, SootMethod m, Scene scene)
 	}
 }
 

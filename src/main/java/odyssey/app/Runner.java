@@ -11,6 +11,14 @@ import java.util.Map;
 public class Runner {
 
   public static void main(String[] args) {
+    
+    // PropertiesSetter.set(args);
+    // Injector injector = Injector.create(new PipelineModule());
+    // Processor p = injector.getInstance(Processor.class);
+    // p.executePipeline();
+    
+    
+    
     System.out.println(Arrays.toString(args));
     if (args.length < 4) {
       System.out.println("Must provide directory and class names");
