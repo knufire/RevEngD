@@ -156,35 +156,39 @@ package Models {
 
 package Renderers {
 	interface PatternRenderer {
-	  + String render(Pattern pattern)
+	  + String render(SootClass c, Pattern pattern)
+	  + String render(SootMethod m, Pattern pattern)
+	  + String render(SootField f, Pattern pattern)
+	  + String render(Relationship r, Pattern pattern)
 	}
 }
 
 package MethodResolution {
 	interface Algorithm {
-	  + List<SootMethod> resolve(Unit u, Scene scene)
+	  + List<SootMethod> resolve(SootMethod m, Scene scene)
 	}
 	
 	class HierarchyAlgorithm implements Algorithm {
 	}
 	class CallGraphAlgorithm implements Algorithm {
 	}
-
-	abstract MethodResolver {
-	  # List<Algorithm> algorithms
 	
-	  + MethodResolver(List<Algorithm> algorithms)
+	interface AggregationStrategy {
+		+ List<SootMethod> resolve(List<Algorithm> algs)
+	}
+	class AggregateAlgorithm implements Algorithm {
+	  # List<Algorithm> algorithms
+	  # AggregationStrategy strat
 	  + {abstract} List<SootMethod> resolve(Unit u, Scene scene)
 	}
-	class SingleMethodResolver extends MethodResolver {
-		+ List<SootMethod> resolve(Unit u, Scene scene)
-	}
+	
+	
 }
 
 package Modules {
 	class PipelineModule {
 	  + {abstract} @Provides @Named("analyzers") List<Analyzer> getUserAnalyzers()
-	  + @Provides @Named("Resolution") MethodResolver getMethodResolver() 
+	  + @Provides @Named("Resolution") Algorithm getAlgorithm() 
 	  + @Provides @Named("pipeline") List<Analyzer> getPipeline(@Named("analyzers") Queue<Analyzers> userAnalyzers)
 	  + @Provides @Named("renderers") Map<String, Class <? extends PatternRenderer>> getRenderers()
 	}
@@ -192,13 +196,14 @@ package Modules {
 }
 
 package SomeoneElsesProject{
-	class IntersectionMethodResolver extends MethodResolver {
+
+	class IntersectionMethodResolver implements AggregationStrategy {
 	  + List<SootMethod> resolve(Unit u, Scene scene)
 	}
-	class ChainMethodResolver extends MethodResolver {
+	class ChainMethodResolver implements AggregationStrategy {
 	  + List<SootMethod> resolve(Unit u, Scene scene)
 	}
-	class UnionMethodResolver extends MethodResolver {
+	class UnionMethodResolver implements AggregationStrategy {
 	  + List<SootMethod> resolve(Unit u, Scene scene)
 	}
 }
@@ -220,7 +225,7 @@ AssociationAnalyzer ..> Relationship
 DependencyAnalyzer ..> Relationship
 SceneAnalyzer ..> SceneBuilder
 SequenceAnalyzer ..> UMLParser
-SequenceAnalyzer --> MethodResolver
+SequenceAnalyzer --> Algorithm
 UMLAnalyzer ..> UMLParser
 UMLAnalyzer ..> Pattern
 UMLAnalyzer ..> PatternRenderer
@@ -236,5 +241,7 @@ RelationshipFilter --> AnalyzerBundle
 Relationship --> Relation
 '---------------------------------------------------
 
-
+'----------Method Resolution Relationships----------
+AggregateAlgorithm --> AggregationStrategy
+'---------------------------------------------------
 @enduml
