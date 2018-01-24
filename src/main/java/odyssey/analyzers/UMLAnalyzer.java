@@ -7,8 +7,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
-import javax.swing.plaf.synth.SynthSeparatorUI;
-
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
@@ -76,8 +74,6 @@ public class UMLAnalyzer extends Analyzer {
 			reader.outputImage(outStream, option);
 		} catch (Exception e) {
 			System.err.println("Cannot create file to store the UML diagram.\n");
-			System.err.println(umlImageLocation.getParent());
-			System.err.println(umlImageLocation);
 			e.printStackTrace();
 		}
 

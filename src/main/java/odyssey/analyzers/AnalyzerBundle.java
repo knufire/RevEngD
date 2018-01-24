@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import com.google.inject.Inject;
-
 import odyssey.models.Message;
 import odyssey.models.Relationship;
 import soot.Scene;
