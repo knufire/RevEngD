@@ -12,7 +12,7 @@ public class Runner {
 
   public static void main(String[] args) {
     
-    // PropertiesSetter.set(args);
+    PropertiesSetter.set(args);
     // Injector injector = Injector.create(new PipelineModule());
     // Processor p = injector.getInstance(Processor.class);
     // p.executePipeline();
