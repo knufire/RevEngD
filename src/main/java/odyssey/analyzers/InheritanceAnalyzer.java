@@ -2,7 +2,6 @@ package odyssey.analyzers;
 
 import java.util.List;
 
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
@@ -11,8 +10,8 @@ import soot.util.Chain;
 
 public class InheritanceAnalyzer extends Analyzer {
 
-  public InheritanceAnalyzer(Configuration configuration, List<Filter> filters) {
-    super(configuration, filters);
+  public InheritanceAnalyzer(List<Filter> filters) {
+    super(filters);
   }
 
   @Override

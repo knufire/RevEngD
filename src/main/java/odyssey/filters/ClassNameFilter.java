@@ -1,21 +1,23 @@
 package odyssey.filters;
 
-import odyssey.app.Configuration;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 
 public class ClassNameFilter implements Filter {
 
-  private Configuration config;
-
-  public ClassNameFilter(Configuration config) {
-    this.config = config;
+  public ClassNameFilter() { 
   }
 
   @Override
   public boolean shouldProcess(SootClass clazz) {
-    return config.classNames.contains(clazz.getName().replaceAll("\\[\\]", ""));
+    String[] classes = System.getProperty("-c").split(" ");
+    for(int i = 0; i< classes.length; i++) {
+      if(classes[i].equals(clazz.getName().replaceAll("\\[\\]", ""))) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @Override

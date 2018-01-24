@@ -1,6 +1,16 @@
--d "C:\Users\moorect\eclipse-workspace\CSSE374\Project\RevEngD"
+-a private
+
+-d C:/Users/Rahul/Documents/csse374_workspace/RevEngD/build/classes/main
 -m odyssey.app.Runner
--i "C:\Users\moorect\Documents\plant_uml.svg"
--c odyssey.app.Runner csse374.revengd.soot.IEntryPointMatcher csse374.revengd.soot.MainMethodMatcher csse374.revengd.soot.SceneBuilder odyssey.analyzers.Analyzer odyssey.analyzers.AnalyzerBundle odyssey.analyzers.SceneAnalyzer odyssey.analyzers.SootAnalyzer odyssey.analyzers.UMLParser odyssey.analyzers.EmptyAnalyzer odyssey.analyzers.AncestorAnalyzer odyssey.analyzers.UMLAnalyzer odyssey.app.Configuration odyssey.app.Processor odyssey.app.Relation odyssey.app.Relationship odyssey.app.UMLGenerationApp odyssey.filters.Filter odyssey.filters.ProtectedFilter odyssey.filters.PublicFilter odyssey.filters.RelationshipFilter odyssey.filters.PackagePrivateFilter odyssey.filters.DollarSignFilter odyssey.filters.ClinitFilter odyssey.filters.ClassNameFilter 
---include-ancestors
--e "<odyssey.app.Runner: void main(java.lang.String[])>"
+-s C:/Users/Rahul/Documents/csse374_workspace/RevEngD/images/sequence.svg
+-i C:/Users/Rahul/Documents/csse374_workspace/RevEngD/images/class.svg
+-c odyssey.app.Runner odyssey.app.Processor odyssey.analyzers.AnalyzerBundle odyssey.analyzers.Analyzer odyssey.filters.ClinitFilter odyssey.filters.RelationshipFilter odyssey.filters.JDKFilter odyssey.filters.ClassNameFilter odyssey.analyzers.SootAnalyzer odyssey.analyzers.EmptyAnalyzer odyssey.filters.PackagePrivateFilter odyssey.analyzers.DependencyAnalyzer odyssey.analyzers.UMLParser odyssey.filters.PublicFilter odyssey.analyzers.AncestorAnalyzer odyssey.analyzers.UMLAnalyzer odyssey.filters.ProtectedFilter odyssey.filters.DollarSignFilter odyssey.analyzers.SequenceAnalyzer odyssey.analyzers.InheritanceAnalyzer odyssey.analyzers.SceneAnalyzer odyssey.analyzers.AssociationAnalyzer odyssey.filters.Filter odyssey.models.Relation odyssey.models.Relationship odyssey.models.CallMessage odyssey.models.Message odyssey.models.ReturnMessage csse374.revengd.soot.SceneBuilder csse374.revengd.soot.MainMethodMatcher csse374.revengd.soot.IEntryPointMatcher 
+--include-ancestors false
+-e <odyssey.app.Runner: void main(java.lang.String[])>
+--include-object false
+-max-depth 5
+--expand-jdk false
+--show-inheritance true
+--show-dependence true
+--show-association true
+--include-super true

@@ -1,32 +1,36 @@
 package odyssey.analyzers;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
 import csse374.revengd.soot.MainMethodMatcher;
 import csse374.revengd.soot.SceneBuilder;
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 
 public class SceneAnalyzer extends Analyzer {
 
-	public SceneAnalyzer(Configuration configuration, List<Filter> filters) {
-		super(configuration, filters);
+	public SceneAnalyzer(List<Filter> filters) {
+		super(filters);
 	}
 
 	@Override
 	public AnalyzerBundle execute(AnalyzerBundle bundle) {
 		SceneBuilder sceneBuilder = SceneBuilder.create();
-
-		sceneBuilder = sceneBuilder.addDirectory(config.projectDirectory.toFile().getAbsolutePath());
-
-		sceneBuilder = sceneBuilder.setEntryClass(config.mainClassName);
-		sceneBuilder = sceneBuilder.addEntryPointMatcher(new MainMethodMatcher(config.mainClassName));
+		Path p = Paths.get(System.getProperty("-d"));
+		sceneBuilder = sceneBuilder.addDirectory(p.toFile().getAbsolutePath());
+		
+		String mainClassName = System.getProperty("-m");
+		sceneBuilder = sceneBuilder.setEntryClass(mainClassName);
+		
+		sceneBuilder = sceneBuilder.addEntryPointMatcher(new MainMethodMatcher(mainClassName));
 
 		sceneBuilder = sceneBuilder.addExclusions(Arrays.asList("java.*", "javax.*", "sun.*"))
 				.addExclusions(Arrays.asList("soot.*", "polygot.*")).addExclusions(Arrays.asList("org.*", "com.*"));
-
-		sceneBuilder = sceneBuilder.addClasses(config.classNames);
+		
+		List<String> classNames = Arrays.asList(System.getProperty("-c").split(" "));
+		sceneBuilder = sceneBuilder.addClasses(classNames);
 
 		bundle.scene = sceneBuilder.build();
 

@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import soot.SootClass;
 import soot.util.Chain;
@@ -14,8 +13,8 @@ public class AncestorAnalyzer extends Analyzer {
 	
 	private Set<SootClass> processedClasses;
 
-	public AncestorAnalyzer(Configuration configuration, List<Filter> filters) {
-		super(configuration, filters);
+	public AncestorAnalyzer(List<Filter> filters) {
+		super(filters);
 		this.processedClasses = new HashSet<>();
 	}
 
@@ -29,8 +28,10 @@ public class AncestorAnalyzer extends Analyzer {
 				ancestorHelper(c);
 			}
 		}
+		
+		boolean includeObject = Boolean.parseBoolean(System.getProperty("--include-object"));
 		// This is to remove the java.lang.Object from the UML, set in the configuration
-		if (!config.includeObject) {
+		if (!includeObject) {
 			processedClasses.remove(objectClass);
 		}
 		

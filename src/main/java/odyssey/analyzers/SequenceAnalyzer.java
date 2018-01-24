@@ -3,15 +3,14 @@ package odyssey.analyzers;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Iterator;
 import java.util.List;
-
-import org.apache.logging.log4j.Level;
 
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import odyssey.models.CallMessage;
 import odyssey.models.Message;
@@ -32,16 +31,22 @@ import soot.toolkits.graph.UnitGraph;
 public class SequenceAnalyzer extends Analyzer {
 
   private AnalyzerBundle bundle;
-  
-  public SequenceAnalyzer(Configuration configuration, List<Filter> filters) {
-    super(configuration, filters);
+  int maxCallDepth;
+  boolean showSuper;
+  Path seqImageLocation;
+  public SequenceAnalyzer(List<Filter> filters) {
+    super(filters);
+    maxCallDepth = Integer.parseInt(System.getProperty("-max-depth"));
+    showSuper = Boolean.parseBoolean(System.getProperty("--include-super"));
+    seqImageLocation = Paths.get(System.getProperty("-s"));
   }
 
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     this.bundle = bundle;
-    System.out.println("Processesing Entry Method:\t" + config.entryMethodName);
-    SootMethod entryMethod = this.bundle.scene.getMethod(config.entryMethodName);
+    String entryMethodName = System.getProperty("-e");
+    System.out.println("Processesing Entry Method:\t" + entryMethodName);
+    SootMethod entryMethod = this.bundle.scene.getMethod(entryMethodName);
     processMethod(entryMethod, 0);
     String parseString = parseCalls();
     generateSeqImage(parseString);
@@ -49,7 +54,7 @@ public class SequenceAnalyzer extends Analyzer {
   }
 
   private void processMethod(SootMethod method, int depth) {
-    if (depth >= config.maxCallDepth)
+    if (depth >= maxCallDepth)
       return;
     if (method.hasActiveBody()) {
       UnitGraph graph = new ExceptionalUnitGraph(method.getActiveBody());
@@ -61,7 +66,7 @@ public class SequenceAnalyzer extends Analyzer {
         }
         
         if (targetMethod != null && passesFilters(targetMethod)) {
-          if (config.showSuper || !isSuperCall(method, targetMethod)) {
+          if (showSuper || !isSuperCall(method, targetMethod)) {
             CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod,
                 UMLParser.parseMethodParameters(targetMethod));
             bundle.messages.add(newCall);
@@ -129,20 +134,20 @@ public class SequenceAnalyzer extends Analyzer {
       builder.append("\n");
     }
     builder.append("@enduml\n");
-    config.logger.log(Level.INFO, "Generated Sequence Diagram\n" + builder.toString());
+    System.out.println("Generated Sequence Diagram\n" + builder.toString());
     return builder.toString();
   }
 
   private void generateSeqImage(String umlString) {
     SourceStringReader reader = new SourceStringReader(umlString);
     try {
-      Files.createDirectories(config.seqImageLocation.getParent());
+      Files.createDirectories(seqImageLocation.getParent());
 
-      OutputStream outStream = new FileOutputStream(config.seqImageLocation.toFile());
+      OutputStream outStream = new FileOutputStream(seqImageLocation.toFile());
       FileFormatOption option = new FileFormatOption(FileFormat.SVG, false);
       reader.outputImage(outStream, option);
     } catch (Exception e) {
-      config.logger.error("Cannot create file to store the UML diagram.\n" + e);
+      System.err.println("Cannot create file to store the UML diagram.\n" + e);
     }
 
   }

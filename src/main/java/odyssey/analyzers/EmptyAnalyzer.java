@@ -2,7 +2,6 @@ package odyssey.analyzers;
 
 import java.util.List;
 
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 
 /**
@@ -14,8 +13,8 @@ import odyssey.filters.Filter;
  */
 public class EmptyAnalyzer extends Analyzer {
 
-  public EmptyAnalyzer(Configuration configuration, List<Filter> filters) {
-    super(configuration, filters);
+  public EmptyAnalyzer(List<Filter> filters) {
+    super(filters);
   }
 
   public AnalyzerBundle execute(AnalyzerBundle bundle) {

@@ -3,14 +3,15 @@ package odyssey.analyzers;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
-import org.apache.logging.log4j.Level;
+import javax.swing.plaf.synth.SynthSeparatorUI;
 
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import odyssey.models.Relationship;
 import soot.SootClass;
@@ -19,8 +20,11 @@ import soot.SootMethod;
 
 public class UMLAnalyzer extends Analyzer {
 
-	public UMLAnalyzer(Configuration configuration, List<Filter> filters) {
-		super(configuration, filters);
+	private Path umlImageLocation;
+
+  public UMLAnalyzer(List<Filter> filters) {
+		super(filters);
+		umlImageLocation = Paths.get(System.getProperty("-i"));
 	}
 
 	@Override
@@ -58,20 +62,23 @@ public class UMLAnalyzer extends Analyzer {
 			builder.append("\n");
 		}
 		builder.append("@enduml\n");
-		config.logger.log(Level.INFO, "Generated UML\n" + builder.toString());
+		System.out.println("Generated UML\n" + builder.toString());
 		return builder.toString();
 	}
 
 	private void generateUMLImage(String umlString) {
 		SourceStringReader reader = new SourceStringReader(umlString);
 		try {
-			Files.createDirectories(config.umlImageLocation.getParent());
+			Files.createDirectories(umlImageLocation.getParent());
 
-			OutputStream outStream = new FileOutputStream(config.umlImageLocation.toFile());
+			OutputStream outStream = new FileOutputStream(umlImageLocation.toFile());
 			FileFormatOption option = new FileFormatOption(FileFormat.SVG, false);
 			reader.outputImage(outStream, option);
 		} catch (Exception e) {
-			config.logger.error("Cannot create file to store the UML diagram.\n" + e);
+			System.err.println("Cannot create file to store the UML diagram.\n");
+			System.err.println(umlImageLocation.getParent());
+			System.err.println(umlImageLocation);
+			e.printStackTrace();
 		}
 
 	}

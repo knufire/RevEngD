@@ -6,7 +6,6 @@ import java.util.Set;
 
 import edu.rosehulman.jvm.sigevaluator.GenericType;
 import edu.rosehulman.jvm.sigevaluator.MethodEvaluator;
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
@@ -28,8 +27,8 @@ public class DependencyAnalyzer extends Analyzer {
   private AnalyzerBundle bundle;
   Set<Relationship> relationships;
 
-  public DependencyAnalyzer(Configuration configuration, List<Filter> filters) {
-    super(configuration, filters);
+  public DependencyAnalyzer(List<Filter> filters) {
+    super(filters);
   }
 
   @Override

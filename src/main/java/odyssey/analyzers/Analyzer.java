@@ -2,7 +2,6 @@ package odyssey.analyzers;
 
 import java.util.List;
 
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import soot.SootClass;
 import soot.SootField;
@@ -11,11 +10,9 @@ import soot.SootMethod;
 public abstract class Analyzer {
 
   List<Filter> filters;
-  Configuration config;
   
 
-  protected Analyzer(Configuration configuration, List<Filter> filters){
-    this.config = configuration;
+  protected Analyzer(List<Filter> filters){
     this.filters = filters;
   }
   

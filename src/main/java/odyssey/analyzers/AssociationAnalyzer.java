@@ -6,7 +6,6 @@ import java.util.Set;
 
 import edu.rosehulman.jvm.sigevaluator.FieldEvaluator;
 import edu.rosehulman.jvm.sigevaluator.GenericType;
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
@@ -19,8 +18,8 @@ import soot.util.Chain;
 public class AssociationAnalyzer extends Analyzer {
   AnalyzerBundle bundle;
 
-  public AssociationAnalyzer(Configuration configuration, List<Filter> filters) {
-    super(configuration, filters);
+  public AssociationAnalyzer(List<Filter> filters) {
+    super(filters);
   }
 
   @Override

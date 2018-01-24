@@ -3,7 +3,6 @@ package odyssey.analyzers;
 import java.util.ArrayList;
 import java.util.List;
 
-import odyssey.app.Configuration;
 import odyssey.filters.Filter;
 import soot.Scene;
 import soot.SootClass;
@@ -13,8 +12,8 @@ public class SootAnalyzer extends Analyzer {
 
   private Scene scene;
 
-  public SootAnalyzer(Configuration configuration, List<Filter> filters) {
-    super(configuration, filters);
+  public SootAnalyzer(List<Filter> filters) {
+    super(filters);
   }
 
   @Override
