@@ -4,36 +4,32 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 
 public class PropertiesSetter {
-  
+
   private static final String DEFAULT_CONFIG = "config.txt";
-  
+
   static void set(String[] args) {
     // "-config" to specify filepath to properties file
     try {
       setConfig(args);
+      System.getProperties().list(System.out);
     } catch (IOException e) {
       e.printStackTrace();
     }
   }
-  
+
   private static void setConfig(String[] args) throws IOException {
     String[] processedArgs = preprocessArgs(args);
     ListMultimap<String, String> argMap = parse(processedArgs);
     File configFile = loadConfigFile(argMap);
     setSystemProperties(configFile);
-    
+    overrideSystemProperties(argMap);
   }
 
   private static String[] preprocessArgs(String[] args) {
@@ -65,7 +61,7 @@ public class PropertiesSetter {
     }
     return parsedArgs;
   }
-  
+
   private static File loadConfigFile(ListMultimap<String, String> argMap) {
     List<String> fileNames = argMap.get("-config");
     File file;
@@ -77,21 +73,20 @@ public class PropertiesSetter {
     }
     return file;
   }
-  
+
   private static void setSystemProperties(File file) throws IOException {
     InputStream input = new FileInputStream(file);
     Properties p = new Properties(System.getProperties());
     p.load(input);
     System.setProperties(p);
-    System.getProperties().list(System.out);
   }
-  
+
   private static void overrideSystemProperties(ListMultimap<String, String> argMap) {
-    argMap.entries().forEach(e -> {
-      //System.setProperty(e.getKey(), processCLArgs(e.getValue()));
+    argMap.keys().forEach(k -> {
+      System.setProperty(k, processesCLArgs(argMap.get(k)));
     });
   }
-  
+
   private static String processesCLArgs(List<String> ls) {
     StringBuilder builder = new StringBuilder();
     ls.forEach(s -> {
