@@ -29,6 +29,8 @@ public class SceneAnalyzer extends Analyzer {
 		sceneBuilder = sceneBuilder.addExclusions(Arrays.asList("java.*", "javax.*", "sun.*"))
 				.addExclusions(Arrays.asList("soot.*", "polygot.*")).addExclusions(Arrays.asList("org.*", "com.*"));
 		
+		sceneBuilder = sceneBuilder.addExclusion("odyssey.modules.*");
+		
 		List<String> classNames = Arrays.asList(System.getProperty("-c").split(" "));
 		sceneBuilder = sceneBuilder.addClasses(classNames);
 

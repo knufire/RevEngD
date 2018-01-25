@@ -11,7 +11,7 @@ import soot.Unit;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 
-public class CallGraphAlgoritm implements Algorithm {
+public class CallGraphAlgorithm implements Algorithm {
 
   @Override
   public List<SootMethod> resolve(Unit u, SootMethod m, Scene scene) {

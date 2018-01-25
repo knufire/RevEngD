@@ -1,5 +1,6 @@
 package odyssey.modules;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -29,6 +30,9 @@ import odyssey.filters.PackagePrivateFilter;
 import odyssey.filters.ProtectedFilter;
 import odyssey.filters.PublicFilter;
 import odyssey.filters.RelationshipFilter;
+import odyssey.methodresolution.AggregateAlgorithm;
+import odyssey.methodresolution.AggregationStrategy;
+import odyssey.methodresolution.Algorithm;
 
 public class PipelineModule extends AbstractModule {
   
@@ -112,6 +116,34 @@ public class PipelineModule extends AbstractModule {
   }
 
   private Analyzer createSequenceAnalyzer() {
+    try {
+      return createSequenceAnalyzerHelper();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
+        | NoSuchMethodException | SecurityException e) {
+      throw new RuntimeException(e.getMessage());
+    }
+  }
+  
+  private Algorithm createMethodResolver() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    String[] algorithms = System.getProperty("-mra").split(" ");
+    if (algorithms.length == 1) {
+      return getClassFromName(Algorithm.class, algorithms[1]);
+    } else {
+      Class<AggregateAlgorithm> aggregate = AggregateAlgorithm.class;
+      List<Algorithm> singleAlgorithms = new ArrayList<>();
+      for (int i = 0; i < algorithms.length; i++) {
+        singleAlgorithms.add(getClassFromName(Algorithm.class, algorithms[i]));
+      }
+      AggregationStrategy strat = getClassFromName(AggregationStrategy.class, System.getProperty("-mrs"));
+      AggregateAlgorithm aggregateAlgorithm = aggregate.getConstructor(AggregationStrategy.class).newInstance(strat);
+      for (Algorithm a : singleAlgorithms) {
+        aggregateAlgorithm.addAlgorithm(a);
+      }
+      return aggregateAlgorithm;
+    }
+  }
+  
+  private Analyzer createSequenceAnalyzerHelper() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
     if (System.getProperty("-e").length() > 0) {
       List<Filter> sequenceFilters = new ArrayList<Filter>();
       addModifierFilter(sequenceFilters);
@@ -120,10 +152,22 @@ public class PipelineModule extends AbstractModule {
       if (!Boolean.parseBoolean(System.getProperty("--expand-jdk"))) {
         sequenceFilters.add(new JDKFilter());
       }
-      return new SequenceAnalyzer(sequenceFilters);
+      return new SequenceAnalyzer(sequenceFilters, createMethodResolver());
     } else {
       return new EmptyAnalyzer(Collections.emptyList());
     }
+  }
+  
+  private <T> T getClassFromName(Class<T> clazz, String name) {
+    try {
+      @SuppressWarnings("unchecked")
+      Class<T> algorithm = (Class<T>) Class.forName(name);
+      return algorithm.newInstance();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException | ClassNotFoundException e) {
+      System.err.println("Could not instantiate method resolver algorithm class.");
+      e.printStackTrace();
+    }
+    return null;
   }
 
   private void addModifierFilter(List<Filter> filters) {

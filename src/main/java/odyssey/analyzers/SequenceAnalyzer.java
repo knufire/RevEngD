@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Iterator;
 import java.util.List;
 
 import net.sourceforge.plantuml.FileFormat;
@@ -16,16 +15,12 @@ import odyssey.methodresolution.Algorithm;
 import odyssey.models.CallMessage;
 import odyssey.models.Message;
 import odyssey.models.ReturnMessage;
-import soot.Hierarchy;
-import soot.MethodOrMethodContext;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
-import soot.jimple.toolkits.callgraph.CallGraph;
-import soot.jimple.toolkits.callgraph.Edge;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
@@ -36,11 +31,12 @@ public class SequenceAnalyzer extends Analyzer {
   boolean showSuper;
   Path seqImageLocation;
   Algorithm resolver;
-  public SequenceAnalyzer(List<Filter> filters) {
+  public SequenceAnalyzer(List<Filter> filters, Algorithm resolver) {
     super(filters);
     maxCallDepth = Integer.parseInt(System.getProperty("-max-depth"));
     showSuper = Boolean.parseBoolean(System.getProperty("--include-super"));
     seqImageLocation = Paths.get(System.getProperty("-s"));
+    this.resolver = resolver;
   }
 
   @Override
@@ -74,9 +70,10 @@ public class SequenceAnalyzer extends Analyzer {
         
         List<SootMethod> possibleTargets = resolver.resolve(u, methodCall, bundle.scene);
         
-        SootMethod targetMethod = possibleTargets.isEmpty() ? null : possibleTargets.get(0);
+        if (possibleTargets.isEmpty()) continue;
         
-        if (targetMethod != null && passesFilters(targetMethod)) {
+        SootMethod targetMethod = possibleTargets.get(0);
+        if (passesFilters(targetMethod)) {
           if (showSuper || !isSuperCall(methodCall, targetMethod)) {
             CallMessage newCall = new CallMessage(methodCall.getDeclaringClass(), targetMethod,
                 UMLParser.parseMethodParameters(targetMethod));
@@ -89,29 +86,11 @@ public class SequenceAnalyzer extends Analyzer {
             bundle.messages
                 .add(new ReturnMessage(methodCall.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
           }
-        } else {
-          //System.err.println("\nNot useful Statement: " + u + "\n");
         }
       }
     } else {
       System.err.println("Unalbe to load method body: " + method.getName());
     }
-  }
-
-  private SootMethod resolveUsingHierarchy(Unit u) {
-    SootMethod method = null;
-    if (u instanceof InvokeStmt) {
-      method = ((InvokeStmt)u).getInvokeExpr().getMethod(); 
-    } else if (u instanceof AssignStmt) {
-      Value rightOp = ((AssignStmt) u).getRightOp();
-      if (rightOp instanceof InvokeExpr) {
-        method = ((InvokeExpr)rightOp).getMethod(); 
-      }
-    }
-    if (method == null) return null;
-    Hierarchy hierarchy = bundle.scene.getActiveHierarchy();
-    List<SootMethod> possibleMethods = hierarchy.resolveAbstractDispatch(method.getDeclaringClass(), method);
-    return possibleMethods.isEmpty() ? null : possibleMethods.get(0);
   }
 
   private boolean isSuperCall(SootMethod method, SootMethod targetMethod) {
@@ -121,20 +100,6 @@ public class SequenceAnalyzer extends Analyzer {
       }
     }
     return false;
-  }
-
-  private SootMethod resolveUsingCallGraph(Unit stmt) {
-    CallGraph callGraph = this.bundle.scene.getCallGraph();
-    Iterator<Edge> itr = callGraph.edgesOutOf(stmt);
-    while (itr.hasNext()) {
-      MethodOrMethodContext methodOrCntxt = itr.next().getTgt();
-      SootMethod targetMethod = methodOrCntxt.method();
-      if (targetMethod != null) {
-        return targetMethod;
-      }
-    }
-    return null;
-
   }
 
   private String parseCalls() {

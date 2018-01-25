@@ -14,3 +14,5 @@
 --show-dependence true
 --show-association true
 --include-super true
+-mrs odyssey.methodresolution.ChainMethodResolver
+-mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm

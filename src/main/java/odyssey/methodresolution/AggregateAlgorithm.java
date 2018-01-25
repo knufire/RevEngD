@@ -9,8 +9,18 @@ import soot.Unit;
 
 public class AggregateAlgorithm implements Algorithm {
   
-  List<Algorithm> algorithms; 
-  AggregationStrategy strat; 
+  private List<Algorithm> algorithms; 
+  private AggregationStrategy strat; 
+  
+  
+  
+  public AggregateAlgorithm(AggregationStrategy strat) {
+    super();
+    this.algorithms = new ArrayList<>();
+    this.strat = strat;
+  }
+
+
 
   @Override
   public List<SootMethod> resolve(Unit u, SootMethod m, Scene scene) {
@@ -24,5 +34,11 @@ public class AggregateAlgorithm implements Algorithm {
     }
     return finalResult; 
   }
+  
+  public void addAlgorithm(Algorithm a) {
+    algorithms.add(a);
+  }
+  
+  
 
 }
