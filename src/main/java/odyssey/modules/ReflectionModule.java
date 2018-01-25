@@ -16,9 +16,9 @@ public class ReflectionModule extends AbstractModule {
 
   @Override
   protected void configure() {
-    // TODO Auto-generated method stub
-
   }
+  
+  //TODO: Actually implement these. 
   
   @Provides
   @Named("analyzers")

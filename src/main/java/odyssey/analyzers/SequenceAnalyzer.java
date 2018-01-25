@@ -12,6 +12,7 @@ import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
 import odyssey.filters.Filter;
+import odyssey.methodresolution.Algorithm;
 import odyssey.models.CallMessage;
 import odyssey.models.Message;
 import odyssey.models.ReturnMessage;
@@ -34,6 +35,7 @@ public class SequenceAnalyzer extends Analyzer {
   int maxCallDepth;
   boolean showSuper;
   Path seqImageLocation;
+  Algorithm resolver;
   public SequenceAnalyzer(List<Filter> filters) {
     super(filters);
     maxCallDepth = Integer.parseInt(System.getProperty("-max-depth"));
@@ -59,15 +61,24 @@ public class SequenceAnalyzer extends Analyzer {
     if (method.hasActiveBody()) {
       UnitGraph graph = new ExceptionalUnitGraph(method.getActiveBody());
       for (Unit u : graph) {
-        SootMethod targetMethod = resolveUsingCallGraph(u);
         
-        if (targetMethod == null) {
-          targetMethod = resolveUsingHierarchy(u);
+        SootMethod methodCall = null;
+        if (u instanceof InvokeStmt) {
+          methodCall = ((InvokeStmt)u).getInvokeExpr().getMethod(); 
+        } else if (u instanceof AssignStmt) {
+          Value rightOp = ((AssignStmt) u).getRightOp();
+          if (rightOp instanceof InvokeExpr) {
+            methodCall = ((InvokeExpr)rightOp).getMethod(); 
+          }
         }
         
+        List<SootMethod> possibleTargets = resolver.resolve(u, methodCall, bundle.scene);
+        
+        SootMethod targetMethod = possibleTargets.isEmpty() ? null : possibleTargets.get(0);
+        
         if (targetMethod != null && passesFilters(targetMethod)) {
-          if (showSuper || !isSuperCall(method, targetMethod)) {
-            CallMessage newCall = new CallMessage(method.getDeclaringClass(), targetMethod,
+          if (showSuper || !isSuperCall(methodCall, targetMethod)) {
+            CallMessage newCall = new CallMessage(methodCall.getDeclaringClass(), targetMethod,
                 UMLParser.parseMethodParameters(targetMethod));
             bundle.messages.add(newCall);
           }
@@ -76,7 +87,7 @@ public class SequenceAnalyzer extends Analyzer {
           
           if (!targetMethod.getReturnType().toString().contains("void")) {
             bundle.messages
-                .add(new ReturnMessage(method.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
+                .add(new ReturnMessage(methodCall.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
           }
         } else {
           //System.err.println("\nNot useful Statement: " + u + "\n");
