@@ -26,7 +26,7 @@ eclipse {
 }
 
 dependencies {
-  runtime fileTree("../PatternDetectorExample/build/libs")
+  runtime fileTree("../BidirectionalDetector/build/libs")
 	compile 'ca.mcgill.sable:soot:3.+'
 	compile 'org.apache.logging.log4j:log4j-api:2.+'
 	compile 'org.apache.logging.log4j:log4j-core:2.+'
