@@ -27,7 +27,7 @@ public class PropertiesSetter {
   private static void setConfig(String[] args) throws IOException {
     String[] processedArgs = preprocessArgs(args);
     ListMultimap<String, String> argMap = parse(processedArgs);
-    File configFile = loadConfigFile(argMap);
+    InputStream configFile = loadConfigFile(argMap);
     setSystemProperties(configFile);
     overrideSystemProperties(argMap);
   }
@@ -62,22 +62,21 @@ public class PropertiesSetter {
     return parsedArgs;
   }
 
-  private static File loadConfigFile(ListMultimap<String, String> argMap) {
+  private static InputStream loadConfigFile(ListMultimap<String, String> argMap) throws IOException {
     List<String> fileNames = argMap.get("-config");
-    File file;
+    InputStream file;
     if (fileNames.size() > 0) {
-      file = new File(fileNames.get(0));
+      file = new FileInputStream(new File(fileNames.get(0)));
     } else {
       ClassLoader classLoader = PropertiesSetter.class.getClassLoader();
-      file = new File(classLoader.getResource(DEFAULT_CONFIG).getFile());
+      file = classLoader.getResourceAsStream(DEFAULT_CONFIG);
     }
     return file;
   }
 
-  private static void setSystemProperties(File file) throws IOException {
-    InputStream input = new FileInputStream(file);
+  private static void setSystemProperties(InputStream file) throws IOException {
     Properties p = new Properties(System.getProperties());
-    p.load(input);
+    p.load(file);
     System.setProperties(p);
   }
 
