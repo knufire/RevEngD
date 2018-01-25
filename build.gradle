@@ -26,6 +26,7 @@ eclipse {
 }
 
 dependencies {
+  runtime fileTree("../PatternDetectorExample/build/libs")
 	compile 'ca.mcgill.sable:soot:3.+'
 	compile 'org.apache.logging.log4j:log4j-api:2.+'
 	compile 'org.apache.logging.log4j:log4j-core:2.+'
@@ -36,6 +37,7 @@ dependencies {
   
   testCompile 'junit:junit:4.+'
   testCompile "org.mockito:mockito-core:2.+"
+  
 }
 
 compileJava {
@@ -46,7 +48,6 @@ mainClassName = "odyssey.app.Runner"
 applicationDefaultJvmArgs = ["-Xms512m", "-Xmx1024m"]
 run {
 	standardInput = System.in
-	args = ['-d', "C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD" , '-m', 'odyssey.app.Runner' , '-i' , "C:/Users/keinslc/Documents/plant_uml.svg", '-c', 'odyssey.app.Runner', 'csse374.revengd.soot.IEntryPointMatcher', 'csse374.revengd.soot.MainMethodMatcher', 'csse374.revengd.soot.SceneBuilder' , ' odyssey.analyzers.Analyzer ' , ' odyssey.analyzers.AnalyzerBundle' , '  odyssey.analyzers.SceneAnalyzer' , ' odyssey.analyzers.SootAnalyzer' , ' odyssey.analyzers.UMLParser' , ' odyssey.analyzers.EmptyAnalyzer' , ' odyssey.analyzers.AncestorAnalyzer' , ' odyssey.analyzers.UMLAnalyzer' , ' odyssey.app.Configuration' , ' odyssey.app.Processor' , ' odyssey.models.Relation' , ' odyssey.models.Relationship' , ' odyssey.app.UMLGenerationApp' , ' odyssey.filters.Filter' , ' odyssey.filters.ProtectedFilter' , ' odyssey.filters.PublicFilter' , ' odyssey.filters.RelationshipFilter' , ' odyssey.filters.PackagePrivateFilter' , ' odyssey.filters.DollarSignFilter' , ' odyssey.filters.ClinitFilter' , ' odyssey.filters.ClassNameFilter' , ' --include-ancestors' , ' -e', "<odyssey.app.Runner: void main(java.lang.String[])>", '-s' ,  "C:/Users/keinslc/Documents/plant_uml_seq.svg", '-max-depth' , ' 50']
 }
 
 jar {
