@@ -17,16 +17,16 @@ public class InheritanceAnalyzer extends Analyzer {
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
 
-    List<Relationship> relationships = bundle.relationships;
+    List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
     
-    for (SootClass c : bundle.classes) {
+    for (SootClass c : bundle.getList("classes", SootClass.class)) {
       if (passesFilters(c)) {
         generateExtendsRelationships(c, relationships);
         generateImplementsRelationships(c, relationships);
       }
     }
 
-    bundle.relationships = relationships;
+    bundle.put("relationships", relationships);
     return bundle;
   }
 

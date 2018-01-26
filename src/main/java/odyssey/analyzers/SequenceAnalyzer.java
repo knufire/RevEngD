@@ -16,6 +16,7 @@ import odyssey.models.CallMessage;
 import odyssey.models.CommentedOutMessage;
 import odyssey.models.Message;
 import odyssey.models.ReturnMessage;
+import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
@@ -45,7 +46,7 @@ public class SequenceAnalyzer extends Analyzer {
     this.bundle = bundle;
     String entryMethodName = System.getProperty("-e");
     System.out.println("Processesing Entry Method:\t" + entryMethodName);
-    SootMethod entryMethod = this.bundle.scene.getMethod(entryMethodName);
+    SootMethod entryMethod = this.bundle.get("scene", Scene.class).getMethod(entryMethodName);
     processMethod(entryMethod, 0);
     String parseString = parseCalls();
     generateSeqImage(parseString);
@@ -69,7 +70,7 @@ public class SequenceAnalyzer extends Analyzer {
           }
         }
         
-        List<SootMethod> possibleTargets = resolver.resolve(u, methodCall, bundle.scene);
+        List<SootMethod> possibleTargets = resolver.resolve(u, methodCall, bundle.get("scene", Scene.class));
         
         if (possibleTargets.isEmpty()) continue;
         
@@ -83,7 +84,7 @@ public class SequenceAnalyzer extends Analyzer {
           processMethod(targetMethod, depth + 1);
           
           if (!targetMethod.getReturnType().toString().contains("void")) {
-            bundle.messages
+            bundle.getList("messages", Message.class)
                 .add(new ReturnMessage(methodCall.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
           }
         }
@@ -100,13 +101,13 @@ public class SequenceAnalyzer extends Analyzer {
   private void createCommentedOutMessage(SootMethod methodCall, SootMethod targetMethod) {
     CommentedOutMessage newMessage = new CommentedOutMessage(methodCall.getDeclaringClass(), targetMethod,
         UMLParser.parseMethodParameters(targetMethod));
-    bundle.messages.add(newMessage);
+    bundle.getList("messages", Message.class).add(newMessage);
   }
   
   private void createCallMessage(SootMethod methodCall, SootMethod targetMethod) {
     CallMessage newCall = new CallMessage(methodCall.getDeclaringClass(), targetMethod,
         UMLParser.parseMethodParameters(targetMethod));
-    bundle.messages.add(newCall);
+    bundle.getList("messages", Message.class).add(newCall);
   }
 
   private boolean isSuperCall(SootMethod method, SootMethod targetMethod) {
@@ -121,7 +122,7 @@ public class SequenceAnalyzer extends Analyzer {
   private String parseCalls() {
     StringBuilder builder = new StringBuilder();
     builder.append("@startuml\n");
-    for (Message c : bundle.messages) {
+    for (Message c : bundle.getList("messages", Message.class)) {
       builder.append(c.getPlantUMLString());
       builder.append("\n");
     }

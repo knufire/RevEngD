@@ -35,7 +35,7 @@ public class UMLAnalyzer extends Analyzer {
 		StringBuilder builder = new StringBuilder();
 		builder.append("@startuml\n");
 		builder.append("skinparam linetype ortho\n");
-		for (SootClass c : bundle.classes) {
+		for (SootClass c : bundle.getList("classes", SootClass.class)) {
 			if (passesFilters(c)) {
 				builder.append(UMLParser.parse(c));
 				builder.append("\n");
@@ -56,7 +56,7 @@ public class UMLAnalyzer extends Analyzer {
 				builder.append("}\n");
 			}
 		}
-		for (Relationship r : bundle.relationships) {
+		for (Relationship r : bundle.getList("relationships", Relationship.class)) {
 			builder.append((UMLParser.parse(r)));
 			builder.append("\n");
 		}

@@ -34,7 +34,7 @@ public class SceneAnalyzer extends Analyzer {
 		List<String> classNames = Arrays.asList(System.getProperty("-c").split(" "));
 		sceneBuilder = sceneBuilder.addClasses(classNames);
 
-		bundle.scene = sceneBuilder.build();
+		bundle.put("scene", sceneBuilder.build());
 
 		return bundle;
 	}

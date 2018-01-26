@@ -18,7 +18,7 @@ public class SootAnalyzer extends Analyzer {
 
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
-    scene = bundle.scene;
+    scene = bundle.get("scene", Scene.class);
     Chain<SootClass> classes = scene.getClasses();
     List<SootClass> filteredClasses = new ArrayList<>();
     for (SootClass c : classes) {
@@ -27,7 +27,7 @@ public class SootAnalyzer extends Analyzer {
       }
     }
     
-    bundle.classes = filteredClasses;
+    bundle.put("classes", filteredClasses);
     return bundle;
   }
 

@@ -9,6 +9,7 @@ import edu.rosehulman.jvm.sigevaluator.GenericType;
 import odyssey.filters.Filter;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
 import soot.Type;
@@ -25,20 +26,21 @@ public class AssociationAnalyzer extends Analyzer {
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     this.bundle = bundle;
-    List<Relationship> relationships = bundle.relationships;
+    List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
 
-    for (SootClass c : bundle.classes) {
+    for (SootClass c : bundle.getList("classes", SootClass.class)) {
       if (passesFilters(c)) {
         generateAssociationRelationships(c, relationships);
       }
     }
 
-    bundle.relationships = relationships;
+    bundle.put("relationships", relationships);
     return bundle;
   }
 
   private void generateAssociationRelationships(SootClass c, List<Relationship> relationships) {
     Chain<SootField> fields = c.getFields();
+    Scene scene = bundle.get("scene", Scene.class);
     for (SootField f : fields) {
       if (!passesFilters(f)) continue;
       Tag signatureTag = f.getTag("SignatureTag");
@@ -51,7 +53,7 @@ public class AssociationAnalyzer extends Analyzer {
 
         Set<String> containerTypes = fieldType.getAllContainerTypes();
         for (String s : containerTypes) {
-          containerClass = bundle.scene.getSootClass(s);
+          containerClass = scene.getSootClass(s);
           if (passesFilters(containerClass)) {
             Relationship rel = new Relationship(c, Relation.ASSOCIATION, containerClass, 0);
             addRelationship(rel);
@@ -61,7 +63,7 @@ public class AssociationAnalyzer extends Analyzer {
         Set<String> genericTypes = fieldType.getAllElementTypes();
         SootClass genericClass;
         for (String s : genericTypes) {
-          genericClass = bundle.scene.getSootClass(s);
+          genericClass = scene.getSootClass(s);
           if (passesFilters(genericClass)) {
             Relationship rel = new Relationship(c, Relation.ASSOCIATION, genericClass, -1);
             addRelationship(rel);
@@ -70,7 +72,7 @@ public class AssociationAnalyzer extends Analyzer {
       } else {
         boolean isArray = f.getType().toString().contains("[");
         Type baseType = f.getType().makeArrayType().baseType;
-        SootClass fieldClass = bundle.scene.getSootClass(baseType.toString());
+        SootClass fieldClass = scene.getSootClass(baseType.toString());
         if (passesFilters(fieldClass) && !c.equals(fieldClass)) {
           addRelationship(new Relationship(c, Relation.ASSOCIATION, fieldClass, isArray ? -1 : 0));
         }
@@ -80,8 +82,9 @@ public class AssociationAnalyzer extends Analyzer {
   
   
   private void addRelationship(Relationship newRelationship) {
+    List<Relationship> bundleRels = bundle.getList("relationships", Relationship.class);
     List<Relationship> toRemove = new ArrayList<>();
-    for (Relationship r : bundle.relationships) {
+    for (Relationship r : bundleRels) {
       if (r.getToClass().equals(newRelationship.getToClass())) {
         if (r.getFromClass().equals(newRelationship.getFromClass())) {
           if (r.getRelation() == Relation.DEPENDENCY) {
@@ -90,7 +93,7 @@ public class AssociationAnalyzer extends Analyzer {
         }
       }
     }
-    bundle.relationships.add(newRelationship);
-    bundle.relationships.removeAll(toRemove);
+    bundleRels.add(newRelationship);
+    bundleRels.removeAll(toRemove);
   }
 }

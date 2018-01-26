@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 
 import odyssey.filters.Filter;
+import soot.Scene;
 import soot.SootClass;
 import soot.util.Chain;
 
@@ -21,9 +22,9 @@ public class AncestorAnalyzer extends Analyzer {
 	@Override
 	public AnalyzerBundle execute(AnalyzerBundle bundle) {
 		// ensures base case, Object has no superClass
-		SootClass objectClass = bundle.scene.getSootClass("java.lang.Object");
+		SootClass objectClass = bundle.get("scene", Scene.class).getSootClass("java.lang.Object");
 		processedClasses.add(objectClass);
-		for (SootClass c: bundle.classes) {
+		for (SootClass c: bundle.getList("classes", SootClass.class)) {
 			if (passesFilters(c)) {
 				ancestorHelper(c);
 			}
@@ -36,7 +37,7 @@ public class AncestorAnalyzer extends Analyzer {
 		}
 		
 		List<SootClass> newClasses = new ArrayList<>(processedClasses);
-		bundle.classes = newClasses;
+		bundle.put("classes", newClasses);
 		return bundle;
 	}
 	

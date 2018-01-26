@@ -1,6 +1,7 @@
 package odyssey.filters;
 
 import odyssey.analyzers.AnalyzerBundle;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -16,9 +17,10 @@ public class RelationshipFilter implements Filter {
   @Override
   public boolean shouldProcess(SootClass clazz) {
     if (clazz.getName().contains("[")) {
-      return bundle.classes.contains(bundle.scene.getSootClass(clazz.getName().replaceAll("\\[\\]", "")));
+      return bundle.getList("classes", SootClass.class)
+          .contains(bundle.get("scene", Scene.class).getSootClass(clazz.getName().replaceAll("\\[\\]", "")));
     }
-    return bundle.classes.contains(clazz);
+    return bundle.getList("classes", SootClass.class).contains(clazz);
   }
 
   @Override

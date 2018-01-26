@@ -10,6 +10,7 @@ import odyssey.filters.Filter;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
 import soot.Body;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
@@ -25,7 +26,8 @@ import soot.toolkits.graph.UnitGraph;
 public class DependencyAnalyzer extends Analyzer {
 
   private AnalyzerBundle bundle;
-  Set<Relationship> relationships;
+  private Set<Relationship> relationships;
+  private Scene scene;
 
   public DependencyAnalyzer(List<Filter> filters) {
     super(filters);
@@ -34,14 +36,15 @@ public class DependencyAnalyzer extends Analyzer {
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     this.bundle = bundle;
+    this.scene = this.bundle.get("scene", Scene.class);
     relationships = new HashSet<>();
-    for (SootClass c : bundle.classes) {
+    for (SootClass c : bundle.getList("classes", SootClass.class)) {
       if (passesFilters(c)) {
         generateDependencyRelationships(c);
       }
     }
 
-    addRelations(bundle.relationships);
+    addRelations(bundle.getList("relationships", Relationship.class));
     return bundle;
   }
 
@@ -83,7 +86,7 @@ public class DependencyAnalyzer extends Analyzer {
     SootClass toClass;
     Set<String> containerTypes = type.getAllContainerTypes();
     for (String s : containerTypes) {
-      toClass = bundle.scene.getSootClass(s);
+      toClass = scene.getSootClass(s);
       if (passesFilters(toClass)) {
         addRelationship(fromClass, toClass, 1);
       }
@@ -91,7 +94,7 @@ public class DependencyAnalyzer extends Analyzer {
 
     Set<String> genericTypes = type.getAllElementTypes();
     for (String s : genericTypes) {
-      toClass = bundle.scene.getSootClass(s);
+      toClass = scene.getSootClass(s);
       if (passesFilters(toClass)) {
         addRelationship(fromClass, toClass, -1);
       }
@@ -101,7 +104,7 @@ public class DependencyAnalyzer extends Analyzer {
   private void evaluateSootParameters(SootClass fromClass, List<Type> parameterTypes) {
     for (Type t : parameterTypes) {
       Type baseType = t.makeArrayType().baseType;
-      SootClass toClass = bundle.scene.getSootClass(baseType.toString());
+      SootClass toClass = scene.getSootClass(baseType.toString());
       if (passesFilters(toClass) && !fromClass.equals(toClass)) {
         addRelationship(fromClass, toClass, isArray(t) ? -1 : 0);
       }
@@ -159,12 +162,12 @@ public class DependencyAnalyzer extends Analyzer {
 
   private void processReturnType(SootClass clazz, SootMethod method) {
     Type returnType = method.getReturnType();
-    SootClass returnClass = bundle.scene.getSootClass(returnType.toString());
+    SootClass returnClass = scene.getSootClass(returnType.toString());
     addRelationship(clazz, returnClass, isArray(returnType) ? -1 : 0);
   }
 
   private void processNewExpr(SootClass clazz, NewExpr newExpr) {
-    SootClass returnType = bundle.scene.getSootClass(newExpr.getType().toString());
+    SootClass returnType = scene.getSootClass(newExpr.getType().toString());
     addRelationship(clazz, returnType, 0);
   }
 
