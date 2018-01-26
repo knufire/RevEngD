@@ -25,11 +25,11 @@ public class SootAnalyzer extends Analyzer {
     
     for (SootClass c : classes) {
       if (passesFilters(c)) {
-        System.out.println("PASSED THE DAMN FILTERS::::  " + c);
+       
         filteredClasses.add(c);
       }
     }
-    System.out.println(Arrays.deepToString(filteredClasses.toArray()));
+    
     
     bundle.put("classes", filteredClasses);
     return bundle;

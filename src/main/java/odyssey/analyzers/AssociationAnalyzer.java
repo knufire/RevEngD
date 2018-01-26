@@ -78,7 +78,8 @@ public class AssociationAnalyzer extends Analyzer {
         boolean isArray = f.getType().toString().contains("[");
         Type baseType = f.getType().makeArrayType().baseType;
         SootClass fieldClass = scene.getSootClass(baseType.toString());
-        if (passesFilters(fieldClass) && !c.equals(fieldClass)) {
+//        if (passesFilters(fieldClass) && !c.equals(fieldClass)) {
+        if (passesFilters(fieldClass)) {
           addRelationship(new Relationship(c, Relation.ASSOCIATION, fieldClass, isArray ? -1 : 0));
         }
       }

@@ -22,7 +22,6 @@ public class UMLParser {
     builder.append(getClassType(c.getModifiers()));
     builder.append(" ");
     builder.append(c.getShortName());
-    builder.append(" {");
     return builder.toString();
   }
 
@@ -159,13 +158,13 @@ public class UMLParser {
     return builder.toString();
   }
 
-  public static String parse(Relationship r) {
+  public static String parse(Relationship r, String patternStuff) {
     StringBuilder builder = new StringBuilder();
     builder.append(r.getToClass().getShortName().replaceAll("\\[\\]", ""));
     builder.append(" ");
     builder.append(parseCardinality(r.getCardinality()));
     builder.append(" ");
-    builder.append(parse(r.getRelation()));
+    builder.append(parse(r.getRelation(), patternStuff));
     builder.append(" ");
     builder.append(r.getFromClass().getShortName());
     return builder.toString();
@@ -183,6 +182,22 @@ public class UMLParser {
       return "<|..";
     default:
       return "<--";
+    }
+  }
+  
+  // This allows you to add colors to arrows
+  public static String parse(Relation r, String patternText) {
+    switch (r) {
+    case ASSOCIATION:
+      return "<-" + patternText + "-";
+    case DEPENDENCY:
+      return "<." + patternText + ".";
+    case EXTENDS:
+      return "<|-" + patternText + "-";
+    case IMPLEMENTS:
+      return "<|." + patternText + ".";
+    default:
+      return "<-" + patternText + "-";
     }
   }
 

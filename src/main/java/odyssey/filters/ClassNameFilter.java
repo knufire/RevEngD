@@ -12,6 +12,12 @@ public class ClassNameFilter implements Filter {
   @Override
   public boolean shouldProcess(SootClass clazz) {
     String[] blackListedPackages = System.getProperty("-bl").split(" ");
+    String[] whiteListedClasses = System.getProperty("-c").split(" ");
+    for (int i = 0; i < whiteListedClasses.length; i++) {
+      if (clazz.toString().contains(whiteListedClasses[i])) {
+        return true;
+      }
+    }
     for (int i = 0; i < blackListedPackages.length; i++) {
       if (clazz.toString().contains(blackListedPackages[i].trim())) {
         return false;

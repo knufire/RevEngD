@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 
 import com.google.inject.AbstractModule;
@@ -34,6 +35,7 @@ import odyssey.filters.RelationshipFilter;
 import odyssey.methodresolution.AggregateAlgorithm;
 import odyssey.methodresolution.AggregationStrategy;
 import odyssey.methodresolution.Algorithm;
+import odyssey.renderers.PatternRenderer;
 
 public class PipelineModule extends AbstractModule {
 
@@ -55,7 +57,7 @@ public class PipelineModule extends AbstractModule {
 
   @Provides
   @Named("pipeline")
-  List<Analyzer> createPipeline(@Named("analyzers") Queue<Analyzer> userAnalyzers) {
+  List<Analyzer> createPipeline(@Named("analyzers") Queue<Analyzer> userAnalyzers,   @Named("renderers")Map<String, PatternRenderer> renderers) {
     List<Analyzer> pipeline = new ArrayList<>();
     pipeline.add(createSceneAnalyzer());
     pipeline.add(createSootAnalyzer());
@@ -65,7 +67,7 @@ public class PipelineModule extends AbstractModule {
     pipeline.add(createDependencyAnalyzer());
     pipeline.addAll(userAnalyzers);
     pipeline.add(createSequenceAnalyzer());
-    pipeline.add(createUMLAnalyzer());
+    pipeline.add(createUMLAnalyzer(renderers));
     return pipeline;
   }
 
@@ -116,14 +118,14 @@ public class PipelineModule extends AbstractModule {
     return new AssociationAnalyzer(relationShipFilters);
   }
 
-  private Analyzer createUMLAnalyzer() {
+  private Analyzer createUMLAnalyzer(Map<String, PatternRenderer> renderers) {
     List<Filter> UMLFilters = new ArrayList<Filter>();
     addModifierFilter(UMLFilters);
     if (includeLambda) {
       UMLFilters.add(new DollarSignFilter());
     }
     UMLFilters.add(new ClinitFilter());
-    return new UMLAnalyzer(UMLFilters);
+    return new UMLAnalyzer(UMLFilters, renderers);
   }
 
   private Analyzer createSequenceAnalyzer() {

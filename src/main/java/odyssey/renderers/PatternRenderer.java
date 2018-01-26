@@ -7,6 +7,8 @@ import soot.SootField;
 import soot.SootMethod;
 
 public interface PatternRenderer {
+  String getStyle();
+  
   String render(SootClass c, Pattern pattern);
 
   String render(SootMethod m, Pattern pattern);

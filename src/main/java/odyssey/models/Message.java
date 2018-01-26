@@ -24,11 +24,11 @@ public abstract class Message {
   }
   
   protected String getMethodCallingClassName() {
-    return methodCallingClass.getShortName();
+    return methodCallingClass.getShortName().replaceAll("\\$", "");
   }
   
   protected String getReceivingClassName() {
-    return method.getDeclaringClass().getShortName();
+    return method.getDeclaringClass().getShortName().replaceAll("\\$", "");
   }
   
   protected String getMethodName() {
