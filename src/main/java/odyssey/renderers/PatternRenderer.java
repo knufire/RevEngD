@@ -16,4 +16,6 @@ public interface PatternRenderer {
   String render(SootField f, Pattern pattern);
 
   String render(Relationship r, Pattern pattern);
+
+  String getName();
 }

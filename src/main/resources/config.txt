@@ -19,3 +19,5 @@
 -mrs odyssey.methodresolution.ChainMethodResolver
 -mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
 --exclude-lambda false
+-analyzers odyssey.analyzers.SingletonAnalyzer
+-renderers odyssey.renderers.SingletonRenderer

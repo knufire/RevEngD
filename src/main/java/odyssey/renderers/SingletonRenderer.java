@@ -37,4 +37,9 @@ public class SingletonRenderer implements PatternRenderer {
     }
   }
 
+  @Override
+  public String getName() {
+    return "singleton";
+  }
+
 }
