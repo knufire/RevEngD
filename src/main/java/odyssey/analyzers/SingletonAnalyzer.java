@@ -4,6 +4,7 @@ import java.util.List;
 
 import odyssey.filters.Filter;
 import odyssey.models.Pattern;
+import odyssey.models.Relation;
 import odyssey.models.Relationship;
 import soot.SootClass;
 import soot.SootField;
@@ -26,10 +27,8 @@ public class SingletonAnalyzer extends Analyzer {
       if (privateConstructor(clazz) && hasGetInstance(clazz) && hasInstanceField(clazz)) {
         Pattern p = new Pattern("singleton");
         p.put("singleton", clazz);
-        Relationship r = findRelationship(relationships, clazz);
-        if (r != null) {
-          p.put("singleton", r);
-        }
+        Relationship r = createRelationship(relationships, clazz);
+        p.put("singleton", r);
         patterns.add(p);
       }
     }
@@ -66,13 +65,10 @@ public class SingletonAnalyzer extends Analyzer {
     return false;
   }
 
-  private Relationship findRelationship(List<Relationship> relationships, SootClass clazz) {
-    for (Relationship r : relationships) {
-      if (r.getFromClass().equals(clazz) && r.getToClass().equals(clazz)) {
-        return r;
-      }
-    }
-    return null;
+  private Relationship createRelationship(List<Relationship> relationships, SootClass clazz) {
+    Relationship r = new Relationship(clazz, Relation.ASSOCIATION, clazz, 0);
+    relationships.add(r);
+    return r;
   }
 
 }
