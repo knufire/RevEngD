@@ -11,15 +11,23 @@ import odyssey.filters.Filter;
 
 public class SceneAnalyzer extends Analyzer {
 
-	public SceneAnalyzer(List<Filter> filters) {
-		super(filters);
-	}
+  public SceneAnalyzer(List<Filter> filters) {
+    super(filters);
+  }
 
-	@Override
+  @Override
 	public AnalyzerBundle execute(AnalyzerBundle bundle) {
 		SceneBuilder sceneBuilder = SceneBuilder.create();
 		Path p = Paths.get(System.getProperty("-d"));
 		sceneBuilder = sceneBuilder.addDirectory(p.toFile().getAbsolutePath());
+		String[] tokens = System.getProperty("-folders").split("\"");
+		String folder = "";
+		for(int i =0; i < tokens.length;i++) {
+		  folder = tokens[i].trim();
+		  if(!folder.isEmpty()) {
+		    sceneBuilder = sceneBuilder.addDirectory(folder);
+		  }
+		}
 		
 		String mainClassName = System.getProperty("-m");
 		sceneBuilder = sceneBuilder.setEntryClass(mainClassName);

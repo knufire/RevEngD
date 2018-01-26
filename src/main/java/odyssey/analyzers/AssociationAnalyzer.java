@@ -42,32 +42,37 @@ public class AssociationAnalyzer extends Analyzer {
     Chain<SootField> fields = c.getFields();
     Scene scene = bundle.get("scene", Scene.class);
     for (SootField f : fields) {
-      if (!passesFilters(f)) continue;
+      if (!passesFilters(f))
+        continue;
       Tag signatureTag = f.getTag("SignatureTag");
       if (signatureTag != null) {
         String signature = signatureTag.toString();
         FieldEvaluator fieldEvaluator = new FieldEvaluator(signature);
-        GenericType fieldType = fieldEvaluator.getType();
+        try {
+          GenericType fieldType = fieldEvaluator.getType();
 
-        SootClass containerClass;
+          SootClass containerClass;
 
-        Set<String> containerTypes = fieldType.getAllContainerTypes();
-        for (String s : containerTypes) {
-          containerClass = scene.getSootClass(s);
-          if (passesFilters(containerClass)) {
-            Relationship rel = new Relationship(c, Relation.ASSOCIATION, containerClass, 0);
-            addRelationship(rel);
+          Set<String> containerTypes = fieldType.getAllContainerTypes();
+          for (String s : containerTypes) {
+            containerClass = scene.getSootClass(s);
+            if (passesFilters(containerClass)) {
+              Relationship rel = new Relationship(c, Relation.ASSOCIATION, containerClass, 0);
+              addRelationship(rel);
+            }
           }
-        }
 
-        Set<String> genericTypes = fieldType.getAllElementTypes();
-        SootClass genericClass;
-        for (String s : genericTypes) {
-          genericClass = scene.getSootClass(s);
-          if (passesFilters(genericClass)) {
-            Relationship rel = new Relationship(c, Relation.ASSOCIATION, genericClass, -1);
-            addRelationship(rel);
+          Set<String> genericTypes = fieldType.getAllElementTypes();
+          SootClass genericClass;
+          for (String s : genericTypes) {
+            genericClass = scene.getSootClass(s);
+            if (passesFilters(genericClass)) {
+              Relationship rel = new Relationship(c, Relation.ASSOCIATION, genericClass, -1);
+              addRelationship(rel);
+            }
           }
+        } catch (Exception e) {
+          continue;
         }
       } else {
         boolean isArray = f.getType().toString().contains("[");
@@ -79,8 +84,7 @@ public class AssociationAnalyzer extends Analyzer {
       }
     }
   }
-  
-  
+
   private void addRelationship(Relationship newRelationship) {
     List<Relationship> bundleRels = bundle.getList("relationships", Relationship.class);
     List<Relationship> toRemove = new ArrayList<>();

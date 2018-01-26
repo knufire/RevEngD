@@ -1,6 +1,7 @@
 package odyssey.analyzers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import odyssey.filters.Filter;
@@ -21,11 +22,14 @@ public class SootAnalyzer extends Analyzer {
     scene = bundle.get("scene", Scene.class);
     Chain<SootClass> classes = scene.getClasses();
     List<SootClass> filteredClasses = new ArrayList<>();
+    
     for (SootClass c : classes) {
       if (passesFilters(c)) {
+        System.out.println("PASSED THE DAMN FILTERS::::  " + c);
         filteredClasses.add(c);
       }
     }
+    System.out.println(Arrays.deepToString(filteredClasses.toArray()));
     
     bundle.put("classes", filteredClasses);
     return bundle;

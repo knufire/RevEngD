@@ -4,7 +4,9 @@
 -m odyssey.app.Runner
 -s C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/sequence.svg
 -i C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/class.svg
--c odyssey.app.Runner odyssey.app.Processor odyssey.analyzers.AnalyzerBundle odyssey.analyzers.Analyzer odyssey.filters.ClinitFilter odyssey.filters.RelationshipFilter odyssey.filters.JDKFilter odyssey.filters.ClassNameFilter odyssey.analyzers.SootAnalyzer odyssey.analyzers.EmptyAnalyzer odyssey.filters.PackagePrivateFilter odyssey.analyzers.DependencyAnalyzer odyssey.analyzers.UMLParser odyssey.filters.PublicFilter odyssey.analyzers.AncestorAnalyzer odyssey.analyzers.UMLAnalyzer odyssey.filters.ProtectedFilter odyssey.filters.DollarSignFilter odyssey.analyzers.SequenceAnalyzer odyssey.analyzers.InheritanceAnalyzer odyssey.analyzers.SceneAnalyzer odyssey.analyzers.AssociationAnalyzer odyssey.filters.Filter odyssey.models.Relation odyssey.models.Relationship odyssey.models.CallMessage odyssey.models.Message odyssey.models.ReturnMessage csse374.revengd.soot.SceneBuilder csse374.revengd.soot.MainMethodMatcher csse374.revengd.soot.IEntryPointMatcher 
+-c odyssey.app.Runner  
+-bl odyssey.modules csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver.
+-folders "C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/java"
 --include-ancestors false
 -e <odyssey.app.Runner: void main(java.lang.String[])>
 --include-object false
@@ -16,3 +18,4 @@
 --include-super true
 -mrs odyssey.methodresolution.ChainMethodResolver
 -mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
+--exclude-lambda true

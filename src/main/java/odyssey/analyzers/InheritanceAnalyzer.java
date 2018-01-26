@@ -18,7 +18,7 @@ public class InheritanceAnalyzer extends Analyzer {
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
 
     List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
-    
+
     for (SootClass c : bundle.getList("classes", SootClass.class)) {
       if (passesFilters(c)) {
         generateExtendsRelationships(c, relationships);
@@ -35,9 +35,13 @@ public class InheritanceAnalyzer extends Analyzer {
       return;
     }
     SootClass superClass = c.getSuperclass();
-    if (this.passesFilters(superClass)) {
-      Relationship rel = new Relationship(c, Relation.EXTENDS, superClass, 0);
-      relationships.add(rel);
+    try {
+      if (this.passesFilters(superClass)) {
+        Relationship rel = new Relationship(c, Relation.EXTENDS, superClass, 0);
+        relationships.add(rel);
+      }
+    } catch (Exception e) {
+      System.out.println(c);
     }
   }
 

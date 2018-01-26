@@ -31,17 +31,21 @@ public class UMLParser {
     builder.append(getAccessModifier(f.getModifiers()));
     builder.append(" ");
     builder.append(getStaticAbstractModifier(f.getModifiers()));
-    
+
     Tag signatureTag = f.getTag("SignatureTag");
     if (signatureTag != null) {
-      String signature = signatureTag.toString();
-      FieldEvaluator fieldEvaluator = new FieldEvaluator(signature);
-      GenericType fieldType = fieldEvaluator.getType();
-      builder.append(parse(fieldType));
+      try {
+        String signature = signatureTag.toString();
+        FieldEvaluator fieldEvaluator = new FieldEvaluator(signature);
+        GenericType fieldType = fieldEvaluator.getType();
+        builder.append(parse(fieldType));
+      } catch (Exception e) {
+        // DoNothing
+      }
     } else {
       builder.append(parse(f.getType()));
     }
-    
+
     builder.append(" ");
     builder.append(f.getName());
     return builder.toString();
@@ -58,7 +62,7 @@ public class UMLParser {
     builder.append(parseMethodParameters(m));
     return builder.toString();
   }
-  
+
   public static String parseReturnType(SootMethod m) {
     StringBuilder builder = new StringBuilder();
     Tag signatureTag = m.getTag("SignatureTag");
@@ -66,7 +70,7 @@ public class UMLParser {
       MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());
       try {
         builder.append(parse(evaluator.getReturnType()));
-      } catch (IllegalStateException e) {       
+      } catch (IllegalStateException e) {
         builder.append(parse(m.getReturnType()));
       }
     } else {
@@ -74,16 +78,16 @@ public class UMLParser {
     }
     return builder.toString();
   }
-  
+
   public static String parseMethodName(SootMethod m) {
     String methodName = Scene.v().quotedNameOf(m.getName());
     if (methodName.contains("<init>")) {
       return trimQualifiedName(Scene.v().quotedNameOf(m.getDeclaringClass().getName()));
     } else {
-     return methodName;
+      return methodName;
     }
   }
-  
+
   public static String parseMethodParameters(SootMethod m) {
     StringBuilder builder = new StringBuilder();
     Tag signatureTag = m.getTag("SignatureTag");
@@ -92,7 +96,7 @@ public class UMLParser {
       MethodEvaluator evaluator = new MethodEvaluator(signatureTag.toString());
       try {
         builder.append(parse(evaluator.getParameterTypes()));
-      } catch (IllegalStateException e){
+      } catch (IllegalStateException e) {
         builder.append(parse(params));
       }
 
@@ -109,10 +113,10 @@ public class UMLParser {
       builder.append(parse(t));
       builder.append(",");
     }
-    return builder.substring(0, builder.length()-1) + ")";
-    
+    return builder.substring(0, builder.length() - 1) + ")";
+
   }
-  
+
   public static String parse(List<Type> types) {
     StringBuilder builder = new StringBuilder();
     builder.append("(");
@@ -125,11 +129,11 @@ public class UMLParser {
     builder.append(")");
     return builder.toString();
   }
-  
+
   public static String parse(Type t) {
     return trimQualifiedName(t.toQuotedString());
   }
-  
+
   public static String parse(GenericType type) {
     StringBuilder builder = new StringBuilder();
     builder.append(trimQualifiedName(type.getContainerType()));
@@ -145,9 +149,9 @@ public class UMLParser {
       }
       builder.append(">");
     }
-    
-    if(type.isArray()) {
-      for(int i = 0; i < type.getDimension(); ++i) {
+
+    if (type.isArray()) {
+      for (int i = 0; i < type.getDimension(); ++i) {
         builder.append("[]");
       }
     }
@@ -167,7 +171,7 @@ public class UMLParser {
     return builder.toString();
   }
 
-  public static  String parse(Relation r) {
+  public static String parse(Relation r) {
     switch (r) {
     case ASSOCIATION:
       return "<--";

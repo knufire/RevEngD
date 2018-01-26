@@ -13,7 +13,7 @@ public class Runner {
     @SuppressWarnings("unchecked")
     Class<? extends ICalculator> clazz = (Class<? extends ICalculator>) Class
         .forName("csse374.revengd.detectors.SpecialCalculatorC");
-    
+        
     
     ICalculator calculator = clazz.newInstance();
     
