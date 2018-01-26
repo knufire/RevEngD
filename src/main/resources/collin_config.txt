@@ -20,4 +20,4 @@
 -mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
 --exclude-lambda true
 -analyzers odyssey.analyzers.SingletonAnalyzer odyssey.analyzers.InheritanceOverCompositionAnalyzer
--renderers odyssey.renderers.SingletonRenderer odyssey.analyzers.InheritanceOverCompositionRenderer
+-renderers odyssey.renderers.SingletonRenderer odyssey.renderers.InheritanceOverCompositionRenderer

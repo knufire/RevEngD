@@ -19,9 +19,8 @@ public class InheritanceOverCompositionAnalyzer extends Analyzer {
     List<SootClass> classes = bundle.getList("classes", SootClass.class);
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
-    
-    
-    return null;
+    checkRelationships(patterns, relationships);
+    return bundle;
   }
   
   private void checkRelationships(List<Pattern> patterns, List<Relationship> relationships) {

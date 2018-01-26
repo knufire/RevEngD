@@ -20,14 +20,12 @@ public class InheritanceOverCompositionRenderer implements PatternRenderer {
 
   @Override
   public String render(SootMethod m, Pattern pattern) {
-    // TODO Auto-generated method stub
-    return null;
+    return "";
   }
 
   @Override
   public String render(SootField f, Pattern pattern) {
-    // TODO Auto-generated method stub
-    return null;
+    return "";
   }
 
   @Override
@@ -37,8 +35,7 @@ public class InheritanceOverCompositionRenderer implements PatternRenderer {
 
   @Override
   public String getName() {
-    // TODO Auto-generated method stub
-    return null;
+    return "IoverC";
   }
 
 }
