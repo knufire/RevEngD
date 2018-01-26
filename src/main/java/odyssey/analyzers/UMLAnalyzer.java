@@ -49,6 +49,7 @@ public class UMLAnalyzer extends Analyzer {
     for (SootClass c : bundle.getList("classes", SootClass.class)) {
       if (passesFilters(c)) {
         builder.append(UMLParser.parse(c));
+        builder.append(" ");
         builder.append(renderPatterns(c));
         builder.append("{");
         builder.append("\n");

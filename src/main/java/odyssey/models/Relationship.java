@@ -32,9 +32,11 @@ public class Relationship {
     return cardinality;
   }
 
+
   @Override
   public String toString() {
-    return this.from.getName() + " " + this.relation.toString() + " " + this.to.getName();
+    return "Relationship [from=" + from + ", to=" + to + ", relation=" + relation + ", cardinality=" + cardinality
+        + "]";
   }
 
   // Needed for use in Set

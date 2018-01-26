@@ -1,5 +1,6 @@
 package odyssey.modules;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,6 +15,8 @@ import com.google.inject.name.Named;
 
 import odyssey.analyzers.Analyzer;
 import odyssey.filters.Filter;
+import odyssey.methodresolution.AggregateAlgorithm;
+import odyssey.methodresolution.AggregationStrategy;
 import odyssey.methodresolution.Algorithm;
 import odyssey.renderers.PatternRenderer;
 
@@ -39,20 +42,64 @@ public class ReflectionModule extends AbstractModule {
     return new LinkedList<>();
   }
 
+  @SuppressWarnings("unchecked")
   private void populateUserAnalyzers(Queue<Analyzer> que, List<Filter> filters)
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException, ClassNotFoundException {
     String[] analyzerNames = System.getProperty("-analyzers").split(" ");
+    System.out.println(analyzerNames[0]);
+    Class<? extends Analyzer> analyzerClass;
+    Constructor<? extends Analyzer> constructor;
+
     for (int i = 0; i < analyzerNames.length; i++) {
-      que.add((Analyzer) Class.forName(analyzerNames[i]).getConstructor(List.class).newInstance(filters));
+      analyzerClass = (Class<? extends Analyzer>) Class.forName(analyzerNames[i]);
+      constructor = analyzerClass.getDeclaredConstructor(List.class);
+      constructor.setAccessible(true);
+      que.add(constructor.newInstance(filters));
     }
   }
 
   @Provides
   @Named("Resolution")
   Algorithm getAlgorithm() {
-    return null;
+    try {
+      return createAlgorithm();
+    } catch (Exception e) {
+      throw new RuntimeException(e.getMessage());
+    }
+  }
 
+  private Algorithm createAlgorithm() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+    String[] algorithms = System.getProperty("-mra").split(" ");
+    if (algorithms.length == 1) {
+      return getClassFromName(Algorithm.class, algorithms[1]);
+    } else {
+      Class<AggregateAlgorithm> aggregate = AggregateAlgorithm.class;
+      List<Algorithm> singleAlgorithms = new ArrayList<>();
+      for (int i = 0; i < algorithms.length; i++) {
+        singleAlgorithms.add(getClassFromName(Algorithm.class, algorithms[i]));
+      }
+      AggregationStrategy strat = getClassFromName(AggregationStrategy.class, System.getProperty("-mrs"));
+      Constructor<AggregateAlgorithm> constructor = aggregate.getDeclaredConstructor(AggregationStrategy.class);
+      AggregateAlgorithm aggregateAlgorithm = constructor.newInstance(strat);
+      for (Algorithm a : singleAlgorithms) {
+        aggregateAlgorithm.addAlgorithm(a);
+      }
+      return aggregateAlgorithm;
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  private <T> T getClassFromName(Class<T> clazz, String name) {
+    try {
+      Class<T> algorithm = (Class<T>) Class.forName(name);
+      return algorithm.newInstance();
+    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException
+        | ClassNotFoundException e) {
+      System.err.println("Could not instantiate method resolver algorithm class.");
+      e.printStackTrace();
+      return null;
+    }
   }
 
   @Provides
@@ -69,7 +116,8 @@ public class ReflectionModule extends AbstractModule {
     return map;
   }
 
-  private void loadRenderers(Map<String, PatternRenderer> map) throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+  private void loadRenderers(Map<String, PatternRenderer> map)
+      throws InstantiationException, IllegalAccessException, ClassNotFoundException {
     String[] rendererNames = System.getProperty("-renderers").split(" ");
     PatternRenderer renderer = null;
     for (int i = 0; i < rendererNames.length; i++) {
