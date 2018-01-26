@@ -21,12 +21,11 @@ public class SingletonAnalyzer extends Analyzer {
     List<SootClass> classes = bundle.getList("classes", SootClass.class);
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
-    
-    for (SootClass clazz: classes) {
+
+    for (SootClass clazz : classes) {
       if (privateConstructor(clazz) && hasGetInstance(clazz) && hasInstanceField(clazz)) {
-        Pattern p = new Pattern();
+        Pattern p = new Pattern("singleton");
         p.put("singleton", clazz);
-        p.setName("singleton");
         Relationship r = findRelationship(relationships, clazz);
         if (r != null) {
           p.put("singleton", r);
@@ -36,10 +35,10 @@ public class SingletonAnalyzer extends Analyzer {
     }
     return bundle;
   }
-  
+
   private boolean hasGetInstance(SootClass clazz) {
     List<SootMethod> methods = clazz.getMethods();
-    for (SootMethod m: methods) {
+    for (SootMethod m : methods) {
       if (!m.isConstructor() && clazz.getType().equals(m.getReturnType())) {
         return true;
       }
@@ -49,26 +48,26 @@ public class SingletonAnalyzer extends Analyzer {
 
   private boolean privateConstructor(SootClass clazz) {
     List<SootMethod> methods = clazz.getMethods();
-    for (SootMethod m: methods) {
+    for (SootMethod m : methods) {
       if (m.isConstructor()) {
         return soot.Modifier.isPrivate(m.getModifiers());
       }
     }
     return false;
   }
-  
+
   private boolean hasInstanceField(SootClass clazz) {
     Chain<SootField> fields = clazz.getFields();
-    for (SootField f: fields) {
+    for (SootField f : fields) {
       if (f.getType().equals(clazz.getType())) {
         return true;
       }
     }
     return false;
   }
-  
+
   private Relationship findRelationship(List<Relationship> relationships, SootClass clazz) {
-    for (Relationship r: relationships) {
+    for (Relationship r : relationships) {
       if (r.getFromClass().equals(clazz) && r.getToClass().equals(clazz)) {
         return r;
       }

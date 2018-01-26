@@ -8,7 +8,6 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
 
 import soot.SootClass;
-import soot.jimple.spark.ondemand.genericutil.HashSetMultiMap;
 
 public class Pattern {
 
@@ -16,10 +15,10 @@ public class Pattern {
   private SetMultimap<String, SootClass> keyToClass;
   private String name;
 
-  public Pattern() {
+  public Pattern(String name) {
     keyToRelationships = HashMultimap.create();
     keyToClass = HashMultimap.create();
-    name = "";
+    this.name = name;
 
   }
 
