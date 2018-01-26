@@ -13,6 +13,7 @@ import net.sourceforge.plantuml.SourceStringReader;
 import odyssey.filters.Filter;
 import odyssey.methodresolution.Algorithm;
 import odyssey.models.CallMessage;
+import odyssey.models.CommentedOutMessage;
 import odyssey.models.Message;
 import odyssey.models.ReturnMessage;
 import soot.SootMethod;
@@ -75,9 +76,8 @@ public class SequenceAnalyzer extends Analyzer {
         SootMethod targetMethod = possibleTargets.get(0);
         if (passesFilters(targetMethod)) {
           if (showSuper || !isSuperCall(methodCall, targetMethod)) {
-            CallMessage newCall = new CallMessage(methodCall.getDeclaringClass(), targetMethod,
-                UMLParser.parseMethodParameters(targetMethod));
-            bundle.messages.add(newCall);
+            createCallMessage(methodCall, targetMethod);
+            processCommentedOutMessages(possibleTargets, methodCall);
           }
           
           processMethod(targetMethod, depth + 1);
@@ -88,9 +88,25 @@ public class SequenceAnalyzer extends Analyzer {
           }
         }
       }
-    } else {
-      System.err.println("Unalbe to load method body: " + method.getName());
     }
+  }
+  
+  private void processCommentedOutMessages(List<SootMethod> methods, SootMethod methodCall) {
+    for (int i = 1; i < methods.size(); i++) {
+      createCommentedOutMessage(methodCall, methods.get(i));
+    }
+  }
+  
+  private void createCommentedOutMessage(SootMethod methodCall, SootMethod targetMethod) {
+    CommentedOutMessage newMessage = new CommentedOutMessage(methodCall.getDeclaringClass(), targetMethod,
+        UMLParser.parseMethodParameters(targetMethod));
+    bundle.messages.add(newMessage);
+  }
+  
+  private void createCallMessage(SootMethod methodCall, SootMethod targetMethod) {
+    CallMessage newCall = new CallMessage(methodCall.getDeclaringClass(), targetMethod,
+        UMLParser.parseMethodParameters(targetMethod));
+    bundle.messages.add(newCall);
   }
 
   private boolean isSuperCall(SootMethod method, SootMethod targetMethod) {

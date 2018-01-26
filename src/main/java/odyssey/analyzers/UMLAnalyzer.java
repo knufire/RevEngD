@@ -34,6 +34,7 @@ public class UMLAnalyzer extends Analyzer {
 	private String parse(AnalyzerBundle bundle) {
 		StringBuilder builder = new StringBuilder();
 		builder.append("@startuml\n");
+		builder.append("skinparam linetype ortho\n");
 		for (SootClass c : bundle.classes) {
 			if (passesFilters(c)) {
 				builder.append(UMLParser.parse(c));

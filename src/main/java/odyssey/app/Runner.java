@@ -17,7 +17,6 @@ public class Runner {
     
     ICalculator calculator = clazz.newInstance();
     
-    
     System.out.println("Class loaded successfully! Result: " + calculator.multiply(1, 2, 3));
 
     PropertiesSetter.set(args);

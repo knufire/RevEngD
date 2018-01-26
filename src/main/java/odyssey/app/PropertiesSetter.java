@@ -18,7 +18,6 @@ public class PropertiesSetter {
     // "-config" to specify filepath to properties file
     try {
       setConfig(args);
-      System.getProperties().list(System.out);
     } catch (IOException e) {
       e.printStackTrace();
     }
