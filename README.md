@@ -9,11 +9,14 @@ This is a repository for our **Software Design - CSSE 374** term project. This a
 3. [Other Online Help](https://github.com/Sable/soot/wiki/Getting-help)
 
 # Running the Project
+The project can either be run using these command line arguments and/or a properties file. The command line arguments will overwrite any properties file setting.
+
 ## Required Flags
   -d : The path to the directory to be analyzed. EX: "C:/Users/User/Projects/MyProject"  
   -m : The fully qualified name of a class that contains the main method for the project. EX: odyssey.app.Runner  
   -c : A space separated list of fully qualified class names to be displayed.  EX: odyssey.app.Configuration odysse.app.Runner
 ## Optional Flags
+  -config : The path to the properties file to use. 
   -a : The most secure level of access to look at. Defaults to private.  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In order of most restricting, the options are "public", "protected", "package", "private"  
   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Any option in the above list will display itself and anything to its left   
@@ -26,6 +29,14 @@ This is a repository for our **Software Design - CSSE 374** term project. This a
   -max-depth : A number representing the maximum call depth the sequence diagram should output, defaults to 5. EX: 20  
   --expand-jdk : The presence of this flag tells the application to step inside of method calls to JDK objects and output them in the sequence diagram.   
   --include-super : The presence of this flag will cause the application to output super calls in the sequence diagram   
+## Properties File
+The properties file consists of single flag and its arguments separated by spaces on each line.
+  -mrs : The MethodResolver to use for resolving interface calls. EX: odyssey.methodresolution.ChainMethodResolver
+  -mra : The Algorithm(s) to use for resolving interface calls. EX: odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
+  --exclude-lambda : When set to true, will display functional constructs, such as lambda methods
+  -analyzers : A list of fully qualified analyzers to be added to the execution pipeline. EX: odyssey.analyzers.SingletonAnalyzer
+  -renderers : A list of fully qualified pattern renderers to be added to the UML Rendering process. EX: odyssey.renderers.SingletonRenderer
+
 ## Example of Running
 One way to run the project would be to build the project using gradle and run the RevEngD.bat file located in
 "build/distributions/RevEngD-SNAPSHOT.zip/bin" using the command line and passing the above arguments in. An example command to run the program would be  
@@ -56,7 +67,12 @@ AssociationAnalyzer -- Collin/Rahul
 DependencyAnalyzer -- Christopher/Collin/Rahul  
 SequenceAnalyzer -- Collin/Rahul  
 Message Hirearchy -- Christopher  
-README.MD -- Christopher  
+README.MD -- Christopher 
+-----M3-----
+README.MD -- Christopher
+Algorithms -- Collin/Rahul
+Patterns -- Christopher/Colling
+Refactoring -- Rahul/Collin/Christopher
 
 # Cloning the Repo
 You can clone the repo locally using Git Bash/Shell as follows:
