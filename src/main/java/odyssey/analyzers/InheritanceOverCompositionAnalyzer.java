@@ -16,7 +16,6 @@ public class InheritanceOverCompositionAnalyzer extends Analyzer {
 
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
-    List<SootClass> classes = bundle.getList("classes", SootClass.class);
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
     checkRelationships(patterns, relationships);
