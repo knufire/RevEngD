@@ -6,7 +6,6 @@ import odyssey.filters.Filter;
 import odyssey.models.Pattern;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
-import soot.SootClass;
 
 public class InheritanceOverCompositionAnalyzer extends Analyzer {
 
