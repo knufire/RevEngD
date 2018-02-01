@@ -123,9 +123,6 @@ public class PipelineModule extends AbstractModule {
       UMLFilters.add(new DollarSignFilter());
     }
     UMLFilters.add(new ClinitFilter());
-    if (!Boolean.parseBoolean(System.getProperty("--expand-jdk"))) {
-      UMLFilters.add(new JDKFilter());
-    }
     return new UMLAnalyzer(UMLFilters, renderers);
   }
 
