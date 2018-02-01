@@ -60,32 +60,32 @@ public class SequenceAnalyzer extends Analyzer {
       UnitGraph graph = new ExceptionalUnitGraph(method.getActiveBody());
       for (Unit u : graph) {
         
-        SootMethod methodCall = null;
+        SootMethod unresolvedMethod = null;
         if (u instanceof InvokeStmt) {
-          methodCall = ((InvokeStmt)u).getInvokeExpr().getMethod(); 
+          unresolvedMethod = ((InvokeStmt)u).getInvokeExpr().getMethod(); 
         } else if (u instanceof AssignStmt) {
           Value rightOp = ((AssignStmt) u).getRightOp();
           if (rightOp instanceof InvokeExpr) {
-            methodCall = ((InvokeExpr)rightOp).getMethod(); 
+            unresolvedMethod = ((InvokeExpr)rightOp).getMethod(); 
           }
         }
         
-        List<SootMethod> possibleTargets = resolver.resolve(u, methodCall, bundle.get("scene", Scene.class));
+        List<SootMethod> possibleTargets = resolver.resolve(u, unresolvedMethod, bundle.get("scene", Scene.class));
         
         if (possibleTargets.isEmpty()) continue;
         
         SootMethod targetMethod = possibleTargets.get(0);
         if (passesFilters(targetMethod)) {
-          if (showSuper || !isSuperCall(methodCall, targetMethod)) {
-            createCallMessage(methodCall, targetMethod);
-            processCommentedOutMessages(possibleTargets, methodCall);
+          if (showSuper || !isSuperCall(method, targetMethod)) {
+            createCallMessage(method, targetMethod);
+            processCommentedOutMessages(possibleTargets, method);
           }
           
           processMethod(targetMethod, depth + 1);
           
           if (!targetMethod.getReturnType().toString().contains("void")) {
             bundle.getList("messages", Message.class)
-                .add(new ReturnMessage(methodCall.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
+                .add(new ReturnMessage(unresolvedMethod.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
           }
         }
       }
@@ -98,14 +98,14 @@ public class SequenceAnalyzer extends Analyzer {
     }
   }
   
-  private void createCommentedOutMessage(SootMethod methodCall, SootMethod targetMethod) {
-    CommentedOutMessage newMessage = new CommentedOutMessage(methodCall.getDeclaringClass(), targetMethod,
+  private void createCommentedOutMessage(SootMethod callingMethod, SootMethod targetMethod) {
+    CommentedOutMessage newMessage = new CommentedOutMessage(callingMethod.getDeclaringClass(), targetMethod,
         UMLParser.parseMethodParameters(targetMethod));
     bundle.getList("messages", Message.class).add(newMessage);
   }
   
-  private void createCallMessage(SootMethod methodCall, SootMethod targetMethod) {
-    CallMessage newCall = new CallMessage(methodCall.getDeclaringClass(), targetMethod,
+  private void createCallMessage(SootMethod callingMethod, SootMethod targetMethod) {
+    CallMessage newCall = new CallMessage(callingMethod.getDeclaringClass(), targetMethod,
         UMLParser.parseMethodParameters(targetMethod));
     bundle.getList("messages", Message.class).add(newCall);
   }

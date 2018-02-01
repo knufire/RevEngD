@@ -1,14 +1,14 @@
 -a private
 
--d C:/Users/Rahul/Documents/csse374_workspace/RevEngD/build/classes/main
--m odyssey.app.Runner
--s C:/Users/Rahul/Documents/csse374_workspace/RevEngD/images/sequence.svg
--i C:/Users/Rahul/Documents/csse374_workspace/RevEngD/images/class.svg
--c odyssey.app.Runner odyssey.app.Processor odyssey.analyzers.AnalyzerBundle odyssey.analyzers.Analyzer odyssey.filters.ClinitFilter odyssey.filters.RelationshipFilter odyssey.filters.JDKFilter odyssey.filters.ClassNameFilter odyssey.analyzers.SootAnalyzer odyssey.analyzers.EmptyAnalyzer odyssey.filters.PackagePrivateFilter odyssey.analyzers.DependencyAnalyzer odyssey.analyzers.UMLParser odyssey.filters.PublicFilter odyssey.analyzers.AncestorAnalyzer odyssey.analyzers.UMLAnalyzer odyssey.filters.ProtectedFilter odyssey.filters.DollarSignFilter odyssey.analyzers.SequenceAnalyzer odyssey.analyzers.InheritanceAnalyzer odyssey.analyzers.SceneAnalyzer odyssey.analyzers.AssociationAnalyzer odyssey.filters.Filter odyssey.models.Relation odyssey.models.Relationship odyssey.models.CallMessage odyssey.models.Message odyssey.models.ReturnMessage csse374.revengd.soot.SceneBuilder csse374.revengd.soot.MainMethodMatcher csse374.revengd.soot.IEntryPointMatcher 
--bl odyssey.modules csse374.revengd.examples.fixtures
--folders src/main/java/
+-d C:/Users/Rahul/Documents/csse374_workspace/Lab2-1/build/classes/main
+-m headfirst.designpatterns.observer.weather.WeatherStation
+-s C:/Users/Rahul/Documents/csse374_workspace/Lab2-1/images/sequence.svg
+-i C:/Users/Rahul/Documents/csse374_workspace/Lab2-1/images/class.svg
+-c headfirst.designpatterns.observer.weather.WeatherStation
+-bl odyssey. problem. puzzle. csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver.
+-folders C:/Users/Rahul/Documents/csse374_workspace/Lab2-1/src/main/java/
 --include-ancestors false
--e <odyssey.app.Runner: void main(java.lang.String[])>
+-e <headfirst.designpatterns.observer.weather.WeatherStation: void main(java.lang.String[])>
 --include-object false
 -max-depth 5
 --expand-jdk false
@@ -18,6 +18,6 @@
 --include-super true
 -mrs odyssey.methodresolution.ChainMethodResolver
 -mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
---exclude-lambda false
+--exclude-lambda true
 -analyzers odyssey.analyzers.SingletonAnalyzer
 -renderers odyssey.renderers.SingletonRenderer
