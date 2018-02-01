@@ -1,0 +1,62 @@
+@startuml
+interface IRenderer <T> {
+  + String render(T thing)
+}
+
+interface IRelationshipRenderer<Relationship> extends IRenderer {
+  + String render(Relationship relationship)
+  + String renderLeft(SootClass clazz)
+  + String renderRight(SootClass clazz)
+  + String renderArrow(Relation relation, int cardinality)
+}
+
+abstract RelationshipRenderer implements IRelationshipRenderer{
+  + final String render(Relationship relationship)
+
+  + String renderLeft(SootClass clazz)
+  + String renderRight(SootClass clazz)
+  + String renderArrow(Relation relation, int cardinality)
+
+  ~ boolean isReverse()
+}
+
+interface IMessageRenderer<Message> extends IRenderer {
+  + String render(Message message)
+
+  + String renderFromClass(SootClass clazz)
+  + String renderToClass(SootMethod method)
+  + String renderArrrow()
+  + String renderMessage(SootMethod method)
+}
+
+abstract MessageRenderer implements IMessageRenderer {
+  + final String render(Message message)
+
+  + String renderFromClass(SootClass clazz)
+  + String renderToClass(SootMethod method)
+  + String renderArrrow()
+  + String renderMessage(SootMethod method)
+}
+
+
+interface IClassRenderer<SootClass> extends IRenderer {
+  + String render(SootClass clazz)
+  + String renderMethod(SootMethod method)
+  + String renderField(SootField field)
+}
+
+abstract ClassRenderer implements IClassRenderer {
+  - SootClass clazz
+
+  + final String render (SootClass clazz)
+
+  ~ String renderClassType()
+  ~ String renderClassName()
+  ~ String renderFields()
+  ~ String renderMethods()
+  
+  + String renderField(SootField field)
+  + String renderMethod(SootMethod method)
+  
+}
+@enduml
