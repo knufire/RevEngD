@@ -1,12 +1,14 @@
 package odyssey.methodresolution;
 
 import java.util.List;
+import java.util.Set;
 
+import soot.Scene;
 import soot.SootMethod;
+import soot.Unit;
 
 public interface AggregationStrategy {
   
-  public List<SootMethod> aggregateResults(List<SootMethod> previousResult, List<SootMethod> newResult);
-  public boolean runNext();
+  public Set<SootMethod> resolve(List<Algorithm> algorithms, Unit u, SootMethod m, Scene scene);;
 
 }

@@ -1,7 +1,6 @@
 package odyssey.analyzers;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import odyssey.filters.Filter;

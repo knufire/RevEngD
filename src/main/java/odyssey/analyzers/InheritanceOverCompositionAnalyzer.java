@@ -6,7 +6,6 @@ import odyssey.filters.Filter;
 import odyssey.models.Pattern;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
-import soot.SootClass;
 
 public class InheritanceOverCompositionAnalyzer extends Analyzer {
 
@@ -16,7 +15,6 @@ public class InheritanceOverCompositionAnalyzer extends Analyzer {
 
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
-    List<SootClass> classes = bundle.getList("classes", SootClass.class);
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
     checkRelationships(patterns, relationships);
