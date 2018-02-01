@@ -9,7 +9,7 @@ public class NullSuperFilter implements Filter{
   @Override
   public boolean shouldProcess(SootClass clazz) {
 
-    return clazz.getName().equals("java.lang.Object") || clazz.getSuperclass() != null;
+    return clazz.hasSuperclass();
   }
 
   @Override

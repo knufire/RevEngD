@@ -72,7 +72,7 @@ public class ReflectionModule extends AbstractModule {
   private Algorithm createAlgorithm() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
     String[] algorithms = System.getProperty("-mra").split(" ");
     if (algorithms.length == 1) {
-      return getClassFromName(Algorithm.class, algorithms[1]);
+      return getClassFromName(Algorithm.class, algorithms[0]);
     } else {
       Class<AggregateAlgorithm> aggregate = AggregateAlgorithm.class;
       List<Algorithm> singleAlgorithms = new ArrayList<>();

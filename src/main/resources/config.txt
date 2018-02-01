@@ -5,8 +5,8 @@
 -s C:/Users/Rahul/Documents/csse374_workspace/Lab2-1/images/sequence.svg
 -i C:/Users/Rahul/Documents/csse374_workspace/Lab2-1/images/class.svg
 -c headfirst.designpatterns.observer.weather.WeatherStation
--bl odyssey. csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver.
--folders src/main/java/
+-bl odyssey. problem. puzzle. csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver.
+-folders C:/Users/Rahul/Documents/csse374_workspace/Lab2-1/src/main/java/
 --include-ancestors false
 -e <headfirst.designpatterns.observer.weather.WeatherStation: void main(java.lang.String[])>
 --include-object false
