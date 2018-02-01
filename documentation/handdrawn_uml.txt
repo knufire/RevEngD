@@ -61,13 +61,15 @@ package Analyzer {
 	}
 
 	class SequenceAnalyzer extends Analyzer {
-	  + SequenceAnalyzer(MethodResolver methodResolver)
+	  + SequenceAnalyzer(MethodResolver methodResolver,
+	                     Map<String, Class ? extends IRenderer<Message>> messageRenderers)
 	}
 
 	class AncestorAnalyzer extends Analyzer {
 	}
 	class UMLAnalyzer extends Analyzer {
-	  +  UMLAnalyzer(Map<String, Class ? extends PatternRenderer> renderers)
+	  +  UMLAnalyzer(Map<String, Class ? extends IRenderer<SootClass>> classRenderers,
+	                 Map<String, Class ? extends IRenderer<Relationship>> relationshipRenderers)
 	}
 	class SceneAnalyzer extends Analyzer {
 	}
@@ -76,20 +78,6 @@ package Analyzer {
 	class SingletonAnalyzer extends Analyzer {
 	}
 	class InheritanceOverCompositionAnalyzer extends Analyzer {
-	}
-	
-	
-	class UMLParser {
-	  + {static} String parse(SootClass)
-	  + {static} String parse(SootField)
-	  + {static} String parse(SootMethod)
-	  + {static} String parse(Type)
-	  + {static} String parse(Relationship)
-	  + {static} String parse(Relation)
-	  + {static} String trimQualifiedName(String)
-	  + {static} String getAccessModifier(int)
-	  + {static} String getStaticAbstractModifier(int)
-	  + {static} String getClassType(int)
 	}
 	
 }
@@ -136,19 +124,16 @@ package Models {
 	  - int cardinality
 	  + void Relationship(SootClass,Relation,SootClass,int)
 	}
-	class ReturnMessage extends Message{
-	  - String returnType
-	}
-	abstract Message {
+
+	class Message {
+	  - String type
 	  - SootClass methodCallingClass
 	  - SootMethod method
-	  + {abstract} getPlantUMLString()
-	}
-	class CallMessage extends Message{
-	  - String parameters
-	}
-	class CommentedOutMessage extends Message {
-	  -String parameters
+	  
+	  + String getType()
+	  + SootClass getMethodCallingClass()
+	  + SootClass getMethodDeclaringClass()
+	  + SootMethod getMethod()
 	}
 	
 	class Pattern {
@@ -159,16 +144,84 @@ package Models {
 }
 
 package Renderers {
-	interface PatternRenderer {
-	  + String render(SootClass c, Pattern pattern)
-	  + String render(SootMethod m, Pattern pattern)
-	  + String render(SootField f, Pattern pattern)
-	  + String render(Relationship r, Pattern pattern)
+	interface IRenderer <T> {
+	  + String render(T thing)
+	  + String render(T thing, Pattern pattern)
 	}
 	
-	class InheritanceOverCompositionRenderer implements PatternRenderer {
+	interface IRelationshipRenderer<Relationship> extends IRenderer {
+	  + String render(Relationship relationship)
+	  + String render(Relationship relationship, Pattern pattern)
+	  
+	  + String renderLeft(SootClass clazz)
+	  + String renderRight(SootClass clazz)
+	  + String renderArrow(Relation relation, int cardinality)
 	}
-	class SingletonRenderer implements PatternRenderer {
+	
+	abstract RelationshipRenderer implements IRelationshipRenderer{
+	  ~ Pattern pattern
+	
+	  + final String render(Relationship relationship)
+	  + final String render(Relationship relationship, Pattern pattern)
+	  
+	  + String renderLeft(SootClass clazz)
+	  + String renderRight(SootClass clazz)
+	  + String renderArrow(Relation relation, int cardinality)
+	
+	  ~ boolean isReverse()
+	}
+	
+	interface IMessageRenderer<Message> extends IRenderer {
+	  + String render(Message message)
+	  + String render(Message message, Pattern pattern)
+	  
+	  + String renderFromClass(SootClass clazz)
+	  + String renderToClass(SootMethod method)
+	  + String renderArrrow()
+	  + String renderMessage(SootMethod method)
+	}
+	
+	abstract MessageRenderer implements IMessageRenderer {
+	  ~ Pattern pattern
+	
+	  + final String render(Message message)
+	  + final String render(Message message, Pattern pattern)
+	  
+	  + String renderFromClass(SootClass clazz)
+	  + String renderToClass(SootMethod method)
+	  + String renderArrrow()
+	  + String renderMessage(SootMethod method)
+	}
+	
+	
+	interface IClassRenderer<SootClass> extends IRenderer {
+	  + String render(SootClass clazz)
+	  + String render(SootClass clazz, Pattern pattern)
+	  
+	  + String renderMethod(SootMethod method)
+	  + String renderField(SootField field)
+	}
+	
+	abstract ClassRenderer implements IClassRenderer {
+	  ~ SootClass clazz
+	  ~ Pattern pattern
+	
+	  + final String render (SootClass clazz)
+	  + final String render(SootClass clazz, Pattern pattern)
+	   
+	  ~ String renderClassType()
+	  ~ String renderClassName()
+	  ~ String renderFields()
+	  ~ String renderMethods()
+	  
+	  + String renderField(SootField field)
+	  + String renderMethod(SootMethod method)
+	  
+	}
+	
+	class InheritanceOverCompositionRenderer extends ClassRenderer {
+	}
+	class SingletonRenderer extends ClassRenderer {
 	}
 }
 
@@ -202,7 +255,9 @@ package Modules {
 	class ReflectionModule {
 	  + {abstract} @Provides @Named("analyzers") List<Analyzer> getUserAnalyzers()
 	  + @Provides @Named("Resolution") Algorithm getAlgorithm()
-	  + @Provides @Named("renderers") Map<String, Class <? extends PatternRenderer>> getRenderers()
+	  + @Provides @Named("classRenderers") Map<String, Class <? extends IClassRenderer>> getClassRenderers()
+	  + @Provides @Named("relationshipRenderers") Map<String, Class <? extends IClassRenderer>> getRelationshipRenderers()
+	  + @Provides @Named("messageRenderers") Map<String, Class <? extends IClassRenderer>> getMessageRenderers()
 	}
 }
 
@@ -219,7 +274,7 @@ package SomeoneElsesProject{
 	}
 	class BidirectionalDetector extends Analyzer {
 	}
-	class BidirectionalRenderer implements PatternRenderer {
+	class BidirectionalRenderer extends ClassRenderer {
 	}
 }
 
@@ -239,13 +294,10 @@ InheritanceAnalyzer ..> Relationship
 AssociationAnalyzer ..> Relationship
 DependencyAnalyzer ..> Relationship
 SceneAnalyzer ..> SceneBuilder
-SequenceAnalyzer ..> UMLParser
 SequenceAnalyzer --> Algorithm
-UMLAnalyzer ..> UMLParser
+SequenceAnalyzer --> IRenderer
 UMLAnalyzer ..> Pattern
-UMLAnalyzer ..> PatternRenderer
-UMLParser ..> Relationship
-UMLParser ..> Relation
+UMLAnalyzer --> IRenderer
 '---------------------------------------------------
 
 '----------------Filter Relationships---------------
