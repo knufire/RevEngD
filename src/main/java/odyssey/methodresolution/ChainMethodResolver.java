@@ -1,21 +1,25 @@
 package odyssey.methodresolution;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import soot.Scene;
 import soot.SootMethod;
+import soot.Unit;
 
 public class ChainMethodResolver implements AggregationStrategy {
 
-  boolean runNext = true;
   @Override
-  public List<SootMethod> aggregateResults(List<SootMethod> previousResult, List<SootMethod> newResult) {
-    runNext = newResult.isEmpty();
-    return newResult;
+  public Set<SootMethod> resolve(List<Algorithm> algorithms, Unit u, SootMethod m, Scene scene) {
+    Set<SootMethod> result = new HashSet<>();
+    int i = 0;
+    while (result.isEmpty() && i < algorithms.size()) {
+      result.addAll(algorithms.get(i).resolve(u, m, scene));
+      i++;
+    }
+    return result;
   }
-
-  @Override
-  public boolean runNext() {
-    return runNext;
-  }
+  
 
 }

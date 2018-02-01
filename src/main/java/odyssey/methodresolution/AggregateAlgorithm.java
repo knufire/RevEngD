@@ -24,15 +24,7 @@ public class AggregateAlgorithm implements Algorithm {
 
   @Override
   public List<SootMethod> resolve(Unit u, SootMethod m, Scene scene) {
-    List<SootMethod> finalResult = new ArrayList<>();
-    for (Algorithm a : algorithms) {
-      List<SootMethod> newResult = a.resolve(u, m, scene);
-      finalResult = strat.aggregateResults(finalResult, newResult);
-      if (!strat.runNext()) {
-        break;
-      }
-    }
-    return finalResult; 
+    return new ArrayList<>(strat.resolve(algorithms, u, m, scene));
   }
   
   public void addAlgorithm(Algorithm a) {
