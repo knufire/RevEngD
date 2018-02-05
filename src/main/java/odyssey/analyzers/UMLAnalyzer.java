@@ -34,7 +34,9 @@ public class UMLAnalyzer extends Analyzer {
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     patterns = bundle.getList("patterns", Pattern.class);
-    generateUMLImage(parse(bundle));
+    String umlString = parse(bundle);
+    generateUMLImage(umlString);
+    bundle.put("umlString", umlString);
     return bundle;
   }
 

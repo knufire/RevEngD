@@ -21,3 +21,4 @@
 --exclude-lambda true
 -analyzers odyssey.analyzers.SingletonAnalyzer
 -renderers odyssey.renderers.SingletonRenderer
+-filters odyssey.filters.DollarSignFilter

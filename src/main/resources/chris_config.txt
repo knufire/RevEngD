@@ -1,5 +1,4 @@
 -a private
-
 -d C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/build/classes/main
 -m odyssey.app.Runner
 -s C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/sequence.svg
@@ -21,3 +20,5 @@
 --exclude-lambda true
 -analyzers odyssey.analyzers.SingletonAnalyzer
 -renderers odyssey.renderers.SingletonRenderer
+-uml C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_uml.txt
+-seq C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_sequence_diagram.txt

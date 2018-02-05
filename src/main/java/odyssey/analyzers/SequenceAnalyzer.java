@@ -50,6 +50,7 @@ public class SequenceAnalyzer extends Analyzer {
     processMethod(entryMethod, 0);
     String parseString = parseCalls();
     generateSeqImage(parseString);
+    bundle.put("seqString", parseString);
     return this.bundle;
   }
 

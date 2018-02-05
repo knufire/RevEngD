@@ -3,6 +3,7 @@ package odyssey.modules;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,8 +32,7 @@ public class ReflectionModule extends AbstractModule {
   Queue<Analyzer> getUserAnalyzers() {
     try {
       Queue<Analyzer> que = new LinkedList<>();
-      List<Filter> filters = new ArrayList<>();
-
+      List<Filter> filters = createUserFilters();
       populateUserAnalyzers(que, filters);
 
       return que;
@@ -69,7 +69,8 @@ public class ReflectionModule extends AbstractModule {
     }
   }
 
-  private Algorithm createAlgorithm() throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException {
+  private Algorithm createAlgorithm() throws InstantiationException, IllegalAccessException, IllegalArgumentException,
+      InvocationTargetException, NoSuchMethodException, SecurityException {
     String[] algorithms = System.getProperty("-mra").split(" ");
     if (algorithms.length == 1) {
       return getClassFromName(Algorithm.class, algorithms[0]);
@@ -126,4 +127,32 @@ public class ReflectionModule extends AbstractModule {
     }
   }
 
+  private List<Filter> createUserFilters() {
+    String filtersList = System.getProperty("-filters");
+    if (filtersList != null) {
+      return loadUserFilters(filtersList);
+    }
+    return Collections.emptyList();
+  }
+
+  private List<Filter> loadUserFilters(String filtersList) {
+    try {
+      return loadFilters(filtersList.split(" "));
+    } catch (Exception e) {
+      System.err.println("Failed to load Filters");
+      e.printStackTrace();
+      return Collections.emptyList();
+    }
+  }
+
+  private List<Filter> loadFilters(String[] tokens)
+      throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+    List<Filter> filters = new ArrayList<>();
+    Filter filter;
+    for (int i = 0; i < tokens.length; i++) {
+      filter = (Filter) Class.forName(tokens[i]).newInstance();
+      filters.add(filter);
+    }
+    return null;
+  }
 }

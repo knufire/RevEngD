@@ -16,6 +16,7 @@ import odyssey.analyzers.AncestorAnalyzer;
 import odyssey.analyzers.AssociationAnalyzer;
 import odyssey.analyzers.DependencyAnalyzer;
 import odyssey.analyzers.EmptyAnalyzer;
+import odyssey.analyzers.FileWriterAnalyzer;
 import odyssey.analyzers.InheritanceAnalyzer;
 import odyssey.analyzers.SceneAnalyzer;
 import odyssey.analyzers.SequenceAnalyzer;
@@ -66,6 +67,7 @@ public class PipelineModule extends AbstractModule {
     pipeline.addAll(userAnalyzers);
     pipeline.add(createSequenceAnalyzer(algo));
     pipeline.add(createUMLAnalyzer(renderers));
+    pipeline.add(createFileWriterAnalyzer());
     return pipeline;
   }
 
@@ -163,7 +165,10 @@ public class PipelineModule extends AbstractModule {
     default: // "private" by default, therefore no filter
       return;
     }
+  }
 
+  private Analyzer createFileWriterAnalyzer() {
+    return new FileWriterAnalyzer(Collections.emptyList());
   }
 
 }
