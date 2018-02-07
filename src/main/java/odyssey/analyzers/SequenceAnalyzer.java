@@ -86,7 +86,8 @@ public class SequenceAnalyzer extends Analyzer {
           
           if (!targetMethod.getReturnType().toString().contains("void")) {
             bundle.getList("messages", Message.class)
-                .add(new ReturnMessage(unresolvedMethod.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
+//                .add(new ReturnMessage(unresolvedMethod.getDeclaringClass(), targetMethod, UMLParser.parseReturnType(targetMethod)));
+                  .add(new Message(targetMethod.getDeclaringClass(), targetMethod, unresolvedMethod.getDeclaringClass(), "return"));
           }
         }
       }
@@ -100,14 +101,16 @@ public class SequenceAnalyzer extends Analyzer {
   }
   
   private void createCommentedOutMessage(SootMethod callingMethod, SootMethod targetMethod) {
-    CommentedOutMessage newMessage = new CommentedOutMessage(callingMethod.getDeclaringClass(), targetMethod,
-        UMLParser.parseMethodParameters(targetMethod));
+//    CommentedOutMessage newMessage = new CommentedOutMessage(callingMethod.getDeclaringClass(), targetMethod,
+//        UMLParser.parseMethodParameters(targetMethod));
+    Message newMessage = new Message(callingMethod.getDeclaringClass(), targetMethod, targetMethod.getDeclaringClass(), "comment");
     bundle.getList("messages", Message.class).add(newMessage);
   }
   
   private void createCallMessage(SootMethod callingMethod, SootMethod targetMethod) {
-    CallMessage newCall = new CallMessage(callingMethod.getDeclaringClass(), targetMethod,
-        UMLParser.parseMethodParameters(targetMethod));
+//    CallMessage newCall = new CallMessage(callingMethod.getDeclaringClass(), targetMethod,
+//        UMLParser.parseMethodParameters(targetMethod));
+    Message newCall = new Message(callingMethod.getDeclaringClass(), targetMethod, targetMethod.getDeclaringClass(), "default");
     bundle.getList("messages", Message.class).add(newCall);
   }
 
@@ -124,6 +127,7 @@ public class SequenceAnalyzer extends Analyzer {
     StringBuilder builder = new StringBuilder();
     builder.append("@startuml\n");
     for (Message c : bundle.getList("messages", Message.class)) {
+      // TODO: Fix parsing here
       builder.append(c.getPlantUMLString());
       builder.append("\n");
     }

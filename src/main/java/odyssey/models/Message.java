@@ -3,42 +3,47 @@ package odyssey.models;
 import soot.SootClass;
 import soot.SootMethod;
 
-public abstract class Message {
-  private SootClass methodCallingClass;
+public class Message {
+  private SootClass methodCaller;
+  private SootClass methodReceiver;
   private SootMethod method;
+  private String type;
   
-  public Message(SootClass methodCallingClass, SootMethod method) {
+  public Message(SootClass methodCaller, SootMethod method, SootClass methodReceiver, String type) {
     super();
-    this.methodCallingClass = methodCallingClass;
+    this.methodCaller = methodCaller;
     this.method = method;
+    this.methodReceiver = methodReceiver;
+    this.type = type;
   }
   
   public SootClass getMethodCallingClass() {
-    return methodCallingClass;
+    return methodCaller;
   }
   public SootMethod getMethod() {
     return method;
   }
-  public SootClass getReceivingClass() {
-    return method.getDeclaringClass();
+  public SootClass getReceiverClass() {
+    return methodReceiver;
   }
   
-  protected String getMethodCallingClassName() {
-    return methodCallingClass.getShortName().replaceAll("\\$", "");
+  public String getMethodCallerClassName() {
+    return methodCaller.getShortName().replaceAll("\\$", "");
   }
   
-  protected String getReceivingClassName() {
-    return method.getDeclaringClass().getShortName().replaceAll("\\$", "");
+  public String getReceiverClassName() {
+    return methodReceiver.getShortName().replaceAll("\\$", "");
   }
   
-  protected String getMethodName() {
+  public String getMethodName() {
     return method.getName();
   }
   
-  public String toString() {
-    return getMethodCallingClassName() + " calls " + getReceivingClassName() + "." + getMethodName();
+  public String getType() {
+    return type;
   }
   
-  public abstract String getPlantUMLString();
-  
+  public String toString() {
+    return getMethodCallerClassName() + " calls " + getReceiverClassName() + "." + getMethodName();
+  }
 }
