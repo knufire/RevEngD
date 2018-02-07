@@ -25,10 +25,9 @@ public class UMLAnalyzer extends Analyzer {
   private Map<String, ClassRenderer> classRenderers;
   private Map<String, RelationshipRenderer> relationshipRenderers;
 
-  public UMLAnalyzer(List<Filter> filters, List<Pattern> patterns, Map<String, ClassRenderer> classRenderers,
+  public UMLAnalyzer(List<Filter> filters, Map<String, ClassRenderer> classRenderers,
       Map<String, RelationshipRenderer> relationshipRenderers) {
     super(filters);
-    this.patterns = patterns;
     this.classRenderers = classRenderers;
     this.relationshipRenderers = relationshipRenderers;
     umlImageLocation = Paths.get(System.getProperty("-i"));
@@ -50,7 +49,8 @@ public class UMLAnalyzer extends Analyzer {
 
     // Render all classes
     for (SootClass c : bundle.getList("classes", SootClass.class)) {
-      if (passesFilters(c)) parse(c, builder);
+      if (passesFilters(c))
+        parse(c, builder);
       builder.append("\n");
     }
     // Render all relationships
@@ -67,7 +67,9 @@ public class UMLAnalyzer extends Analyzer {
     for (Pattern p : patterns) {
       if (p.contains(c)) {
         ClassRenderer renderer = classRenderers.get(p.getName());
-        if (renderer == null) throw new RuntimeException("Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");
+        if (renderer == null)
+          throw new RuntimeException(
+              "Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");
         builder.append(renderer.render(c, p));
         return;
       }
@@ -79,7 +81,9 @@ public class UMLAnalyzer extends Analyzer {
     for (Pattern p : patterns) {
       if (p.contains(r)) {
         RelationshipRenderer renderer = relationshipRenderers.get(p.getName());
-        if (renderer == null) throw new RuntimeException("Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");
+        if (renderer == null)
+          throw new RuntimeException(
+              "Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");
         builder.append(renderer.render(r, p));
         return;
       }

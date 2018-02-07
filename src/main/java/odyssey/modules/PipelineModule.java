@@ -33,7 +33,9 @@ import odyssey.filters.ProtectedFilter;
 import odyssey.filters.PublicFilter;
 import odyssey.filters.RelationshipFilter;
 import odyssey.methodresolution.Algorithm;
-import odyssey.renderers.PatternRenderer;
+import odyssey.renderers.ClassRenderer;
+import odyssey.renderers.MessageRenderer;
+import odyssey.renderers.RelationshipRenderer;
 
 public class PipelineModule extends AbstractModule {
 
@@ -56,7 +58,9 @@ public class PipelineModule extends AbstractModule {
   @Provides
   @Named("pipeline")
   List<Analyzer> createPipeline(@Named("analyzers") Queue<Analyzer> userAnalyzers,
-      @Named("renderers") Map<String, PatternRenderer> renderers, @Named("Resolution") Algorithm algo) {
+      @Named("relationship_renderers") Map<String, RelationshipRenderer> relationshipRenderers,
+      @Named("message_renderers") Map<String, MessageRenderer> messageRenderers,
+      @Named("class_renderers") Map<String, ClassRenderer> classRenderers, @Named("Resolution") Algorithm algo) {
     List<Analyzer> pipeline = new ArrayList<>();
     pipeline.add(createSceneAnalyzer());
     pipeline.add(createSootAnalyzer());
@@ -65,8 +69,10 @@ public class PipelineModule extends AbstractModule {
     pipeline.add(createAssociationAnalyzer());
     pipeline.add(createDependencyAnalyzer());
     pipeline.addAll(userAnalyzers);
-    pipeline.add(createSequenceAnalyzer(algo));
-    pipeline.add(createUMLAnalyzer(renderers));
+
+    pipeline.add(createSequenceAnalyzer(algo, messageRenderers));
+    pipeline.add(createUMLAnalyzer(classRenderers, relationshipRenderers));
+
     pipeline.add(createFileWriterAnalyzer());
     return pipeline;
   }
@@ -118,22 +124,24 @@ public class PipelineModule extends AbstractModule {
     return new AssociationAnalyzer(relationShipFilters);
   }
 
-  private Analyzer createUMLAnalyzer(Map<String, PatternRenderer> renderers) {
+  private Analyzer createUMLAnalyzer(Map<String, ClassRenderer> classRenderers,
+      Map<String, RelationshipRenderer> relationshipRenderers) {
+
     List<Filter> UMLFilters = new ArrayList<Filter>();
     addModifierFilter(UMLFilters);
     if (includeLambda) {
       UMLFilters.add(new DollarSignFilter());
     }
     UMLFilters.add(new ClinitFilter());
-    return new UMLAnalyzer(UMLFilters, renderers);
+    return new UMLAnalyzer(UMLFilters, classRenderers, relationshipRenderers);
   }
 
-  private Analyzer createSequenceAnalyzer(Algorithm algo) {
-    return createSequenceAnalyzerHelper(algo);
+  private Analyzer createSequenceAnalyzer(Algorithm algo, Map<String, MessageRenderer> messageRenderers) {
+    return createSequenceAnalyzerHelper(algo, messageRenderers);
 
   }
 
-  private Analyzer createSequenceAnalyzerHelper(Algorithm algo) {
+  private Analyzer createSequenceAnalyzerHelper(Algorithm algo, Map<String, MessageRenderer> messageRenderers) {
     if (System.getProperty("-e").length() > 0) {
       List<Filter> sequenceFilters = new ArrayList<Filter>();
       addModifierFilter(sequenceFilters);
@@ -144,7 +152,7 @@ public class PipelineModule extends AbstractModule {
       if (!Boolean.parseBoolean(System.getProperty("--expand-jdk"))) {
         sequenceFilters.add(new JDKFilter());
       }
-      return new SequenceAnalyzer(sequenceFilters, algo);
+      return new SequenceAnalyzer(sequenceFilters, algo, messageRenderers);
     } else {
       return new EmptyAnalyzer(Collections.emptyList());
     }

@@ -198,6 +198,7 @@ package Renderers {
 	  + String render(SootClass clazz)
 	  + String render(SootClass clazz, Pattern pattern)
 	  
+	  + String renderStyle()
 	  + String renderMethod(SootMethod method)
 	  + String renderField(SootField field)
 	}
@@ -214,6 +215,7 @@ package Renderers {
 	  ~ String renderFields()
 	  ~ String renderMethods()
 	  
+	  + String renderStyle()
 	  + String renderField(SootField field)
 	  + String renderMethod(SootMethod method)
 	  
