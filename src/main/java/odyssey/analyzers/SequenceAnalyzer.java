@@ -6,16 +6,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
 
 import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
 import odyssey.filters.Filter;
 import odyssey.methodresolution.Algorithm;
-import odyssey.models.CallMessage;
-import odyssey.models.CommentedOutMessage;
 import odyssey.models.Message;
-import odyssey.models.ReturnMessage;
+import odyssey.renderers.MessageRenderer;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
@@ -29,16 +28,19 @@ import soot.toolkits.graph.UnitGraph;
 public class SequenceAnalyzer extends Analyzer {
 
   private AnalyzerBundle bundle;
-  int maxCallDepth;
-  boolean showSuper;
-  Path seqImageLocation;
-  Algorithm resolver;
-  public SequenceAnalyzer(List<Filter> filters, Algorithm resolver) {
+  private int maxCallDepth;
+  private boolean showSuper;
+  private Path seqImageLocation;
+  private Algorithm resolver;
+  private Map<String, MessageRenderer> messageRenderers;
+  
+  public SequenceAnalyzer(List<Filter> filters, Algorithm resolver, Map<String, MessageRenderer> messageRenderers) {
     super(filters);
     maxCallDepth = Integer.parseInt(System.getProperty("-max-depth"));
     showSuper = Boolean.parseBoolean(System.getProperty("--include-super"));
     seqImageLocation = Paths.get(System.getProperty("-s"));
     this.resolver = resolver;
+    this.messageRenderers = messageRenderers;
   }
 
   @Override
@@ -133,8 +135,11 @@ public class SequenceAnalyzer extends Analyzer {
     builder.append("@startuml\n");
     for (Message c : bundle.getList("messages", Message.class)) {
       // TODO: Fix parsing here
-      builder.append(c.getPlantUMLString());
-      builder.append("\n");
+      MessageRenderer renderer = messageRenderers.get(c.getType());
+      if (renderer != null) {
+        builder.append(renderer.render(c));
+        builder.append("\n");        
+      }
     }
     builder.append("@enduml\n");
     System.out.println("Generated Sequence Diagram\n" + builder.toString());
