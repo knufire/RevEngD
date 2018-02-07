@@ -16,6 +16,7 @@ import odyssey.models.Pattern;
 import odyssey.models.Relationship;
 import odyssey.renderers.ClassRenderer;
 import odyssey.renderers.RelationshipRenderer;
+import odyssey.renderers.Renderer;
 import soot.SootClass;
 
 public class UMLAnalyzer extends Analyzer {
@@ -46,6 +47,11 @@ public class UMLAnalyzer extends Analyzer {
     StringBuilder builder = new StringBuilder();
     builder.append("@startuml\n");
     builder.append("skinparam linetype ortho\n");
+    
+    //Add styles for patterns to use
+    for (ClassRenderer c : classRenderers.values()) {
+      builder.append(c.renderStyle());
+    }
 
     // Render all classes
     for (SootClass c : bundle.getList("classes", SootClass.class)) {
@@ -66,7 +72,7 @@ public class UMLAnalyzer extends Analyzer {
   private void parse(SootClass c, StringBuilder builder) {
     for (Pattern p : patterns) {
       if (p.contains(c)) {
-        ClassRenderer renderer = classRenderers.get(p.getName());
+        Renderer<SootClass> renderer = classRenderers.get(p.getName());
         if (renderer == null)
           throw new RuntimeException(
               "Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");
@@ -80,7 +86,7 @@ public class UMLAnalyzer extends Analyzer {
   private void parse(Relationship r, StringBuilder builder) {
     for (Pattern p : patterns) {
       if (p.contains(r)) {
-        RelationshipRenderer renderer = relationshipRenderers.get(p.getName());
+        Renderer<Relationship> renderer = relationshipRenderers.get(p.getName());
         if (renderer == null)
           throw new RuntimeException(
               "Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");

@@ -15,6 +15,7 @@ import soot.SootMethod;
 import soot.Type;
 import soot.tagkit.Tag;
 
+@Deprecated
 public class UMLParser {
 
   public static String parse(SootClass c) {

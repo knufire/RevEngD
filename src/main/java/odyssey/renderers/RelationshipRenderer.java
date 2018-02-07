@@ -56,34 +56,40 @@ public class RelationshipRenderer implements IRelationshipRenderer {
     return "default";
   }
   
+  //TODO: Make this less ugly.
   protected String parseArrow(Relation relation) {
     switch (relation) {
     case ASSOCIATION:
-      return "<--";
+      return "<-" + renderArrowStyle() + "-";
     case DEPENDENCY:
-      return "<..";
+      return "<." + renderArrowStyle() + ".";
     case EXTENDS:
-      return "<|--";
+      return "<|-" + renderArrowStyle() + "-";
     case IMPLEMENTS:
-      return "<|..";
+      return "<|." + renderArrowStyle() + ".";
     default:
-      return "<--";
+      return "<-" + renderArrowStyle() + "-";
     }
   }
   
+  //TODO: Make this less ugly.
   protected String parseBackwardsArrow(Relation relation) {
     switch (relation) {
     case ASSOCIATION:
-      return "-->";
+      return "-" + renderArrowStyle() + "->";
     case DEPENDENCY:
-      return "..>";
+      return "." + renderArrowStyle() + ".>";
     case EXTENDS:
-      return "--|>";
+      return "-" + renderArrowStyle() + "-|>";
     case IMPLEMENTS:
-      return "..|>";
+      return "." + renderArrowStyle() + ".|>";
     default:
-      return "-->";
+      return "-" + renderArrowStyle() + "->";
     }
+  }
+  
+  protected String renderArrowStyle() {
+    return "";
   }
   
   protected String parseCardinality(int cardinality) {
