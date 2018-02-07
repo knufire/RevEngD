@@ -56,7 +56,7 @@ public class RelationshipRenderer implements IRelationshipRenderer {
     return "default";
   }
   
-  private String parseArrow(Relation relation) {
+  protected String parseArrow(Relation relation) {
     switch (relation) {
     case ASSOCIATION:
       return "<--";
@@ -71,7 +71,7 @@ public class RelationshipRenderer implements IRelationshipRenderer {
     }
   }
   
-  private String parseBackwardsArrow(Relation relation) {
+  protected String parseBackwardsArrow(Relation relation) {
     switch (relation) {
     case ASSOCIATION:
       return "-->";
@@ -86,7 +86,7 @@ public class RelationshipRenderer implements IRelationshipRenderer {
     }
   }
   
-  private String parseCardinality(int cardinality) {
+  protected String parseCardinality(int cardinality) {
     if (cardinality == -1) {
       return "\"1..*\"";
     }
