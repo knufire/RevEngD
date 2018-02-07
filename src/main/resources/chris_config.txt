@@ -18,7 +18,5 @@
 -mrs odyssey.methodresolution.ChainMethodResolver
 -mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
 --exclude-lambda true
--analyzers odyssey.analyzers.SingletonAnalyzer
--renderers odyssey.renderers.SingletonRenderer
 -uml C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_uml.txt
 -seq C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_sequence_diagram.txt

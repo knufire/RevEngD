@@ -123,7 +123,7 @@ public class RendererRelfectionModule extends AbstractModule {
   }
 
   private void addDefaultClassRenderers(Map<String, ClassRenderer> classRenderers) {
-    classRenderers.put("return", new ClassRenderer());
+    classRenderers.put("default", new ClassRenderer());
   }
 
   private Collection<ClassRenderer> reflectClassRenderers() {

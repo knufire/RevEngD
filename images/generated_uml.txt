@@ -1,465 +1,806 @@
 @startuml
 skinparam linetype ortho
-skinparam class {
- borderColor<<Singleton>> blue
-}
 class Runner {
-  + void Runner()
-  + {static} void main(String[])
+
++ void Runner()
++ {static} void main(String[])
+
 }
+
 class PropertiesSetter {
-  - {static} String DEFAULT_CONFIG
-  + void PropertiesSetter()
-  ~ {static} void set(String[])
-  - {static} void setConfig(String[])
-  - {static} String[] preprocessArgs(String[])
-  - {static} ListMultimap<String,String> parse(String[])
-  - {static} InputStream loadConfigFile(ListMultimap<String,String>)
-  - {static} void setSystemProperties(InputStream)
-  - {static} void overrideSystemProperties(ListMultimap<String,String>)
-  - {static} String processesCLArgs(List<String>)
+- {static} String DEFAULT_CONFIG
+
++ void PropertiesSetter()
+~ {static} void set(String[])
+- {static} void setConfig(String[])
+- {static} String[] preprocessArgs(String[])
+- {static} ListMultimap<String,String> parse(String[])
+- {static} InputStream loadConfigFile(ListMultimap<String,String>)
+- {static} void setSystemProperties(InputStream)
+- {static} void overrideSystemProperties(ListMultimap<String,String>)
+- {static} String processesCLArgs(List<String>)
+- {static} void lambda$processesCLArgs$1(StringBuilder,String)
+- {static} void lambda$overrideSystemProperties$0(ListMultimap,String)
+
 }
+
 class AnalyzerBundle {
-  - Map<String,Object> bundle
-  + void AnalyzerBundle()
-  + Object get(String,Class)
-  + void put(String,Object)
-  + List getList(String,Class)
+- Map<String,Object> bundle
+
++ void AnalyzerBundle()
++ Object get(String,Class)
++ void put(String,Object)
++ List getList(String,Class)
+
 }
+
 class Processor {
-  - List<Analyzer> pipeline
-  - AnalyzerBundle bundle
-  ~ void Processor(List<Analyzer>,AnalyzerBundle)
-  + AnalyzerBundle executePipeline()
+- List<Analyzer> pipeline
+- AnalyzerBundle bundle
+
+~ void Processor(List<Analyzer>,AnalyzerBundle)
++ AnalyzerBundle executePipeline()
+
 }
+
+class ClassRenderer {
+# Pattern pattern
+# SootClass clazz
+
++ void ClassRenderer()
++ String render(SootClass)
++ String getName()
++ String render(SootClass,Pattern)
++ String renderMethod(SootMethod)
++ String renderField(SootField)
++ String renderStyle()
+# String renderClassName()
+# String renderClassType()
+# String getClassType()
+# String renderFields()
+# String renderMethods()
+# String parseReturnType(SootMethod)
+# String parseMethodName(SootMethod)
+# String parseMethodParameters(SootMethod)
+# String parse(Collection<GenericType>)
+# String parse(List<Type>)
+# String getAccessModifier(int)
+# String getStaticAbstractModifier(int)
+# String renderGenericType(GenericType)
+# String renderStandardType(Type)
+# String trimQualifiedName(String)
++ String render(Object,Pattern)
++ String render(Object)
+- void lambda$renderMethods$1(StringBuilder,SootMethod)
+- void lambda$renderFields$0(StringBuilder,SootField)
+
+}
+
+class MessageRenderer {
+# Message message
+# Pattern pattern
+
++ void MessageRenderer()
++ String render(Message)
++ String render(Message,Pattern)
++ String renderFromClass(SootClass)
++ String renderToClass(SootClass)
++ String renderArrow()
++ String renderMessage(SootMethod)
++ String getName()
+# String parseReturnType(SootMethod)
+# String parse(GenericType)
+# String parse(Type)
+# String trimQualifiedName(String)
+# String parseMethodParameters(SootMethod)
+# String parse(Collection<GenericType>)
+# String parse(List<Type>)
++ String render(Object,Pattern)
++ String render(Object)
+
+}
+
+class RelationshipRenderer {
+# Pattern pattern
+
++ void RelationshipRenderer()
++ String render(Relationship)
++ String render(Relationship,Pattern)
++ String renderLeft(SootClass)
++ String renderRight(SootClass)
++ String renderArrow(Relation,int)
++ String getName()
+# String parseArrow(Relation)
+# String parseBackwardsArrow(Relation)
+# String renderArrowStyle()
+# String parseCardinality(int)
+~ boolean isReverse()
++ String render(Object,Pattern)
++ String render(Object)
+
+}
+
 interface Algorithm {
-  + {abstract} List<SootMethod> resolve(Unit,SootMethod,Scene)
+
++ {abstract} List<SootMethod> resolve(Unit,SootMethod,Scene)
+
 }
+
 abstract Analyzer {
-  ~ List<Filter> filters
-  # void Analyzer(List<Filter>)
-  + {abstract} AnalyzerBundle execute(AnalyzerBundle)
-  + void addFilter(Filter)
-  # boolean passesFilters(SootClass)
-  # boolean passesFilters(SootMethod)
-  # boolean passesFilters(SootField)
+~ List<Filter> filters
+
+# void Analyzer(List<Filter>)
++ {abstract} AnalyzerBundle execute(AnalyzerBundle)
++ void addFilter(Filter)
+# boolean passesFilters(SootClass)
+# boolean passesFilters(SootMethod)
+# boolean passesFilters(SootField)
+
 }
+
 interface Filter {
-  + {abstract} boolean shouldProcess(SootClass)
-  + {abstract} boolean shouldProcess(SootMethod)
-  + {abstract} boolean shouldProcess(SootField)
+
++ {abstract} boolean shouldProcess(SootClass)
++ {abstract} boolean shouldProcess(SootMethod)
++ {abstract} boolean shouldProcess(SootField)
+
 }
-class EagerChocolateBoiler <<Singleton>>{
-  - {static} EagerChocolateBoiler boiler
-  - void EagerChocolateBoiler()
-  + {static} EagerChocolateBoiler getInstance()
+
+interface IClassRenderer {
+
++ {abstract} String renderMethod(SootMethod)
++ {abstract} String renderField(SootField)
++ {abstract} String renderStyle()
+
 }
-class LazyChocolateBoiler <<Singleton>>{
-  - {static} LazyChocolateBoiler boiler
-  - void LazyChocolateBoiler()
-  + {static} LazyChocolateBoiler getInstance()
-}
-class AncestorAnalyzer {
-  - Set<SootClass> processedClasses
-  + void AncestorAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - void ancestorHelper(SootClass)
-}
-class AssociationAnalyzer {
-  ~ AnalyzerBundle bundle
-  + void AssociationAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - void generateAssociationRelationships(SootClass,List<Relationship>)
-  - void addRelationship(Relationship)
-}
-class Relationship {
-  - SootClass from
-  - SootClass to
-  - Relation relation
-  - int cardinality
-  + void Relationship(SootClass,Relation,SootClass,int)
-  + SootClass getFromClass()
-  + SootClass getToClass()
-  + Relation getRelation()
-  + int getCardinality()
-  + String toString()
-  + int hashCode()
-  + boolean equals(Object)
-}
-enum Relation <<Singleton>>{
-  + {static} Relation ASSOCIATION
-  + {static} Relation EXTENDS
-  + {static} Relation IMPLEMENTS
-  + {static} Relation DEPENDENCY
-  + {static} Relation[] values()
-  + {static} Relation valueOf(String)
-  - void Relation)
-}
-class DependencyAnalyzer {
-  - AnalyzerBundle bundle
-  - Set<Relationship> relationships
-  - Scene scene
-  + void DependencyAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - void generateDependencyRelationships(SootClass)
-  - void evaluateMethodUsingTag(SootClass,Tag)
-  - void processGenericType(SootClass,GenericType)
-  - void evaluateSootParameters(SootClass,List<Type>)
-  - void checkBody(SootClass,Body)
-  - void processInvokeStmt(SootClass,InvokeStmt)
-  - void processInvokeExpr(SootClass,InvokeExpr)
-  - boolean isArray(Type)
-  - void processReturnType(SootClass,SootMethod)
-  - void processNewExpr(SootClass,NewExpr)
-  - void addRelationship(SootClass,SootClass,int)
-  - void addRelations(List<Relationship>)
-}
-class EmptyAnalyzer {
-  + void EmptyAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-}
-class FileWriterAnalyzer {
-  + void FileWriterAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - void writeStringToFile(String,String)
-  - void writeFile(String,String)
-}
-class InheritanceAnalyzer {
-  + void InheritanceAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - void generateExtendsRelationships(SootClass,List<Relationship>)
-  - void generateImplementsRelationships(SootClass,List<Relationship>)
-}
-class InheritanceOverCompositionAnalyzer {
-  # void InheritanceOverCompositionAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - void checkRelationships(List<Pattern>,List<Relationship>)
-}
+
 class Pattern {
-  - SetMultimap<String,Relationship> keyToRelationships
-  - SetMultimap<String,SootClass> keyToClass
-  - String name
-  + void Pattern(String)
-  + Set<Relationship> getRelationships(String)
-  + Set<SootClass> getClasses(String)
-  + boolean contains(Relationship)
-  + String getKey(Relationship)
-  + String getKey(SootClass)
-  + String getName()
-  + void put(String,SootClass)
-  + void put(String,Relationship)
-  + void setName(String)
-  + boolean contains(SootClass)
+- SetMultimap<String,Relationship> keyToRelationships
+- SetMultimap<String,SootClass> keyToClass
+- String name
+
++ void Pattern(String)
++ Set<Relationship> getRelationships(String)
++ Set<SootClass> getClasses(String)
++ boolean contains(Relationship)
++ String getKey(Relationship)
++ String getKey(SootClass)
++ String getName()
++ void put(String,SootClass)
++ void put(String,Relationship)
++ void setName(String)
++ boolean contains(SootClass)
+
 }
+
+interface IMessageRenderer {
+
++ {abstract} String renderFromClass(SootClass)
++ {abstract} String renderToClass(SootClass)
++ {abstract} String renderArrow()
++ {abstract} String renderMessage(SootMethod)
+
+}
+
+class Message {
+- SootClass methodCaller
+- SootClass methodReceiver
+- SootMethod method
+- String type
+
++ void Message(SootClass,SootMethod,SootClass,String)
++ SootClass getMethodCallerClass()
++ SootMethod getMethod()
++ SootClass getReceiverClass()
++ String getMethodCallerClassName()
++ String getReceiverClassName()
++ String getMethodName()
++ String getType()
++ String toString()
+
+}
+
+interface IRelationshipRenderer {
+
++ {abstract} String renderLeft(SootClass)
++ {abstract} String renderRight(SootClass)
++ {abstract} String renderArrow(Relation,int)
+
+}
+
+class Relationship {
+- SootClass from
+- SootClass to
+- Relation relation
+- int cardinality
+
++ void Relationship(SootClass,Relation,SootClass,int)
++ SootClass getFromClass()
++ SootClass getToClass()
++ Relation getRelation()
++ int getCardinality()
++ String toString()
++ int hashCode()
++ boolean equals(Object)
+
+}
+
+enum Relation {
++ {static} Relation ASSOCIATION
++ {static} Relation EXTENDS
++ {static} Relation IMPLEMENTS
++ {static} Relation DEPENDENCY
+- {static} Relation[] $VALUES
+
++ {static} Relation[] values()
++ {static} Relation valueOf(String)
+- void Relation)
+~ {static} void <clinit>()
+
+}
+
+
+interface Renderer {
+
++ {abstract} String render(Object)
++ {abstract} String render(Object,Pattern)
++ {abstract} String getName()
+
+}
+
+class EagerChocolateBoiler {
+- {static} EagerChocolateBoiler boiler
+
+- void EagerChocolateBoiler()
++ {static} EagerChocolateBoiler getInstance()
+~ {static} void <clinit>()
+
+}
+
+class LazyChocolateBoiler {
+- {static} LazyChocolateBoiler boiler
+
+- void LazyChocolateBoiler()
++ {static} LazyChocolateBoiler getInstance()
+~ {static} void <clinit>()
+
+}
+
+class AncestorAnalyzer {
+- Set<SootClass> processedClasses
+
++ void AncestorAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- void ancestorHelper(SootClass)
+
+}
+
+class AssociationAnalyzer {
+~ AnalyzerBundle bundle
+
++ void AssociationAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- void generateAssociationRelationships(SootClass,List<Relationship>)
+- void addRelationship(Relationship)
+
+}
+
+class DependencyAnalyzer {
+- AnalyzerBundle bundle
+- Set<Relationship> relationships
+- Scene scene
+
++ void DependencyAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- void generateDependencyRelationships(SootClass)
+- void evaluateMethodUsingTag(SootClass,Tag)
+- void processGenericType(SootClass,GenericType)
+- void evaluateSootParameters(SootClass,List<Type>)
+- void checkBody(SootClass,Body)
+- void processInvokeStmt(SootClass,InvokeStmt)
+- void processInvokeExpr(SootClass,InvokeExpr)
+- boolean isArray(Type)
+- void processReturnType(SootClass,SootMethod)
+- void processNewExpr(SootClass,NewExpr)
+- void addRelationship(SootClass,SootClass,int)
+- void addRelations(List<Relationship>)
+- void lambda$checkBody$1(SootClass,Unit)
+- void lambda$generateDependencyRelationships$0(SootClass,SootMethod)
+
+}
+
+class EmptyAnalyzer {
+
++ void EmptyAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+
+}
+
+class FileWriterAnalyzer {
+
++ void FileWriterAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- void writeStringToFile(String,String)
+- void writeFile(String,String)
+
+}
+
+class InheritanceAnalyzer {
+
++ void InheritanceAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- void generateExtendsRelationships(SootClass,List<Relationship>)
+- void generateImplementsRelationships(SootClass,List<Relationship>)
+
+}
+
+class InheritanceOverCompositionAnalyzer {
+
+# void InheritanceOverCompositionAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- void checkRelationships(List<Pattern>,List<Relationship>)
+
+}
+
 class SceneAnalyzer {
-  + void SceneAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
+
++ void SceneAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+
 }
+
 class SequenceAnalyzer {
-  - AnalyzerBundle bundle
-  ~ int maxCallDepth
-  ~ boolean showSuper
-  ~ Path seqImageLocation
-  ~ Algorithm resolver
-  + void SequenceAnalyzer(List<Filter>,Algorithm)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - void processMethod(SootMethod,int)
-  - void processCommentedOutMessages(List<SootMethod>,SootMethod)
-  - void createCommentedOutMessage(SootMethod,SootMethod)
-  - void createCallMessage(SootMethod,SootMethod)
-  - boolean isSuperCall(SootMethod,SootMethod)
-  - String parseCalls()
-  - void generateSeqImage(String)
+- AnalyzerBundle bundle
+- int maxCallDepth
+- boolean showSuper
+- Path seqImageLocation
+- Algorithm resolver
+- Map<String,MessageRenderer> messageRenderers
+
++ void SequenceAnalyzer(List<Filter>,Algorithm,Map<String,MessageRenderer>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- void processMethod(SootMethod,int)
+- void processCommentedOutMessages(List<SootMethod>,SootMethod)
+- void createCommentedOutMessage(SootMethod,SootMethod)
+- void createCallMessage(SootMethod,SootMethod)
+- boolean isSuperCall(SootMethod,SootMethod)
+- String parseCalls()
+- void generateSeqImage(String)
+
 }
-class CallMessage {
-  - String parameters
-  + void CallMessage(SootClass,SootMethod,String)
-  + String getParameters()
-  + String getPlantUMLString()
-}
-abstract Message {
-  - SootClass methodCallingClass
-  - SootMethod method
-  + void Message(SootClass,SootMethod)
-  + SootClass getMethodCallingClass()
-  + SootMethod getMethod()
-  + SootClass getReceivingClass()
-  # String getMethodCallingClassName()
-  # String getReceivingClassName()
-  # String getMethodName()
-  + String toString()
-  + {abstract} String getPlantUMLString()
-}
-class UMLParser {
-  + void UMLParser()
-  + {static} String parse(SootClass)
-  + {static} String parse(SootField)
-  + {static} String parse(SootMethod)
-  + {static} String parseReturnType(SootMethod)
-  + {static} String parseMethodName(SootMethod)
-  + {static} String parseMethodParameters(SootMethod)
-  + {static} String parse(Collection<GenericType>)
-  + {static} String parse(List<Type>)
-  + {static} String parse(Type)
-  + {static} String parse(GenericType)
-  + {static} String parse(Relationship,String)
-  + {static} String parse(Relation)
-  + {static} String parse(Relation,String)
-  + {static} String parseCardinality(int)
-  + {static} String trimQualifiedName(String)
-  + {static} String getAccessModifier(int)
-  + {static} String getStaticAbstractModifier(int)
-  + {static} String getClassType(int)
-}
-class CommentedOutMessage {
-  - String parameters
-  + void CommentedOutMessage(SootClass,SootMethod,String)
-  + String getParameters()
-  + String getPlantUMLString()
-}
-class ReturnMessage {
-  - String returnType
-  + void ReturnMessage(SootClass,SootMethod,String)
-  + String getReturnType()
-  + String getPlantUMLString()
-}
+
 class SingletonAnalyzer {
-  + void SingletonAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - boolean hasGetInstance(SootClass)
-  - boolean privateConstructor(SootClass)
-  - boolean hasInstanceField(SootClass)
-  - Relationship createRelationship(List<Relationship>,SootClass)
+
++ void SingletonAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- boolean hasGetInstance(SootClass)
+- boolean privateConstructor(SootClass)
+- boolean hasInstanceField(SootClass)
+- Relationship createRelationship(List<Relationship>,SootClass)
+
 }
+
 class SootAnalyzer {
-  - Scene scene
-  + void SootAnalyzer(List<Filter>)
-  + AnalyzerBundle execute(AnalyzerBundle)
+- Scene scene
+
++ void SootAnalyzer(List<Filter>)
++ AnalyzerBundle execute(AnalyzerBundle)
+
 }
+
 class UMLAnalyzer {
-  - Path umlImageLocation
-  - List<Pattern> patterns
-  - Map<String,PatternRenderer> renderers
-  + void UMLAnalyzer(List<Filter>,Map<String,PatternRenderer>)
-  + AnalyzerBundle execute(AnalyzerBundle)
-  - String parse(AnalyzerBundle)
-  - String renderPatterns(SootClass)
-  - String renderPatterns(Relationship)
-  - void generateUMLImage(String)
+- Path umlImageLocation
+- List<Pattern> patterns
+- Map<String,ClassRenderer> classRenderers
+- Map<String,RelationshipRenderer> relationshipRenderers
+
++ void UMLAnalyzer(List<Filter>,Map<String,ClassRenderer>,Map<String,RelationshipRenderer>)
++ AnalyzerBundle execute(AnalyzerBundle)
+- String parse(AnalyzerBundle)
+- void parse(SootClass,StringBuilder)
+- void parse(Relationship,StringBuilder)
+- void generateUMLImage(String)
+
 }
-interface PatternRenderer {
-  + {abstract} String getStyle()
-  + {abstract} String render(SootClass,Pattern)
-  + {abstract} String render(SootMethod,Pattern)
-  + {abstract} String render(SootField,Pattern)
-  + {abstract} String render(Relationship,Pattern)
-  + {abstract} String getName()
+
+
+class UMLParser {
+
++ void UMLParser()
++ {static} String parse(SootClass)
++ {static} String parse(SootField)
++ {static} String parse(SootMethod)
++ {static} String parseReturnType(SootMethod)
++ {static} String parseMethodName(SootMethod)
++ {static} String parseMethodParameters(SootMethod)
++ {static} String parse(Collection<GenericType>)
++ {static} String parse(List<Type>)
++ {static} String parse(Type)
++ {static} String parse(GenericType)
++ {static} String parse(Relationship,String)
++ {static} String parse(Relation)
++ {static} String parse(Relation,String)
++ {static} String parseCardinality(int)
++ {static} String trimQualifiedName(String)
++ {static} String getAccessModifier(int)
++ {static} String getStaticAbstractModifier(int)
++ {static} String getClassType(int)
+
 }
+
 class ClassNameFilter {
-  + void ClassNameFilter()
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+
++ void ClassNameFilter()
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class ClinitFilter {
-  + void ClinitFilter()
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+
++ void ClinitFilter()
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class DollarSignFilter {
-  + void DollarSignFilter()
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+
++ void DollarSignFilter()
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class JDKFilter {
-  + void JDKFilter()
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+
++ void JDKFilter()
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class NullSuperFilter {
-  + void NullSuperFilter()
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+
++ void NullSuperFilter()
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class PackagePrivateFilter {
-  + void PackagePrivateFilter()
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+
++ void PackagePrivateFilter()
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class ProtectedFilter {
-  + void ProtectedFilter()
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+
++ void ProtectedFilter()
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class PublicFilter {
-  + void PublicFilter()
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+
++ void PublicFilter()
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class RelationshipFilter {
-  ~ AnalyzerBundle bundle
-  + void RelationshipFilter(AnalyzerBundle)
-  + boolean shouldProcess(SootClass)
-  + boolean shouldProcess(SootMethod)
-  + boolean shouldProcess(SootField)
+~ AnalyzerBundle bundle
+
++ void RelationshipFilter(AnalyzerBundle)
++ boolean shouldProcess(SootClass)
++ boolean shouldProcess(SootMethod)
++ boolean shouldProcess(SootField)
+
 }
+
 class AggregateAlgorithm {
-  - List<Algorithm> algorithms
-  - AggregationStrategy strat
-  + void AggregateAlgorithm(AggregationStrategy)
-  + List<SootMethod> resolve(Unit,SootMethod,Scene)
-  + void addAlgorithm(Algorithm)
+- List<Algorithm> algorithms
+- AggregationStrategy strat
+
++ void AggregateAlgorithm(AggregationStrategy)
++ List<SootMethod> resolve(Unit,SootMethod,Scene)
++ void addAlgorithm(Algorithm)
+
 }
+
 interface AggregationStrategy {
-  + {abstract} Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
+
++ {abstract} Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
+
 }
+
 class CallGraphAlgorithm {
-  + void CallGraphAlgorithm()
-  + List<SootMethod> resolve(Unit,SootMethod,Scene)
+
++ void CallGraphAlgorithm()
++ List<SootMethod> resolve(Unit,SootMethod,Scene)
+
 }
+
 class ChainMethodResolver {
-  + void ChainMethodResolver()
-  + Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
+
++ void ChainMethodResolver()
++ Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
+
 }
+
 class HierachyAlgorithm {
-  + void HierachyAlgorithm()
-  + List<SootMethod> resolve(Unit,SootMethod,Scene)
+
++ void HierachyAlgorithm()
++ List<SootMethod> resolve(Unit,SootMethod,Scene)
+
 }
+
 class IntersectionMethodResolver {
-  + void IntersectionMethodResolver()
-  + Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
+
++ void IntersectionMethodResolver()
++ Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
+- {static} void lambda$resolve$0(Unit,SootMethod,Scene,Set,Algorithm)
+
 }
+
 class UnionMethodResolver {
-  + void UnionMethodResolver()
-  + Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
+
++ void UnionMethodResolver()
++ Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
+- {static} void lambda$resolve$0(Set,Unit,SootMethod,Scene,Algorithm)
+
 }
+
+class CallMessage {
+- String parameters
+
++ void CallMessage(SootClass,SootMethod,String)
++ String getParameters()
++ String getPlantUMLString()
+
+}
+
+class CommentedOutMessage {
+- String parameters
+
++ void CommentedOutMessage(SootClass,SootMethod,String)
++ String getParameters()
++ String getPlantUMLString()
+
+}
+
+class ReturnMessage {
+- String returnType
+
++ void ReturnMessage(SootClass,SootMethod,String)
++ String getReturnType()
++ String getPlantUMLString()
+
+}
+
+class CommentMessageRenderer {
+
++ void CommentMessageRenderer()
++ String renderFromClass(SootClass)
+
+}
+
+class InheritanceOverCompositionClassRenderer {
+
++ void InheritanceOverCompositionClassRenderer()
+# String renderClassName()
++ String getName()
+
+}
+
+class InheritanceOverCompositionRelationshipRenderer {
+
++ void InheritanceOverCompositionRelationshipRenderer()
++ String getName()
+# String renderArrowStyle()
+
+}
+
 class InheritanceOverCompositionRenderer {
-  + void InheritanceOverCompositionRenderer()
-  + String getStyle()
-  + String render(SootClass,Pattern)
-  + String render(SootMethod,Pattern)
-  + String render(SootField,Pattern)
-  + String render(Relationship,Pattern)
-  + String getName()
+
++ void InheritanceOverCompositionRenderer()
++ String getStyle()
++ String render(SootClass,Pattern)
++ String render(SootMethod,Pattern)
++ String render(SootField,Pattern)
++ String render(Relationship,Pattern)
++ String getName()
+
 }
+
+interface PatternRenderer {
+
++ {abstract} String getStyle()
++ {abstract} String render(SootClass,Pattern)
++ {abstract} String render(SootMethod,Pattern)
++ {abstract} String render(SootField,Pattern)
++ {abstract} String render(Relationship,Pattern)
++ {abstract} String getName()
+
+}
+
+class InitMessageRenderer {
+
++ void InitMessageRenderer()
++ String renderMessage(SootMethod)
+
+}
+
+class ReturnMessageRenderer {
+
++ void ReturnMessageRenderer()
++ String renderMessage(SootMethod)
+
+}
+
+class SingletonClassRenderer {
+
++ void SingletonClassRenderer()
++ String renderStyle()
+# String renderClassName()
++ String getName()
+
+}
+
+class SingletonRelationshipRenderer {
+
++ void SingletonRelationshipRenderer()
++ String getName()
+# String parseArrow(Relation)
+# String parseBackwardsArrow(Relation)
+
+}
+
 class SingletonRenderer {
-  + void SingletonRenderer()
-  + String getStyle()
-  + String render(SootClass,Pattern)
-  + String render(SootMethod,Pattern)
-  + String render(SootField,Pattern)
-  + String render(Relationship,Pattern)
-  + String getName()
+
++ void SingletonRenderer()
++ String getStyle()
++ String render(SootClass,Pattern)
++ String render(SootMethod,Pattern)
++ String render(SootField,Pattern)
++ String render(Relationship,Pattern)
++ String getName()
+
 }
-Analyzer  <|-- AncestorAnalyzer
-Analyzer  <|-- AssociationAnalyzer
-Analyzer  <|-- DependencyAnalyzer
-Analyzer  <|-- EmptyAnalyzer
-Analyzer  <|-- FileWriterAnalyzer
-Analyzer  <|-- InheritanceAnalyzer
-Analyzer  <|-- InheritanceOverCompositionAnalyzer
-Analyzer  <|-- SceneAnalyzer
-Analyzer  <|-- SequenceAnalyzer
-Message  <|-- CallMessage
-Message  <|-- CommentedOutMessage
-Message  <|-- ReturnMessage
-Analyzer  <|-- SingletonAnalyzer
-Analyzer  <|-- SootAnalyzer
-Analyzer  <|-- UMLAnalyzer
-Filter  <|.. ClassNameFilter
-Filter  <|.. ClinitFilter
-Filter  <|.. DollarSignFilter
-Filter  <|.. JDKFilter
-Filter  <|.. NullSuperFilter
-Filter  <|.. PackagePrivateFilter
-Filter  <|.. ProtectedFilter
-Filter  <|.. PublicFilter
-Filter  <|.. RelationshipFilter
-Algorithm  <|.. AggregateAlgorithm
-Algorithm  <|.. CallGraphAlgorithm
-AggregationStrategy  <|.. ChainMethodResolver
-Algorithm  <|.. HierachyAlgorithm
-AggregationStrategy  <|.. IntersectionMethodResolver
-AggregationStrategy  <|.. UnionMethodResolver
-PatternRenderer  <|.. InheritanceOverCompositionRenderer
-PatternRenderer  <|.. SingletonRenderer
-Analyzer "1..*" <-- Processor
-AnalyzerBundle  <-- Processor
-Filter "1..*" <-- Analyzer
-AnalyzerBundle  <-- AssociationAnalyzer
-Relation  <-- Relationship
-AnalyzerBundle  <-- DependencyAnalyzer
-Relationship "1..*" <-- DependencyAnalyzer
-Relationship "1..*" <-- Pattern
-AnalyzerBundle  <-- SequenceAnalyzer
-Algorithm  <-- SequenceAnalyzer
-Pattern "1..*" <-- UMLAnalyzer
-PatternRenderer "1..*" <-- UMLAnalyzer
-AnalyzerBundle  <-- RelationshipFilter
-Algorithm "1..*" <-- AggregateAlgorithm
-AggregationStrategy  <-- AggregateAlgorithm
-Relationship "1..*" <.. AssociationAnalyzer
-Relationship  <.. AssociationAnalyzer
-Relation  <.. SingletonRenderer
-AnalyzerBundle  <.. InheritanceOverCompositionAnalyzer
-Filter "1..*" <.. SceneAnalyzer
-AnalyzerBundle  <.. UMLAnalyzer
-Relationship  <.. UMLAnalyzer
-AnalyzerBundle  <.. EmptyAnalyzer
-Filter "1..*" <.. EmptyAnalyzer
-Processor  <.. Runner
-Filter "1..*" <.. UMLAnalyzer
-Pattern  <.. InheritanceOverCompositionRenderer
-Relationship "1..*" <.. SingletonAnalyzer
-Relationship  <.. SingletonAnalyzer
-Relation  <.. AssociationAnalyzer
-Filter "1..*" <.. InheritanceOverCompositionAnalyzer
-AnalyzerBundle  <.. SceneAnalyzer
-Pattern  <.. SingletonAnalyzer
-Relationship  <.. InheritanceOverCompositionRenderer
-Filter "1..*" <.. FileWriterAnalyzer
-AnalyzerBundle  <.. FileWriterAnalyzer
-Filter "1..*" <.. SingletonAnalyzer
-Algorithm "1..*" <.. ChainMethodResolver
-Filter "1..*" <.. DependencyAnalyzer
-AnalyzerBundle  <.. Analyzer
-Filter "1..*" <.. AncestorAnalyzer
-Relation  <.. DependencyAnalyzer
-ReturnMessage  <.. SequenceAnalyzer
-Relationship "1..*" <.. InheritanceAnalyzer
-Relationship  <.. InheritanceAnalyzer
-PropertiesSetter  <.. Runner
-Algorithm "1..*" <.. IntersectionMethodResolver
-Filter "1..*" <.. SequenceAnalyzer
-CallMessage  <.. SequenceAnalyzer
-Algorithm "1..*" <.. AggregationStrategy
-AnalyzerBundle  <.. SingletonAnalyzer
-Pattern  <.. SingletonRenderer
-Relation  <.. InheritanceOverCompositionAnalyzer
-Algorithm "1..*" <.. UnionMethodResolver
-AnalyzerBundle  <.. AncestorAnalyzer
-Filter "1..*" <.. AssociationAnalyzer
-Relationship  <.. SingletonRenderer
-Relation  <.. UMLParser
-Filter "1..*" <.. InheritanceAnalyzer
-AnalyzerBundle  <.. InheritanceAnalyzer
-AnalyzerBundle  <.. SootAnalyzer
-Filter "1..*" <.. SootAnalyzer
-Pattern  <.. PatternRenderer
-Pattern "1..*" <.. InheritanceOverCompositionAnalyzer
-Pattern  <.. InheritanceOverCompositionAnalyzer
-Relationship  <.. PatternRenderer
-Relationship "1..*" <.. InheritanceOverCompositionAnalyzer
-Relationship  <.. UMLParser
-CommentedOutMessage  <.. SequenceAnalyzer
-EagerChocolateBoiler  <-[#blue]- EagerChocolateBoiler
-LazyChocolateBoiler  <-[#blue]- LazyChocolateBoiler
-Relation  <-[#blue]- Relation
+
+ClassRenderer  <|.. IClassRenderer
+MessageRenderer  <|.. IMessageRenderer
+RelationshipRenderer  <|.. IRelationshipRenderer
+IClassRenderer  <|.. Renderer
+IMessageRenderer  <|.. Renderer
+IRelationshipRenderer  <|.. Renderer
+AncestorAnalyzer  <|-- Analyzer
+AssociationAnalyzer  <|-- Analyzer
+DependencyAnalyzer  <|-- Analyzer
+EmptyAnalyzer  <|-- Analyzer
+FileWriterAnalyzer  <|-- Analyzer
+InheritanceAnalyzer  <|-- Analyzer
+InheritanceOverCompositionAnalyzer  <|-- Analyzer
+SceneAnalyzer  <|-- Analyzer
+SequenceAnalyzer  <|-- Analyzer
+SingletonAnalyzer  <|-- Analyzer
+SootAnalyzer  <|-- Analyzer
+UMLAnalyzer  <|-- Analyzer
+ClassNameFilter  <|.. Filter
+ClinitFilter  <|.. Filter
+DollarSignFilter  <|.. Filter
+JDKFilter  <|.. Filter
+NullSuperFilter  <|.. Filter
+PackagePrivateFilter  <|.. Filter
+ProtectedFilter  <|.. Filter
+PublicFilter  <|.. Filter
+RelationshipFilter  <|.. Filter
+AggregateAlgorithm  <|.. Algorithm
+CallGraphAlgorithm  <|.. Algorithm
+ChainMethodResolver  <|.. AggregationStrategy
+HierachyAlgorithm  <|.. Algorithm
+IntersectionMethodResolver  <|.. AggregationStrategy
+UnionMethodResolver  <|.. AggregationStrategy
+CallMessage  <|-- Message
+CommentedOutMessage  <|-- Message
+ReturnMessage  <|-- Message
+CommentMessageRenderer  <|-- MessageRenderer
+InheritanceOverCompositionClassRenderer  <|-- ClassRenderer
+InheritanceOverCompositionRelationshipRenderer  <|-- RelationshipRenderer
+InheritanceOverCompositionRenderer  <|.. PatternRenderer
+InitMessageRenderer  <|-- MessageRenderer
+ReturnMessageRenderer  <|-- MessageRenderer
+SingletonClassRenderer  <|-- ClassRenderer
+SingletonRelationshipRenderer  <|-- RelationshipRenderer
+SingletonRenderer  <|.. PatternRenderer
+Processor "1..*" <-- Analyzer
+Processor  <-- AnalyzerBundle
+ClassRenderer  <-- Pattern
+MessageRenderer  <-- Message
+MessageRenderer  <-- Pattern
+RelationshipRenderer  <-- Pattern
+Analyzer "1..*" <-- Filter
+Pattern "1..*" <-- Relationship
+Relationship  <-- Relation
+AssociationAnalyzer  <-- AnalyzerBundle
+DependencyAnalyzer  <-- AnalyzerBundle
+DependencyAnalyzer "1..*" <-- Relationship
+SequenceAnalyzer  <-- AnalyzerBundle
+SequenceAnalyzer  <-- Algorithm
+SequenceAnalyzer "1..*" <-- MessageRenderer
+UMLAnalyzer "1..*" <-- Pattern
+UMLAnalyzer "1..*" <-- ClassRenderer
+UMLAnalyzer "1..*" <-- RelationshipRenderer
+RelationshipFilter  <-- AnalyzerBundle
+AggregateAlgorithm "1..*" <-- Algorithm
+AggregateAlgorithm  <-- AggregationStrategy
+RelationshipRenderer  <.. Relation
+SingletonAnalyzer "1..*" <.. Filter
+UMLAnalyzer  <.. Relationship
+AssociationAnalyzer "1..*" <.. Filter
+UMLParser  <.. Relationship
+EmptyAnalyzer  <.. AnalyzerBundle
+InheritanceAnalyzer "1..*" <.. Filter
+SequenceAnalyzer  <.. Message
+SingletonRenderer  <.. Pattern
+DependencyAnalyzer  <.. Relation
+ChainMethodResolver "1..*" <.. Algorithm
+DependencyAnalyzer "1..*" <.. Filter
+PatternRenderer  <.. Pattern
+Renderer  <.. Pattern
+InheritanceOverCompositionRenderer  <.. Pattern
+RelationshipRenderer  <.. Relationship
+PatternRenderer  <.. Relationship
+IRelationshipRenderer  <.. Relation
+IntersectionMethodResolver "1..*" <.. Algorithm
+SingletonRelationshipRenderer  <.. Relation
+UMLAnalyzer "1..*" <.. Filter
+AncestorAnalyzer "1..*" <.. Filter
+SootAnalyzer "1..*" <.. Filter
+SootAnalyzer  <.. AnalyzerBundle
+FileWriterAnalyzer  <.. AnalyzerBundle
+AncestorAnalyzer  <.. AnalyzerBundle
+UMLParser  <.. Relation
+SingletonRenderer  <.. Relationship
+SceneAnalyzer  <.. AnalyzerBundle
+AggregationStrategy "1..*" <.. Algorithm
+SingletonRenderer  <.. Relation
+InheritanceOverCompositionAnalyzer "1..*" <.. Pattern
+InheritanceOverCompositionAnalyzer  <.. Pattern
+SceneAnalyzer "1..*" <.. Filter
+InheritanceOverCompositionAnalyzer "1..*" <.. Filter
+UMLAnalyzer  <.. AnalyzerBundle
+SequenceAnalyzer "1..*" <.. Filter
+FileWriterAnalyzer "1..*" <.. Filter
+SingletonAnalyzer  <.. Pattern
+AssociationAnalyzer  <.. Relation
+UnionMethodResolver "1..*" <.. Algorithm
+SingletonAnalyzer "1..*" <.. Relationship
+SingletonAnalyzer  <.. Relationship
+InheritanceOverCompositionAnalyzer  <.. Relation
+SingletonAnalyzer  <.. AnalyzerBundle
+InheritanceOverCompositionRenderer  <.. Relationship
+EmptyAnalyzer "1..*" <.. Filter
+AssociationAnalyzer "1..*" <.. Relationship
+AssociationAnalyzer  <.. Relationship
+Runner  <.. PropertiesSetter
+Analyzer  <.. AnalyzerBundle
+InheritanceAnalyzer "1..*" <.. Relationship
+InheritanceAnalyzer  <.. Relationship
+Runner  <.. Processor
+InheritanceOverCompositionAnalyzer  <.. AnalyzerBundle
+InheritanceAnalyzer  <.. AnalyzerBundle
+InheritanceOverCompositionAnalyzer "1..*" <.. Relationship
 @enduml
