@@ -51,6 +51,11 @@ public class RelationshipRenderer implements IRelationshipRenderer {
     return builder.toString();
   }
   
+  @Override
+  public String getName() {
+    return "default";
+  }
+  
   private String parseArrow(Relation relation) {
     switch (relation) {
     case ASSOCIATION:
@@ -94,5 +99,7 @@ public class RelationshipRenderer implements IRelationshipRenderer {
   boolean isReverse() {
     return false;
   }
+  
+  
 
 }

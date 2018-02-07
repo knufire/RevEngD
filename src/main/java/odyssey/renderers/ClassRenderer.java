@@ -19,13 +19,14 @@ public class ClassRenderer implements IClassRenderer {
   protected Pattern pattern;
   protected SootClass clazz;
 
+  @Override
   public final String render(SootClass clazz) {
     this.clazz = clazz;
 
     StringBuilder builder = new StringBuilder();
-    builder.append(renderClassName());
-    builder.append(" ");
     builder.append(renderClassType());
+    builder.append(" ");
+    builder.append(renderClassName());
     builder.append(" {");
     builder.append(System.lineSeparator());
     builder.append(renderFields());
@@ -36,17 +37,67 @@ public class ClassRenderer implements IClassRenderer {
     builder.append(System.lineSeparator());
     return builder.toString();
   }
+  
+  @Override
+  public String getName() {
+    return "default";
+  }
 
+  @Override
   public final String render(SootClass clazz, Pattern pattern) {
     this.pattern = pattern;
     return render(clazz);
   }
 
-  String renderClassName() {
+  @Override
+  public String renderMethod(SootMethod method) {
+    StringBuilder builder = new StringBuilder();
+    builder.append(getAccessModifier(method.getModifiers()));
+    builder.append(" ");
+    builder.append(getStaticAbstractModifier(method.getModifiers()));
+    builder.append(parseReturnType(method));
+    builder.append(" ");
+    builder.append(parseMethodName(method));
+    builder.append(parseMethodParameters(method));
+    return builder.toString();
+  }
+  
+  @Override
+  public String renderField(SootField field) {
+    StringBuilder builder = new StringBuilder();
+    builder.append(getAccessModifier(field.getModifiers()));
+    builder.append(" ");
+    builder.append(getStaticAbstractModifier(field.getModifiers()));
+
+    Tag signatureTag = field.getTag("SignatureTag");
+    if (signatureTag != null) {
+      try {
+        String signature = signatureTag.toString();
+        FieldEvaluator fieldEvaluator = new FieldEvaluator(signature);
+        GenericType fieldType = fieldEvaluator.getType();
+        builder.append(renderGenericType(fieldType));
+      } catch (Exception e) {
+        // DoNothing
+      }
+    } else {
+      builder.append(renderStandardType(field.getType()));
+    }
+
+    builder.append(" ");
+    builder.append(field.getName());
+    return builder.toString();
+  }
+  
+  @Override
+  public String renderStyle() {
+    return "";
+  }
+  
+  protected String renderClassName() {
     return clazz.getShortName();
   }
 
-  String renderClassType() {
+  protected String renderClassType() {
     return getClassType();
   }
 
@@ -64,7 +115,7 @@ public class ClassRenderer implements IClassRenderer {
     return "class";
   }
 
-  String renderFields() {
+  protected String renderFields() {
     StringBuilder builder = new StringBuilder();
     clazz.getFields().forEach(f -> {
       builder.append(renderField(f));
@@ -73,24 +124,12 @@ public class ClassRenderer implements IClassRenderer {
     return builder.toString();
   }
 
-  String renderMethods() {
+  protected String renderMethods() {
     StringBuilder builder = new StringBuilder();
     clazz.getMethods().forEach(m -> {
       builder.append(renderMethod(m));
       builder.append(System.lineSeparator());
     });
-    return builder.toString();
-  }
-
-  public String renderMethod(SootMethod method) {
-    StringBuilder builder = new StringBuilder();
-    builder.append(getAccessModifier(method.getModifiers()));
-    builder.append(" ");
-    builder.append(getStaticAbstractModifier(method.getModifiers()));
-    builder.append(parseReturnType(method));
-    builder.append(" ");
-    builder.append(parseMethodName(method));
-    builder.append(parseMethodParameters(method));
     return builder.toString();
   }
 
@@ -160,31 +199,6 @@ public class ClassRenderer implements IClassRenderer {
     return builder.toString();
   }
 
-  public String renderField(SootField field) {
-    StringBuilder builder = new StringBuilder();
-    builder.append(getAccessModifier(field.getModifiers()));
-    builder.append(" ");
-    builder.append(getStaticAbstractModifier(field.getModifiers()));
-
-    Tag signatureTag = field.getTag("SignatureTag");
-    if (signatureTag != null) {
-      try {
-        String signature = signatureTag.toString();
-        FieldEvaluator fieldEvaluator = new FieldEvaluator(signature);
-        GenericType fieldType = fieldEvaluator.getType();
-        builder.append(renderGenericType(fieldType));
-      } catch (Exception e) {
-        // DoNothing
-      }
-    } else {
-      builder.append(renderStandardType(field.getType()));
-    }
-
-    builder.append(" ");
-    builder.append(field.getName());
-    return builder.toString();
-  }
-
   protected String getAccessModifier(int m) {
     if (soot.Modifier.isPublic(m)) {
       return "+";
@@ -239,5 +253,4 @@ public class ClassRenderer implements IClassRenderer {
     String[] parts = s.split("\\.");
     return parts[parts.length - 1];
   }
-
 }

@@ -52,5 +52,10 @@ public class MessageRenderer implements IMessageRenderer {
   public String renderMessage(SootMethod method) {
     return method.getName();
   }
+  
+  @Override
+  public String getName() {
+    return "default";
+  }
 
 }
