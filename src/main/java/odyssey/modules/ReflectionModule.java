@@ -33,6 +33,8 @@ public class ReflectionModule extends AbstractModule {
       populateUserAnalyzers(que, filters);
 
       return que;
+    } catch (NullPointerException e) {
+      // Expected
     } catch (Exception e) {
       e.printStackTrace();
     }

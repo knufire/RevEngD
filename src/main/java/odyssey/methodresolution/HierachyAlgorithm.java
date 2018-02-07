@@ -12,10 +12,16 @@ public class HierachyAlgorithm implements Algorithm {
 
   @Override
   public List<SootMethod> resolve(Unit u, SootMethod m, Scene scene) {
-    if (m == null) return Collections.emptyList();
+    if (m == null)
+      return Collections.emptyList();
     Hierarchy hierarchy = scene.getActiveHierarchy();
-    List<SootMethod> possibleMethods = hierarchy.resolveAbstractDispatch(m.getDeclaringClass(), m);
-    return possibleMethods;
+    try {
+      List<SootMethod> possibleMethods = hierarchy.resolveAbstractDispatch(m.getDeclaringClass(), m);
+      return possibleMethods;
+    } catch (RuntimeException e) {
+      System.err.println("Unable to resolve concrete dispatch : " + m.getName());
+    }
+    return Collections.emptyList();
   }
 
 }
