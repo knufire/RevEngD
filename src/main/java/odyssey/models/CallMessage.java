@@ -8,7 +8,7 @@ public class CallMessage extends Message {
   private String parameters;
 
   public CallMessage(SootClass caller, SootMethod method, String parameters) {
-    super(caller, method);
+    super(caller, method, caller, parameters);
     this.parameters = parameters;
   }
 
@@ -19,12 +19,12 @@ public class CallMessage extends Message {
   public String getPlantUMLString() {
     if (getMethodName().equals("<init>")) {
       if (getMethodCallingClass().hasSuperclass() && getMethodCallingClass().getSuperclass().equals(getMethod().getDeclaringClass())) {
-        return getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + "super()";
+        return getMethodCallerClassName() + " -> " + getReceiverClassName() + " : " + "super()";
       }
-      return getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + "new " + getReceivingClassName()
+      return getMethodCallerClassName() + " -> " + getReceiverClassName() + " : " + "new " + getReceiverClassName()
           + getParameters();
     }
-    return getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + getMethodName() + getParameters();
+    return getMethodCallerClassName() + " -> " + getReceiverClassName() + " : " + getMethodName() + getParameters();
   }
 
 }

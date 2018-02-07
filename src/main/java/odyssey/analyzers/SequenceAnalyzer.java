@@ -110,7 +110,12 @@ public class SequenceAnalyzer extends Analyzer {
   private void createCallMessage(SootMethod callingMethod, SootMethod targetMethod) {
 //    CallMessage newCall = new CallMessage(callingMethod.getDeclaringClass(), targetMethod,
 //        UMLParser.parseMethodParameters(targetMethod));
-    Message newCall = new Message(callingMethod.getDeclaringClass(), targetMethod, targetMethod.getDeclaringClass(), "default");
+    Message newCall;
+    if (targetMethod.toString().contains("<init>")) {
+      newCall = new Message(callingMethod.getDeclaringClass(), targetMethod, targetMethod.getDeclaringClass(), "init");
+    } else {
+      newCall = new Message(callingMethod.getDeclaringClass(), targetMethod, targetMethod.getDeclaringClass(), "default");
+    }
     bundle.getList("messages", Message.class).add(newCall);
   }
 

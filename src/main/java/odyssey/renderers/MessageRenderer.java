@@ -6,16 +6,20 @@ import soot.SootClass;
 import soot.SootMethod;
 
 public class MessageRenderer implements IMessageRenderer {
-  
-  Pattern pattern;
+  protected Message message;
+  protected Pattern pattern;
 
   @Override
   public final String render(Message t) {
+    this.message = t;
     StringBuilder builder = new StringBuilder();
     
     builder.append(renderFromClass(t.getMethodCallingClass()));
+    builder.append(" ");
     builder.append(renderArrow());
-    builder.append(renderToClass(t.getReceivingClass()));
+    builder.append(" ");
+    builder.append(renderToClass(t.getReceiverClass()));
+    builder.append(" ");
     builder.append(renderMessage(t.getMethod()));
     
     return builder.toString();
@@ -31,26 +35,22 @@ public class MessageRenderer implements IMessageRenderer {
   
   @Override
   public String renderFromClass(SootClass clazz) {
-    // TODO Auto-generated method stub
-    return null;
+    return clazz.getShortName().replaceAll("\\$", "");
   }
 
   @Override
   public String renderToClass(SootClass clazz) {
-    // TODO Auto-generated method stub
-    return null;
+    return clazz.getShortName().replaceAll("\\$", "");
   }
 
   @Override
   public String renderArrow() {
-    // TODO Auto-generated method stub
-    return null;
+    return "->";
   }
 
   @Override
   public String renderMessage(SootMethod method) {
-    // TODO Auto-generated method stub
-    return null;
+    return method.getName();
   }
 
 }

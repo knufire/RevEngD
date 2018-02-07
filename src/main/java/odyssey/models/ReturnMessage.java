@@ -8,7 +8,7 @@ public class ReturnMessage extends Message {
   private String returnType;
 
   public ReturnMessage(SootClass reciever, SootMethod method, String returnType) {
-    super(reciever, method);
+    super(reciever, method, reciever, returnType);
     this.returnType = returnType;
   }
 
@@ -16,9 +16,8 @@ public class ReturnMessage extends Message {
     return returnType;
   }
 
-  @Override
   public String getPlantUMLString() {
-    return getReceivingClassName() + " --> " + getMethodCallingClassName() + " : " + getReturnType();
+    return getReceiverClassName() + " --> " + getMethodCallerClassName() + " : " + getReturnType();
   }
 
 }

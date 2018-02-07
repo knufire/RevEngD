@@ -8,7 +8,7 @@ public class CommentedOutMessage extends Message {
   private String parameters;
 
   public CommentedOutMessage(SootClass methodCallingClass, SootMethod method, String parameters) {
-    super(methodCallingClass, method);
+    super(methodCallingClass, method, methodCallingClass, parameters);
     this.parameters = parameters;
   }
 
@@ -16,16 +16,15 @@ public class CommentedOutMessage extends Message {
     return parameters;
   }
   
-  @Override
   public String getPlantUMLString() {
     if (getMethodName().equals("<init>")) {
       if (getMethodCallingClass().hasSuperclass() && getMethodCallingClass().getSuperclass().equals(getMethod().getDeclaringClass())) {
-        return "'" + getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + "super()";
+        return "'" + getMethodCallerClassName() + " -> " + getReceiverClassName() + " : " + "super()";
       }
-      return "'" + getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + "new " + getReceivingClassName()
+      return "'" + getMethodCallerClassName() + " -> " + getReceiverClassName() + " : " + "new " + getReceiverClassName()
           + getParameters();
     }
-    return "'" + getMethodCallingClassName() + " -> " + getReceivingClassName() + " : " + getMethodName() + getParameters();
+    return "'" + getMethodCallerClassName() + " -> " + getReceiverClassName() + " : " + getMethodName() + getParameters();
   }
 
 }
