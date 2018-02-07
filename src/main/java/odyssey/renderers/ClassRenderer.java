@@ -94,7 +94,7 @@ public class ClassRenderer implements IClassRenderer {
   }
   
   protected String renderClassName() {
-    return clazz.getShortName();
+    return clazz.getName();
   }
 
   protected String renderClassType() {
