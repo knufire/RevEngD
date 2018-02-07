@@ -66,7 +66,9 @@ public class UMLAnalyzer extends Analyzer {
   private void parse(SootClass c, StringBuilder builder) {
     for (Pattern p : patterns) {
       if (p.contains(c)) {
-        builder.append(classRenderers.get(p.getName()).render(c, p));
+        ClassRenderer renderer = classRenderers.get(p.getName());
+        if (renderer == null) throw new RuntimeException("Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");
+        builder.append(renderer.render(c, p));
         return;
       }
     }
@@ -76,7 +78,9 @@ public class UMLAnalyzer extends Analyzer {
   private void parse(Relationship r, StringBuilder builder) {
     for (Pattern p : patterns) {
       if (p.contains(r)) {
-        builder.append(relationshipRenderers.get(p.getName()).render(r, p));
+        RelationshipRenderer renderer = relationshipRenderers.get(p.getName());
+        if (renderer == null) throw new RuntimeException("Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");
+        builder.append(renderer.render(r, p));
         return;
       }
     }
