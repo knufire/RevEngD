@@ -32,10 +32,14 @@ The project can either be run using these command line arguments and/or a proper
 ## Properties File
 The properties file consists of single flag and its arguments separated by spaces on each line.
   -mrs : The MethodResolver to use for resolving interface calls. EX: odyssey.methodresolution.ChainMethodResolver
-  -mra : The Algorithm(s) to use for resolving interface calls. EX: odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
-  --exclude-lambda : When set to true, will display functional constructs, such as lambda methods
-  -analyzers : A list of fully qualified analyzers to be added to the execution pipeline. EX: odyssey.analyzers.SingletonAnalyzer
-  -renderers : A list of fully qualified pattern renderers to be added to the UML Rendering process. EX: odyssey.renderers.SingletonRenderer
+  -mra : The Algorithm(s) to use for resolving interface calls. EX: odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm  
+  --exclude-lambda : When set to true, will display functional constructs, such as lambda methods  
+  -analyzers : A list of fully qualified analyzers to be added to the execution pipeline. EX: odyssey.analyzers.SingletonAnalyzer  
+  -filters : A list of fully qualified filters to be added to user analyzers created by the -analyzers flag. EX odyssey.filters.DollarSignFilter  
+  -messageRenderers : A list of fully qualified message renderers to be added to the Seqeunce Diagram Rendering process. EX: odyssey.renderers.MessageRenderer  
+  -classRenderers : A list of fully qualified class renderers to be added to the Seqeunce Diagram Rendering process. EX: odyssey.renderers.SingletonClassRenderer  
+  -relationshipRenderers : A list of fully qualified relationship renderers to be added to the Seqeunce Diagram Rendering process. EX: odyssey.renderers.SingletonRelationshipRenderer  
+
 
 ## Example of Running
 One way to run the project would be to build the project using gradle and run the RevEngD.bat file located in
@@ -73,6 +77,7 @@ README.MD -- Christopher
 Algorithms -- Collin/Rahul
 Patterns -- Christopher/Colling
 Refactoring -- Rahul/Collin/Christopher
+-----M4-----
 
 # Cloning the Repo
 You can clone the repo locally using Git Bash/Shell as follows:
