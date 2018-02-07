@@ -14,21 +14,24 @@ import net.sourceforge.plantuml.SourceStringReader;
 import odyssey.filters.Filter;
 import odyssey.models.Pattern;
 import odyssey.models.Relationship;
-import odyssey.renderers.PatternRenderer;
+import odyssey.renderers.ClassRenderer;
+import odyssey.renderers.RelationshipRenderer;
 import soot.SootClass;
-import soot.SootField;
-import soot.SootMethod;
 
 public class UMLAnalyzer extends Analyzer {
 
   private Path umlImageLocation;
   private List<Pattern> patterns;
-  private Map<String, PatternRenderer> renderers;
+  private Map<String, ClassRenderer> classRenderers;
+  private Map<String, RelationshipRenderer> relationshipRenderers;
 
-  public UMLAnalyzer(List<Filter> filters, Map<String, PatternRenderer> renderers) {
+  public UMLAnalyzer(List<Filter> filters, List<Pattern> patterns, Map<String, ClassRenderer> classRenderers,
+      Map<String, RelationshipRenderer> relationshipRenderers) {
     super(filters);
+    this.patterns = patterns;
+    this.classRenderers = classRenderers;
+    this.relationshipRenderers = relationshipRenderers;
     umlImageLocation = Paths.get(System.getProperty("-i"));
-    this.renderers = renderers;
   }
 
   @Override
@@ -44,37 +47,15 @@ public class UMLAnalyzer extends Analyzer {
     StringBuilder builder = new StringBuilder();
     builder.append("@startuml\n");
     builder.append("skinparam linetype ortho\n");
-    for (PatternRenderer p : renderers.values()) {
-      builder.append(p.getStyle());
+
+    // Render all classes
+    for (SootClass c : bundle.getList("classes", SootClass.class)) {
+      if (passesFilters(c)) parse(c, builder);
       builder.append("\n");
     }
-    for (SootClass c : bundle.getList("classes", SootClass.class)) {
-      if (passesFilters(c)) {
-        builder.append(UMLParser.parse(c));
-        builder.append(" ");
-        builder.append(renderPatterns(c));
-        builder.append("{");
-        builder.append("\n");
-        for (SootField f : c.getFields()) {
-          if (passesFilters(f)) {
-            builder.append("  ");
-            builder.append(UMLParser.parse(f));
-            builder.append("\n");
-          }
-        }
-        for (SootMethod m : c.getMethods()) {
-          if (passesFilters(m)) {
-            builder.append("  ");
-            builder.append(UMLParser.parse(m));
-            builder.append("\n");
-          }
-        }
-        builder.append("}\n");
-      }
-    }
+    // Render all relationships
     for (Relationship r : bundle.getList("relationships", Relationship.class)) {
-      builder.append(UMLParser.parse(r, renderPatterns(r)));
-      //builder.append((UMLParser.parse(r)));
+      parse(r, builder);
       builder.append("\n");
     }
     builder.append("@enduml\n");
@@ -82,24 +63,24 @@ public class UMLAnalyzer extends Analyzer {
     return builder.toString();
   }
 
-  private String renderPatterns(SootClass c) {
-    String rendered = "";
+  private void parse(SootClass c, StringBuilder builder) {
     for (Pattern p : patterns) {
       if (p.contains(c)) {
-        rendered += renderers.get(p.getName()).render(c, p);
+        builder.append(classRenderers.get(p.getName()).render(c, p));
+        return;
       }
     }
-    return rendered;
+    builder.append(classRenderers.get("default").render(c));
   }
-  
-  private String renderPatterns(Relationship r) {
-    String rendered = "";
-    for (Pattern p: patterns) {
+
+  private void parse(Relationship r, StringBuilder builder) {
+    for (Pattern p : patterns) {
       if (p.contains(r)) {
-        rendered = renderers.get(p.getName()).render(r, p);
+        builder.append(relationshipRenderers.get(p.getName()).render(r, p));
+        return;
       }
     }
-    return rendered;
+    builder.append(relationshipRenderers.get("default").render(r));
   }
 
   private void generateUMLImage(String umlString) {
