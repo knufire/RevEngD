@@ -17,7 +17,7 @@ public class Message {
     this.type = type;
   }
   
-  public SootClass getMethodCallingClass() {
+  public SootClass getMethodCallerClass() {
     return methodCaller;
   }
   public SootMethod getMethod() {

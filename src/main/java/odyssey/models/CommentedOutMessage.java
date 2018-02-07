@@ -18,7 +18,7 @@ public class CommentedOutMessage extends Message {
   
   public String getPlantUMLString() {
     if (getMethodName().equals("<init>")) {
-      if (getMethodCallingClass().hasSuperclass() && getMethodCallingClass().getSuperclass().equals(getMethod().getDeclaringClass())) {
+      if (getMethodCallerClass().hasSuperclass() && getMethodCallerClass().getSuperclass().equals(getMethod().getDeclaringClass())) {
         return "'" + getMethodCallerClassName() + " -> " + getReceiverClassName() + " : " + "super()";
       }
       return "'" + getMethodCallerClassName() + " -> " + getReceiverClassName() + " : " + "new " + getReceiverClassName()

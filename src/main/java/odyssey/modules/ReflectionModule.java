@@ -4,10 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Queue;
 
 import com.google.inject.AbstractModule;
@@ -19,7 +17,6 @@ import odyssey.filters.Filter;
 import odyssey.methodresolution.AggregateAlgorithm;
 import odyssey.methodresolution.AggregationStrategy;
 import odyssey.methodresolution.Algorithm;
-import odyssey.renderers.PatternRenderer;
 
 public class ReflectionModule extends AbstractModule {
 
@@ -100,30 +97,6 @@ public class ReflectionModule extends AbstractModule {
       System.err.println("Could not instantiate method resolver algorithm class.");
       e.printStackTrace();
       return null;
-    }
-  }
-
-  @Provides
-  @Named("renderers")
-  Map<String, PatternRenderer> getRenderers() {
-    Map<String, PatternRenderer> map = new HashMap<>();
-
-    try {
-      loadRenderers(map);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-
-    return map;
-  }
-
-  private void loadRenderers(Map<String, PatternRenderer> map)
-      throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-    String[] rendererNames = System.getProperty("-renderers").split(" ");
-    PatternRenderer renderer = null;
-    for (int i = 0; i < rendererNames.length; i++) {
-      renderer = (PatternRenderer) Class.forName(rendererNames[i]).newInstance();
-      map.put(renderer.getName(), renderer);
     }
   }
 
