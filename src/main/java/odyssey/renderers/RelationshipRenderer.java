@@ -28,12 +28,12 @@ public class RelationshipRenderer implements IRelationshipRenderer {
 
   @Override
   public String renderLeft(SootClass clazz) {
-    return clazz.getShortName().replaceAll("\\[\\]", "");
+    return clazz.getName().replaceAll("\\[\\]", "");
   }
 
   @Override
   public String renderRight(SootClass clazz) {
-    return clazz.getShortName().replaceAll("\\[\\]", "");
+    return clazz.getName().replaceAll("\\[\\]", "");
   }
 
   @Override
