@@ -6,6 +6,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 
+@Deprecated
 public class InheritanceOverCompositionRenderer implements PatternRenderer {
 
   @Override

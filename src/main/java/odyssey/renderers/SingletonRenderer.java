@@ -7,6 +7,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 
+@Deprecated 
 public class SingletonRenderer implements PatternRenderer {
   @Override
   public String getStyle() {
