@@ -12,11 +12,11 @@ public class RelationshipRenderer implements IRelationshipRenderer {
   @Override
   public final String render(Relationship t) {
     StringBuilder builder = new StringBuilder();
-    builder.append(renderLeft(isReverse(t.getRelation()) ? t.getFromClass() : t.getToClass()));
+    builder.append(renderLeft(isReverse(t.getRelation()) ? t.getToClass() : t.getFromClass()));
     builder.append(" ");
     builder.append(renderArrow(t.getRelation(), t.getCardinality()));
     builder.append(" ");
-    builder.append(renderRight(isReverse(t.getRelation()) ? t.getToClass() : t.getFromClass()));
+    builder.append(renderRight(isReverse(t.getRelation()) ? t.getFromClass() : t.getToClass()));
     return builder.toString();
   }
 
