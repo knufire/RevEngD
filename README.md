@@ -71,13 +71,19 @@ AssociationAnalyzer -- Collin/Rahul
 DependencyAnalyzer -- Christopher/Collin/Rahul  
 SequenceAnalyzer -- Collin/Rahul  
 Message Hirearchy -- Christopher  
-README.MD -- Christopher 
------M3-----
-README.MD -- Christopher
-Algorithms -- Collin/Rahul
-Patterns -- Christopher/Colling
-Refactoring -- Rahul/Collin/Christopher
------M4-----
+README.MD -- Christopher  
+-----M3-----  
+README.MD -- Christopher  
+Algorithms -- Collin/Rahul  
+Patterns -- Christopher/Collin  
+Refactoring -- Rahul/Collin/Christopher  
+-----M4-----  
+README.MD -- Christopher  
+ClassRenderer -- Christopher  
+RelationshipRenderer -- Rahul  
+MethodRenderer -- Collin  
+Refactoring -- Christopher/Collin/Rahul  
+
 
 # Cloning the Repo
 You can clone the repo locally using Git Bash/Shell as follows:
