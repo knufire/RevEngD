@@ -12,11 +12,11 @@ public class RelationshipRenderer implements IRelationshipRenderer {
   @Override
   public final String render(Relationship t) {
     StringBuilder builder = new StringBuilder();
-    builder.append(renderLeft(!isReverse() ? t.getFromClass() : t.getToClass()));
+    builder.append(renderLeft(!isReverse(t.getRelation()) ? t.getFromClass() : t.getToClass()));
     builder.append(" ");
     builder.append(renderArrow(t.getRelation(), t.getCardinality()));
     builder.append(" ");
-    builder.append(renderRight(!isReverse() ? t.getToClass() : t.getFromClass()));
+    builder.append(renderRight(!isReverse(t.getRelation()) ? t.getToClass() : t.getFromClass()));
     return builder.toString();
   }
 
@@ -39,7 +39,7 @@ public class RelationshipRenderer implements IRelationshipRenderer {
   @Override
   public String renderArrow(Relation relation, int cardinality) {
     StringBuilder builder = new StringBuilder();
-    if (!isReverse()) {
+    if (!isReverse(relation)) {
       builder.append(parseCardinality(cardinality));
       builder.append(" ");
       builder.append(parseArrow(relation));
@@ -102,8 +102,8 @@ public class RelationshipRenderer implements IRelationshipRenderer {
     return "\"" + cardinality + "\"";
   }
   
-  boolean isReverse() {
-    return false;
+  boolean isReverse(Relation r) {
+    return (r == Relation.IMPLEMENTS || r == Relation.EXTENDS);
   }
   
   
