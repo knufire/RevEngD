@@ -4,7 +4,9 @@ public class InheritanceOverCompositionClassRenderer extends ClassRenderer {
   
   @Override
   protected String renderClassName() {
-    return super.renderClassName() + " #orange";
+    if (pattern.getKey(clazz).equals("from"))
+      return super.renderClassName() + " #orange";
+    return super.renderClassName();
   }
   
   @Override
