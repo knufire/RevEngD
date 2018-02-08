@@ -7,7 +7,14 @@ BackgroundColor<<Decorator>> PaleGreen
 skinparam class {
 BackgroundColor<<Component>> PaleGreen
 }
+<<<<<<< HEAD
 class odyssey.app.Runner {
+=======
+skinparam class {
+BackgroundColor<<BadDecorator>> PaleGreen
+}
+class App {
+>>>>>>> 8856b750f0fae59b799a0d24764b2800da568c12
 
 + void Runner()
 + {static} void main(String[])
@@ -733,6 +740,7 @@ class odyssey.renderers.SingletonRelationshipRenderer {
 
 }
 
+<<<<<<< HEAD
 class odyssey.renderers.SingletonRenderer {
 
 + void SingletonRenderer()
@@ -742,6 +750,37 @@ class odyssey.renderers.SingletonRenderer {
 + String render(SootField,Pattern)
 + String render(Relationship,Pattern)
 + String getName()
+=======
+abstract SecurityManagerBackDoorDecorator <<Bad Decorator>> {
+# SecurityManager decorated
+# boolean isDoorOpen
+
++ void SecurityManagerBackDoorDecorator(SecurityManager)
++ {abstract} void checkAccept(String,int)
++ void checkAccess(Thread)
++ void checkAccess(ThreadGroup)
++ void checkConnect(String,int)
++ void checkConnect(String,int,Object)
++ void checkCreateClassLoader()
++ void checkDelete(String)
++ void checkExec(String)
++ void checkExit(int)
++ void checkListen(int)
++ void checkMulticast(InetAddress)
++ void checkPackageAccess(String)
++ void checkPackageDefinition(String)
++ void checkPrintJobAccess()
++ void checkPropertiesAccess()
++ void checkRead(FileDescriptor)
++ void checkSecurityAccess(String)
++ void checkSetFactory()
++ void checkWrite(FileDescriptor)
++ void checkWrite(String)
++<font color=”#FF0000”>boolean getInCheck()</font>
++<font color=”#FF0000”>Object getSecurityContext()</font>
++<font color=”#FF0000”>boolean checkTopLevelWindow(Object)</font>
++<font color=”#FF0000”>ThreadGroup getThreadGroup()</font>
+>>>>>>> 8856b750f0fae59b799a0d24764b2800da568c12
 
 }
 
