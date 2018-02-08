@@ -23,3 +23,4 @@
 -classRenderers odyssey.renderers.DIPClassRenderer odyssey.renderers.InheritanceOverCompositionClassRenderer odyssey.renderers.SingletonClassRenderer
 -relationshipRenderers odyssey.renderers.DIPRelationshipRenderer odyssey.renderers.InheritanceOverCompositionRelationshipRenderer odyssey.renderers.SingletonRelationshipRenderer
 -filters odyssey.filters.DollarSignFilter
+-uml C:/Users/Rahul/Documents/csse374_workspace/RevEngD/images/generated_uml.txt
