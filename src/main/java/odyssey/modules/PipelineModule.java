@@ -15,7 +15,6 @@ import odyssey.analyzers.AnalyzerBundle;
 import odyssey.analyzers.AncestorAnalyzer;
 import odyssey.analyzers.AssociationAnalyzer;
 import odyssey.analyzers.DependencyAnalyzer;
-import odyssey.analyzers.EmptyAnalyzer;
 import odyssey.analyzers.FileWriterAnalyzer;
 import odyssey.analyzers.InheritanceAnalyzer;
 import odyssey.analyzers.MessageAnalyzer;
@@ -63,72 +62,71 @@ public class PipelineModule extends AbstractModule {
       @Named("message_renderers") Map<String, MessageRenderer> messageRenderers,
       @Named("class_renderers") Map<String, ClassRenderer> classRenderers, @Named("Resolution") Algorithm algo) {
     List<Analyzer> pipeline = new ArrayList<>();
-    pipeline.add(createSceneAnalyzer());
-    pipeline.add(createSootAnalyzer());
-    pipeline.add(createAncestorAnalyzer());
-    pipeline.add(createInheritanceAnalyzer());
-    pipeline.add(createAssociationAnalyzer());
-    pipeline.add(createDependencyAnalyzer());
-    pipeline.add(createMessageAnalyzer(algo));
+    createSceneAnalyzer(pipeline);
+    createSootAnalyzer(pipeline);
+    createAncestorAnalyzer(pipeline);
+    createInheritanceAnalyzer(pipeline);
+    createAssociationAnalyzer(pipeline);
+    createDependencyAnalyzer(pipeline);
+    createMessageAnalyzer(algo, pipeline);
 
     pipeline.addAll(userAnalyzers);
 
-    pipeline.add(createSequenceAnalyzer(messageRenderers));
-    pipeline.add(createUMLAnalyzer(classRenderers, relationshipRenderers));
+    createSequenceAnalyzer(messageRenderers, pipeline);
+    createUMLAnalyzer(classRenderers, relationshipRenderers, pipeline);
 
-    pipeline.add(createFileWriterAnalyzer());
+    createFileWriterAnalyzer(pipeline);
     return pipeline;
   }
 
-  private Analyzer createSceneAnalyzer() {
-    return new SceneAnalyzer(Collections.emptyList());
+  private void createSceneAnalyzer(List<Analyzer> pipeline) {
+    pipeline.add(new SceneAnalyzer(Collections.emptyList()));
   }
 
-  private Analyzer createSootAnalyzer() {
+  private void createSootAnalyzer(List<Analyzer> pipeline) {
     List<Filter> sootAnalyzerFilters = new ArrayList<Filter>();
     sootAnalyzerFilters.add(new NullSuperFilter());
     sootAnalyzerFilters.add(new ClassNameFilter());
-    return new SootAnalyzer(sootAnalyzerFilters);
+    pipeline.add(new SootAnalyzer(sootAnalyzerFilters));
   }
 
-  private Analyzer createAncestorAnalyzer() {
+  private void createAncestorAnalyzer(List<Analyzer> pipeline) {
     if (Boolean.parseBoolean(System.getProperty("--include-ancestors"))) {
-      return new AncestorAnalyzer(Collections.emptyList());
+      pipeline.add(new AncestorAnalyzer(Collections.emptyList()));
     }
-    return new EmptyAnalyzer(Collections.emptyList());
   }
 
-  private Analyzer createInheritanceAnalyzer() {
+  private void createInheritanceAnalyzer(List<Analyzer> pipeline) {
     List<Filter> relationShipFilters = new ArrayList<Filter>();
     if (includeLambda) {
       relationShipFilters.add(new DollarSignFilter());
     }
     relationShipFilters.add(new RelationshipFilter(this.bundle));
-    return new InheritanceAnalyzer(relationShipFilters);
+    pipeline.add(new InheritanceAnalyzer(relationShipFilters));
   }
 
-  private Analyzer createDependencyAnalyzer() {
-    List<Filter> relationShipFilters = new ArrayList<Filter>();
-    addModifierFilter(relationShipFilters);
-    if (includeLambda) {
-      relationShipFilters.add(new DollarSignFilter());
-    }
-    relationShipFilters.add(new RelationshipFilter(this.bundle));
-    return new DependencyAnalyzer(relationShipFilters);
-  }
-
-  private Analyzer createAssociationAnalyzer() {
+  private void createDependencyAnalyzer(List<Analyzer> pipeline) {
     List<Filter> relationShipFilters = new ArrayList<Filter>();
     addModifierFilter(relationShipFilters);
     if (includeLambda) {
       relationShipFilters.add(new DollarSignFilter());
     }
     relationShipFilters.add(new RelationshipFilter(this.bundle));
-    return new AssociationAnalyzer(relationShipFilters);
+    pipeline.add(new DependencyAnalyzer(relationShipFilters));
   }
 
-  private Analyzer createUMLAnalyzer(Map<String, ClassRenderer> classRenderers,
-      Map<String, RelationshipRenderer> relationshipRenderers) {
+  private void createAssociationAnalyzer(List<Analyzer> pipeline) {
+    List<Filter> relationShipFilters = new ArrayList<Filter>();
+    addModifierFilter(relationShipFilters);
+    if (includeLambda) {
+      relationShipFilters.add(new DollarSignFilter());
+    }
+    relationShipFilters.add(new RelationshipFilter(this.bundle));
+    pipeline.add(new AssociationAnalyzer(relationShipFilters));
+  }
+
+  private void createUMLAnalyzer(Map<String, ClassRenderer> classRenderers,
+      Map<String, RelationshipRenderer> relationshipRenderers, List<Analyzer> pipeline) {
 
     List<Filter> UMLFilters = new ArrayList<Filter>();
     addModifierFilter(UMLFilters);
@@ -136,35 +134,31 @@ public class PipelineModule extends AbstractModule {
       UMLFilters.add(new DollarSignFilter());
     }
     UMLFilters.add(new ClinitFilter());
-    return new UMLAnalyzer(UMLFilters, classRenderers, relationshipRenderers);
+    pipeline.add(new UMLAnalyzer(UMLFilters, classRenderers, relationshipRenderers));
   }
 
-  private Analyzer createMessageAnalyzer(Algorithm algo) {
-    return createMessageAnalyzerHelper(algo);
+  private void createMessageAnalyzer(Algorithm algo, List<Analyzer> pipeline) {
+    if (System.getProperty("-e").length() > 0) {
+      pipeline.add(createMessageAnalyzerHelper(algo));
+    }
   }
 
   private Analyzer createMessageAnalyzerHelper(Algorithm algo) {
-    if (System.getProperty("-e").length() > 0) {
-      List<Filter> sequenceFilters = new ArrayList<Filter>();
-      addModifierFilter(sequenceFilters);
-      if (includeLambda) {
-        sequenceFilters.add(new DollarSignFilter());
-      }
-      sequenceFilters.add(new ClinitFilter());
-      if (!Boolean.parseBoolean(System.getProperty("--expand-jdk"))) {
-        sequenceFilters.add(new JDKFilter());
-      }
-      return new MessageAnalyzer(sequenceFilters, algo);
-    } else {
-      return new EmptyAnalyzer(Collections.emptyList());
+    List<Filter> sequenceFilters = new ArrayList<Filter>();
+    addModifierFilter(sequenceFilters);
+    if (includeLambda) {
+      sequenceFilters.add(new DollarSignFilter());
     }
+    sequenceFilters.add(new ClinitFilter());
+    if (!Boolean.parseBoolean(System.getProperty("--expand-jdk"))) {
+      sequenceFilters.add(new JDKFilter());
+    }
+    return new MessageAnalyzer(sequenceFilters, algo);
   }
-  
-  private Analyzer createSequenceAnalyzer(Map<String, MessageRenderer> messageRenderers) {
+
+  private void createSequenceAnalyzer(Map<String, MessageRenderer> messageRenderers, List<Analyzer> pipeline) {
     if (System.getProperty("-e").length() > 0) {
-      return new SequenceAnalyzer(Collections.emptyList(), messageRenderers);
-    } else {
-      return new EmptyAnalyzer(Collections.emptyList());
+      pipeline.add(new SequenceAnalyzer(Collections.emptyList(), messageRenderers));
     }
   }
 
@@ -185,8 +179,8 @@ public class PipelineModule extends AbstractModule {
     }
   }
 
-  private Analyzer createFileWriterAnalyzer() {
-    return new FileWriterAnalyzer(Collections.emptyList());
+  private void createFileWriterAnalyzer(List<Analyzer> pipeline) {
+    pipeline.add(new FileWriterAnalyzer(Collections.emptyList()));
   }
 
 }

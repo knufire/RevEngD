@@ -1,96 +1,81 @@
 @startuml
-App -> SecurityManagerBackdoor : new SecurityManagerBackdoor
-SecurityManagerBackdoor -> SecurityManagerBackDoorDecorator : super()
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackDoorDecorator : checkListen
-'App -> SecurityManager : checkListen
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkListen
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkListen
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkListen
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkListen
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkListen
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkListen
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkListen
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkListen
-App -> SecurityManagerBackDoorDecorator : checkDelete
-'App -> SecurityManager : checkDelete
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkDelete
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkDelete
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkDelete
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkDelete
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkDelete
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkDelete
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkDelete
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkDelete
-App -> SecurityManagerBackDoorDecorator : checkExec
-'App -> SecurityManager : checkExec
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkExec
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkExec
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkExec
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkExec
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkExec
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkExec
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkExec
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkExec
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : new SecurityManagerBackdoor
-SecurityManagerBackdoor -> SecurityManagerBackDoorDecorator : super()
+Runner -> PropertiesSetter : set(String[])
+activate PropertiesSetter
+PropertiesSetter -> PropertiesSetter : setConfig(String[])
+PropertiesSetter -> PropertiesSetter : preprocessArgs(String[])
+PropertiesSetter --> PropertiesSetter : preprocessArgs(String[])
+PropertiesSetter -> PropertiesSetter : parse(String[])
+PropertiesSetter -> ArrayListMultimap : create()
+activate ArrayListMultimap
+ArrayListMultimap --> PropertiesSetter : ArrayListMultimap
+deactivate ArrayListMultimap
+PropertiesSetter -> ArrayListMultimap : put(Object,Object)
+activate ArrayListMultimap
+ArrayListMultimap --> PropertiesSetter : boolean
+deactivate ArrayListMultimap
+PropertiesSetter -> ArrayListMultimap : put(Object,Object)
+activate ArrayListMultimap
+ArrayListMultimap --> PropertiesSetter : boolean
+deactivate ArrayListMultimap
+PropertiesSetter --> PropertiesSetter : parse(String[])
+PropertiesSetter -> PropertiesSetter : loadConfigFile(ListMultimap<String,String>)
+PropertiesSetter -> ArrayListMultimap : get(Object)
+activate ArrayListMultimap
+ArrayListMultimap --> PropertiesSetter : List
+deactivate ArrayListMultimap
+PropertiesSetter -> IdentityArrayList : get(int)
+activate IdentityArrayList
+'PropertiesSetter -> CopyOnWriteArrayList : get(int)
+'PropertiesSetter -> ArrayList : get(int)
+'PropertiesSetter -> Vector : get(int)
+'PropertiesSetter -> LinkedList : get(int)
+IdentityArrayList --> PropertiesSetter : Object
+deactivate IdentityArrayList
+PropertiesSetter --> PropertiesSetter : loadConfigFile(ListMultimap<String,String>)
+PropertiesSetter -> PropertiesSetter : setSystemProperties(InputStream)
+PropertiesSetter -> PropertiesSetter : overrideSystemProperties(ListMultimap<String,String>)
+PropertiesSetter -> ArrayListMultimap : keys()
+activate ArrayListMultimap
+ArrayListMultimap --> PropertiesSetter : Multiset
+deactivate ArrayListMultimap
+PropertiesSetter -> InvokeDynamic : accept(ListMultimap)
+activate InvokeDynamic
+InvokeDynamic --> PropertiesSetter : Consumer
+deactivate InvokeDynamic
+Runner -> PipelineModule : new PipelineModule
+Runner -> ReflectionModule : new ReflectionModule
+Runner -> RendererRelfectionModule : new RendererRelfectionModule
+Runner -> Guice : createInjector(Module[])
+activate Guice
+Guice --> Runner : Injector
+deactivate Guice
+Runner -> Processor : executePipeline()
+activate Processor
+Processor -> IdentityArrayList : get(int)
+activate IdentityArrayList
+'Processor -> CopyOnWriteArrayList : get(int)
+'Processor -> ArrayList : get(int)
+'Processor -> Vector : get(int)
+'Processor -> LinkedList : get(int)
+IdentityArrayList --> Processor : Object
+deactivate IdentityArrayList
+Processor -> EmptyAnalyzer : execute(AnalyzerBundle)
+activate EmptyAnalyzer
+'Processor -> FileWriterAnalyzer : execute(AnalyzerBundle)
+'Processor -> SceneAnalyzer : execute(AnalyzerBundle)
+'Processor -> SequenceAnalyzer : execute(AnalyzerBundle)
+'Processor -> AssociationAnalyzer : execute(AnalyzerBundle)
+'Processor -> UMLAnalyzer : execute(AnalyzerBundle)
+'Processor -> DecoratorAnalyzer : execute(AnalyzerBundle)
+'Processor -> InheritanceOverCompositionAnalyzer : execute(AnalyzerBundle)
+'Processor -> MessageAnalyzer : execute(AnalyzerBundle)
+'Processor -> SingletonAnalyzer : execute(AnalyzerBundle)
+'Processor -> SootAnalyzer : execute(AnalyzerBundle)
+'Processor -> DependencyAnalyzer : execute(AnalyzerBundle)
+'Processor -> AncestorAnalyzer : execute(AnalyzerBundle)
+'Processor -> InheritanceAnalyzer : execute(AnalyzerBundle)
+EmptyAnalyzer --> Processor : AnalyzerBundle
+deactivate EmptyAnalyzer
+Processor --> Runner : AnalyzerBundle
+deactivate Processor
 @enduml
