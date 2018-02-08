@@ -18,6 +18,7 @@ import odyssey.analyzers.DependencyAnalyzer;
 import odyssey.analyzers.EmptyAnalyzer;
 import odyssey.analyzers.FileWriterAnalyzer;
 import odyssey.analyzers.InheritanceAnalyzer;
+import odyssey.analyzers.MessageAnalyzer;
 import odyssey.analyzers.SceneAnalyzer;
 import odyssey.analyzers.SequenceAnalyzer;
 import odyssey.analyzers.SootAnalyzer;
@@ -68,9 +69,11 @@ public class PipelineModule extends AbstractModule {
     pipeline.add(createInheritanceAnalyzer());
     pipeline.add(createAssociationAnalyzer());
     pipeline.add(createDependencyAnalyzer());
+    pipeline.add(createMessageAnalyzer(algo));
+
     pipeline.addAll(userAnalyzers);
 
-    pipeline.add(createSequenceAnalyzer(algo, messageRenderers));
+    pipeline.add(createSequenceAnalyzer(messageRenderers));
     pipeline.add(createUMLAnalyzer(classRenderers, relationshipRenderers));
 
     pipeline.add(createFileWriterAnalyzer());
@@ -136,12 +139,11 @@ public class PipelineModule extends AbstractModule {
     return new UMLAnalyzer(UMLFilters, classRenderers, relationshipRenderers);
   }
 
-  private Analyzer createSequenceAnalyzer(Algorithm algo, Map<String, MessageRenderer> messageRenderers) {
-    return createSequenceAnalyzerHelper(algo, messageRenderers);
-
+  private Analyzer createMessageAnalyzer(Algorithm algo) {
+    return createMessageAnalyzerHelper(algo);
   }
 
-  private Analyzer createSequenceAnalyzerHelper(Algorithm algo, Map<String, MessageRenderer> messageRenderers) {
+  private Analyzer createMessageAnalyzerHelper(Algorithm algo) {
     if (System.getProperty("-e").length() > 0) {
       List<Filter> sequenceFilters = new ArrayList<Filter>();
       addModifierFilter(sequenceFilters);
@@ -152,7 +154,15 @@ public class PipelineModule extends AbstractModule {
       if (!Boolean.parseBoolean(System.getProperty("--expand-jdk"))) {
         sequenceFilters.add(new JDKFilter());
       }
-      return new SequenceAnalyzer(sequenceFilters, algo, messageRenderers);
+      return new MessageAnalyzer(sequenceFilters, algo);
+    } else {
+      return new EmptyAnalyzer(Collections.emptyList());
+    }
+  }
+  
+  private Analyzer createSequenceAnalyzer(Map<String, MessageRenderer> messageRenderers) {
+    if (System.getProperty("-e").length() > 0) {
+      return new SequenceAnalyzer(Collections.emptyList(), messageRenderers);
     } else {
       return new EmptyAnalyzer(Collections.emptyList());
     }
