@@ -1,9 +1,12 @@
 @startuml
 skinparam linetype ortho
-skinparam class {
- borderColor<<Singleton>> blue
-}
 
+skinparam class {
+BackgroundColor<<Decorator>> PaleGreen
+}
+skinparam class {
+BackgroundColor<<Component>> PaleGreen
+}
 class App {
 
 + void App()
@@ -11,7 +14,7 @@ class App {
 
 }
 
-class java.lang.SecurityManager {
+class java.lang.SecurityManager <<Component>> {
 # boolean inCheck
 - boolean initialized
 - {static} ThreadGroup rootGroup
@@ -91,7 +94,7 @@ interface java.lang.Appendable {
 
 
 
-abstract SecurityManagerBackDoorDecorator {
+abstract SecurityManagerBackDoorDecorator <<Decorator>> {
 # SecurityManager decorated
 # boolean isDoorOpen
 
@@ -121,7 +124,7 @@ abstract SecurityManagerBackDoorDecorator {
 
 SecurityManagerBackDoorDecorator  <|-- SecurityManagerBackdoor
 java.lang.SecurityManager  <|-- SecurityManagerBackDoorDecorator
-SecurityManagerBackDoorDecorator -->  java.lang.SecurityManager
+SecurityManagerBackDoorDecorator -[#Green]->  java.lang.SecurityManager : <<Decorates>>
 App ..>  java.lang.SecurityManager
 SecurityManagerBackdoor ..>  java.lang.SecurityManager
 App ..>  SecurityManagerBackdoor

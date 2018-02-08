@@ -17,13 +17,11 @@ public class MainMethodMatcher implements IEntryPointMatcher {
 
 	@Override
 	public boolean match(SootClass clazz) {
-	  System.out.println(clazz.toString());
 		return clazz.getName().equals(this.className);
 	}
 
 	@Override
 	public boolean match(SootMethod method) {
-	  System.out.println(method.toString());
 		if(!method.getName().equals("main"))
 			return false;
 

@@ -20,6 +20,6 @@
 --exclude-lambda true
 -uml C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_uml.txt
 -seq C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_sequence_diagram.txt
--classRenderers odyssey.renderers.SingletonClassRenderer
--analyzers odyssey.analyzers.SingletonAnalyzer
--relationshipRenderers odyssey.renderers.SingletonRelationshipRenderer
+-classRenderers odyssey.renderers.DecoratorClassRenderer
+-analyzers odyssey.analyzers.SingletonAnalyzer odyssey.analyzers.DecoratorAnalyzer
+-relationshipRenderers odyssey.renderers.DecoratorRelationshipRenderer
