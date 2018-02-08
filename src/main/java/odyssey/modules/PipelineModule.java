@@ -33,9 +33,9 @@ import odyssey.filters.ProtectedFilter;
 import odyssey.filters.PublicFilter;
 import odyssey.filters.RelationshipFilter;
 import odyssey.methodresolution.Algorithm;
-import odyssey.renderers.IClassRenderer;
-import odyssey.renderers.IMessageRenderer;
-import odyssey.renderers.IRelationshipRenderer;
+import odyssey.renderers.ClassRenderer;
+import odyssey.renderers.MessageRenderer;
+import odyssey.renderers.RelationshipRenderer;
 
 public class PipelineModule extends AbstractModule {
 
@@ -58,9 +58,9 @@ public class PipelineModule extends AbstractModule {
   @Provides
   @Named("pipeline")
   List<Analyzer> createPipeline(@Named("analyzers") Queue<Analyzer> userAnalyzers,
-      @Named("relationship_renderers") Map<String, IRelationshipRenderer> relationshipRenderers,
-      @Named("message_renderers") Map<String, IMessageRenderer> messageRenderers,
-      @Named("class_renderers") Map<String, IClassRenderer> classRenderers, @Named("Resolution") Algorithm algo) {
+      @Named("relationship_renderers") Map<String, RelationshipRenderer> relationshipRenderers,
+      @Named("message_renderers") Map<String, MessageRenderer> messageRenderers,
+      @Named("class_renderers") Map<String, ClassRenderer> classRenderers, @Named("Resolution") Algorithm algo) {
     List<Analyzer> pipeline = new ArrayList<>();
     createSceneAnalyzer(pipeline);
     createSootAnalyzer(pipeline);
@@ -125,8 +125,8 @@ public class PipelineModule extends AbstractModule {
     pipeline.add(new AssociationAnalyzer(relationShipFilters));
   }
 
-  private void createUMLAnalyzer(Map<String, IClassRenderer> classRenderers,
-      Map<String, IRelationshipRenderer> relationshipRenderers, List<Analyzer> pipeline) {
+  private void createUMLAnalyzer(Map<String, ClassRenderer> classRenderers,
+      Map<String, RelationshipRenderer> relationshipRenderers, List<Analyzer> pipeline) {
 
     List<Filter> UMLFilters = new ArrayList<Filter>();
     addModifierFilter(UMLFilters);
@@ -156,7 +156,7 @@ public class PipelineModule extends AbstractModule {
     return new MessageAnalyzer(sequenceFilters, algo);
   }
 
-  private void createSequenceAnalyzer(Map<String, IMessageRenderer> messageRenderers, List<Analyzer> pipeline) {
+  private void createSequenceAnalyzer(Map<String, MessageRenderer> messageRenderers, List<Analyzer> pipeline) {
     if (System.getProperty("-e").length() > 0) {
       pipeline.add(new SequenceAnalyzer(Collections.emptyList(), messageRenderers));
     }
