@@ -10,7 +10,6 @@ public class Message {
   private String type;
   
   public Message(SootClass methodCaller, SootMethod method, SootClass methodReceiver, String type) {
-    super();
     this.methodCaller = methodCaller;
     this.method = method;
     this.methodReceiver = methodReceiver;

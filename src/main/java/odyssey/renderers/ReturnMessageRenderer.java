@@ -6,6 +6,14 @@ public class ReturnMessageRenderer extends MessageRenderer {
 
   @Override
   public String renderMessage(SootMethod method) {
-    return parseReturnType(method);
+    if (message.getMethodCallerClass().equals(message.getReceiverClass())) {
+      return super.renderMessage(method);
+    }
+    return parseReturnType(method) + System.lineSeparator() + "deactivate " + method.getDeclaringClass().getShortName().replaceAll("\\$", "");
+  }
+
+  @Override
+  public String renderArrow() {
+    return "-->";
   }
 }

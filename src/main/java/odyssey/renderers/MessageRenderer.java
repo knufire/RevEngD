@@ -38,8 +38,6 @@ public class MessageRenderer implements IMessageRenderer {
     return render(t);
   }
 
-  
-  
   @Override
   public String renderFromClass(SootClass clazz) {
     return clazz.getShortName().replaceAll("\\$", "");
@@ -57,7 +55,10 @@ public class MessageRenderer implements IMessageRenderer {
 
   @Override
   public String renderMessage(SootMethod method) {
-    return method.getName();
+    if (message.getMethodCallerClass().equals(message.getReceiverClass())) {
+      return method.getName() + parseMethodParameters(method);
+    }
+    return method.getName() + parseMethodParameters(method) + System.lineSeparator() + "activate " + method.getDeclaringClass().getShortName().replaceAll("\\$", "");
   }
   
   @Override

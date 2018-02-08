@@ -370,4 +370,13 @@ public class SceneBuilder {
 		}
 		return c;
 	}
+
+  @Override
+  public String toString() {
+    return "SceneBuilder [classPaths=" + classPaths + ", classes=" + classes + ", dirsToProcess=" + dirsToProcess
+        + ", exclusions=" + exclusions + ", matchers=" + matchers + ", entryClassToLoad=" + entryClassToLoad
+        + ", entryMethodToLoad=" + entryMethodToLoad + ", nameToClassMap=" + nameToClassMap + "]";
+  }
+	
+	
 }
