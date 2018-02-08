@@ -29,6 +29,18 @@ public class SceneAnalyzer extends Analyzer {
       }
 
     }
+    try {
+      tokens = System.getProperty("-classPath").split("\"");
+      String classPath = "";
+      for (int i = 0; i < tokens.length; i++) {
+        classPath = tokens[i].trim();
+        if (!classPath.isEmpty()) {
+          sceneBuilder = sceneBuilder.addClassPath(classPath);
+        }
+      }
+    } catch (Exception e) {
+      // do nada
+    }
 
     String mainClassName = System.getProperty("-m");
     sceneBuilder = sceneBuilder.setEntryClass(mainClassName);

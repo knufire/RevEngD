@@ -51,12 +51,12 @@ run {
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo1.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo2.txt']
-	args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo3.txt']
+	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo3.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/BidirectionalDetector/resources/collin_config_Demo4.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo5.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo6.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo7.txt']
-	//args = ['-config', 'C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/src/main/resources/chris_config.txt']
+	args = ['-config', 'C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/src/main/resources/chris_config.txt']
 	//args = ['-config', 'C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/BidirectionalDetector/resources/chris_config.txt']
 
 }

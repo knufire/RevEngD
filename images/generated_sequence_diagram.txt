@@ -1,96 +1,13 @@
 @startuml
-App -> SecurityManagerBackdoor : new SecurityManagerBackdoor
-SecurityManagerBackdoor -> SecurityManagerBackDoorDecorator : super()
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackDoorDecorator : checkListen
-'App -> SecurityManager : checkListen
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkListen
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkListen
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkListen
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkListen
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkListen
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkListen
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkListen
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkListen
-App -> SecurityManagerBackDoorDecorator : checkDelete
-'App -> SecurityManager : checkDelete
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkDelete
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkDelete
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkDelete
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkDelete
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkDelete
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkDelete
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkDelete
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkDelete
-App -> SecurityManagerBackDoorDecorator : checkExec
-'App -> SecurityManager : checkExec
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkExec
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkExec
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkExec
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkExec
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkExec
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkExec
-SecurityManagerBackDoorDecorator -> SecurityManagerBackDoorDecorator : checkExec
-'SecurityManagerBackDoorDecorator -> SecurityManager : checkExec
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : checkAccept
-'App -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-SecurityManagerBackdoor -> SecurityManagerBackdoor : checkAccept
-'SecurityManagerBackdoor -> SecurityManager : checkAccept
-App -> SecurityManagerBackdoor : new SecurityManagerBackdoor
-SecurityManagerBackdoor -> SecurityManagerBackDoorDecorator : super()
+CheeseCakeClient -> CheeseCakeFactory : new CheeseCakeFactory
+CheeseCakeClient -> CheeseCakeUI : new CheeseCakeUI
+CheeseCakeClient -> CheeseCakeUI : show()
+activate CheeseCakeUI
+CheeseCakeUI -> CheeseCakeFactory : createCheeseCake(String)
+activate CheeseCakeFactory
+CheeseCakeFactory -> GrahamCrackerCrust : new GrahamCrackerCrust
+CheeseCakeFactory -> CreamCheese : new CreamCheese
+CheeseCakeFactory -> PlainCheeseCake : new PlainCheeseCake
+CheeseCakeFactory --> CheeseCakeUI : PlainCheeseCake
+deactivate CheeseCakeFactory
 @enduml

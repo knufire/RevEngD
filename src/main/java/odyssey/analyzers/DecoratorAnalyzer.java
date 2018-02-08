@@ -24,6 +24,9 @@ public class DecoratorAnalyzer extends Analyzer {
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<SootClass> classes = bundle.getList("classes", SootClass.class);
+
+    classes.forEach(c -> System.out.println(c));
+
     relationships = bundle.getList("relationships", Relationship.class);
     addClassesToPatterns(classes, patterns);
     return bundle;
@@ -37,6 +40,9 @@ public class DecoratorAnalyzer extends Analyzer {
 
   private void addClassToPattern(SootClass c, List<Pattern> patterns) {
     if (!passesFilters(c)) {
+      return;
+    }
+    if (!c.hasSuperclass()) {
       return;
     }
     if (c.getSuperclass().getName().equals("java.lang.Object")) {
@@ -94,7 +100,10 @@ public class DecoratorAnalyzer extends Analyzer {
     Pattern p = new Pattern("decorator");
     p.put("component", decorated);
     p.put("badDecorator", c);
-    p.put("decorates", findDecoratorRelationship(c, decorated));
+    Relationship r = findDecoratorRelationship(c, decorated);
+    if (r != null) {
+      p.put("decorates", findDecoratorRelationship(c, decorated));
+    }
     String methodKey = c.getName() + " badMethod";
     missingMethods.forEach(m -> p.put(methodKey, m));
     return p;
@@ -104,22 +113,23 @@ public class DecoratorAnalyzer extends Analyzer {
     Pattern p = new Pattern("decorator");
     p.put("component", decorated);
     p.put("decorator", c);
-    p.put("decorates", findDecoratorRelationship(c, decorated));
+    Relationship r = findDecoratorRelationship(c, decorated);
+    if (r != null) {
+      p.put("decorates", findDecoratorRelationship(c, decorated));
+    }
     return p;
   }
 
   private Relationship findDecoratorRelationship(SootClass c, SootClass decorated) {
     for (Relationship r : relationships) {
-      // System.out.println(r);
-      // System.out.println("\t " + c);
-      // System.out.println("\t" + decorated.getShortName());
-      // System.out.println();
       if (r.getFromClass().equals(c) && r.getToClass().equals(decorated)) {
         if (r.getRelation().equals(Relation.ASSOCIATION)) {
           return r;
         }
       }
     }
-    throw new RuntimeException("Could not find a relationship for this Decorator " + c.getName());
+    return null;
+    // throw new RuntimeException("Could not find a relationship for this
+    // Decorator " + c.getName());
   }
 }
