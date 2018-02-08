@@ -1,7 +1,9 @@
 package odyssey.analyzers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import odyssey.filters.Filter;
 import odyssey.models.Pattern;
@@ -9,11 +11,14 @@ import odyssey.models.Relation;
 import odyssey.models.Relationship;
 import soot.Body;
 import soot.SootClass;
+import soot.SootField;
 import soot.SootMethod;
 import soot.Unit;
+import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
+import soot.util.Chain;
 
 public class InheritanceOverCompositionAnalyzer extends Analyzer {
 
@@ -44,19 +49,33 @@ public class InheritanceOverCompositionAnalyzer extends Analyzer {
     SootClass subClass = r.getFromClass();
     List<SootMethod> overriddenMethods = getOverriddenMethods(superClass, subClass);
     for (SootMethod m : overriddenMethods) {
-      if (!delagatesCall(m)) return true;
+      if (!delagatesCall(m)) {
+//        System.out.println("Violation: " + subClass + "\t Method: " + m);
+        return true;
+      }
+      
     }
+//    System.out.println("No violation: " + subClass);
     return false;
   }
 
   private boolean delagatesCall(SootMethod m) {
+    if (m.getSubSignature().contains("<init>")) return true;
     if (!m.hasActiveBody()) return true;
     Body body = m.getActiveBody();
     UnitGraph graph = new ExceptionalUnitGraph(body);
     for (Unit u : graph) {
       if (u instanceof InvokeStmt) {
         InvokeStmt stmt = (InvokeStmt) u;
-        if (stmt.containsFieldRef()) return true;
+        InvokeExpr expr = stmt.getInvokeExpr();
+        SootClass target = expr.getMethod().getDeclaringClass();
+        Chain<SootField> fields = m.getDeclaringClass().getFields();
+        for (SootField f : fields) {
+          if (f.getType().equals(target.getType())) {
+//            System.out.println("Types equal: " + f.getType());
+            return true;
+          }
+        }
       }
     }
     return false;
@@ -64,8 +83,18 @@ public class InheritanceOverCompositionAnalyzer extends Analyzer {
 
   private List<SootMethod> getOverriddenMethods(SootClass superClass, SootClass subClass) {
     List<SootMethod> result = new ArrayList<>();
-    result.addAll(subClass.getMethods());
-    result.retainAll(superClass.getMethods());
+//    System.out.print("Subclass Methods: ");
+//    subClass.getMethods().forEach(m -> System.out.print(m.getSubSignature() + " "));
+//    System.out.println();
+//    System.out.print("Superclass Methods: ");
+//    superClass.getMethods().forEach(m -> System.out.print(m.getSubSignature() + " "));
+//    System.out.println();
+    Map<String, SootMethod> methods = new HashMap<>();
+    subClass.getMethods().forEach(m -> methods.put(m.getSubSignature(), m));
+    for (SootMethod m : superClass.getMethods()) {
+      if (methods.containsKey(m.getSubSignature())) 
+        result.add(methods.get(m.getSubSignature()));
+    }
     return result;
   }
 
