@@ -7,14 +7,10 @@ BackgroundColor<<Decorator>> PaleGreen
 skinparam class {
 BackgroundColor<<Component>> PaleGreen
 }
-<<<<<<< HEAD
-class odyssey.app.Runner {
-=======
 skinparam class {
 BackgroundColor<<BadDecorator>> PaleGreen
 }
-class App {
->>>>>>> 8856b750f0fae59b799a0d24764b2800da568c12
+class odyssey.app.Runner {
 
 + void Runner()
 + {static} void main(String[])
@@ -317,10 +313,17 @@ class odyssey.analyzers.DecoratorAnalyzer {
 - void addClassesToPatterns(List<SootClass>,List<Pattern>)
 - void addClassToPattern(SootClass,List<Pattern>)
 - SootClass typeOfDecoratedObject(SootClass)
-- boolean isBadDecorator(SootClass)
-- Pattern createBadDecoratorPattern(SootClass)
+- List<SootMethod> findMissingMethods(SootClass,SootClass)
+- List<SootMethod> getDeclaredMethods(SootClass)
+- List<SootMethod> getMissingMethods(List<SootMethod>,SootClass)
+- boolean methodMatches(SootMethod,List<SootMethod>)
+- Pattern createBadDecoratorPattern(SootClass,SootClass,List<SootMethod>)
 - Pattern createRegularDecoratorPattern(SootClass,SootClass)
 - Relationship findDecoratorRelationship(SootClass,SootClass)
+- {static} void lambda$createBadDecoratorPattern$4(Pattern,String,SootMethod)
+- boolean lambda$getMissingMethods$3(List,SootMethod)
+- {static} boolean lambda$getMissingMethods$2(SootMethod)
+- {static} boolean lambda$getDeclaredMethods$1(SootClass,SootMethod)
 - void lambda$addClassesToPatterns$0(List,SootClass)
 
 }
@@ -346,13 +349,6 @@ class odyssey.analyzers.DependencyAnalyzer {
 - void addRelations(List<Relationship>)
 - void lambda$checkBody$1(SootClass,Unit)
 - void lambda$generateDependencyRelationships$0(SootClass,SootMethod)
-
-}
-
-class odyssey.analyzers.EmptyAnalyzer {
-
-+ void EmptyAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
 
 }
 
@@ -656,6 +652,9 @@ class odyssey.renderers.DecoratorClassRenderer {
 + String getName()
 + String renderStyle()
 # String renderClassName()
+# String renderMethods()
+- void lambda$renderMethods$1(StringBuilder,SootMethod)
+- void lambda$renderMethods$0(StringBuilder,SootMethod)
 
 }
 
@@ -740,7 +739,6 @@ class odyssey.renderers.SingletonRelationshipRenderer {
 
 }
 
-<<<<<<< HEAD
 class odyssey.renderers.SingletonRenderer {
 
 + void SingletonRenderer()
@@ -750,37 +748,6 @@ class odyssey.renderers.SingletonRenderer {
 + String render(SootField,Pattern)
 + String render(Relationship,Pattern)
 + String getName()
-=======
-abstract SecurityManagerBackDoorDecorator <<Bad Decorator>> {
-# SecurityManager decorated
-# boolean isDoorOpen
-
-+ void SecurityManagerBackDoorDecorator(SecurityManager)
-+ {abstract} void checkAccept(String,int)
-+ void checkAccess(Thread)
-+ void checkAccess(ThreadGroup)
-+ void checkConnect(String,int)
-+ void checkConnect(String,int,Object)
-+ void checkCreateClassLoader()
-+ void checkDelete(String)
-+ void checkExec(String)
-+ void checkExit(int)
-+ void checkListen(int)
-+ void checkMulticast(InetAddress)
-+ void checkPackageAccess(String)
-+ void checkPackageDefinition(String)
-+ void checkPrintJobAccess()
-+ void checkPropertiesAccess()
-+ void checkRead(FileDescriptor)
-+ void checkSecurityAccess(String)
-+ void checkSetFactory()
-+ void checkWrite(FileDescriptor)
-+ void checkWrite(String)
-+<font color=”#FF0000”>boolean getInCheck()</font>
-+<font color=”#FF0000”>Object getSecurityContext()</font>
-+<font color=”#FF0000”>boolean checkTopLevelWindow(Object)</font>
-+<font color=”#FF0000”>ThreadGroup getThreadGroup()</font>
->>>>>>> 8856b750f0fae59b799a0d24764b2800da568c12
 
 }
 
@@ -794,7 +761,6 @@ odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.AncestorAnalyzer
 odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.AssociationAnalyzer
 odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.DecoratorAnalyzer
 odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.DependencyAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.EmptyAnalyzer
 odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.FileWriterAnalyzer
 odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.InheritanceAnalyzer
 odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.InheritanceOverCompositionAnalyzer
@@ -856,68 +822,66 @@ odyssey.analyzers.UMLAnalyzer --> "1..*" odyssey.renderers.RelationshipRenderer
 odyssey.filters.RelationshipFilter -->  odyssey.analyzers.AnalyzerBundle
 odyssey.methodresolution.AggregateAlgorithm --> "1..*" odyssey.methodresolution.Algorithm
 odyssey.methodresolution.AggregateAlgorithm -->  odyssey.methodresolution.AggregationStrategy
-odyssey.analyzers.InheritanceAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.UMLParser ..>  odyssey.models.Relation
-odyssey.renderers.InheritanceOverCompositionRenderer ..>  odyssey.models.Relationship
-odyssey.app.Runner ..>  odyssey.app.PropertiesSetter
-odyssey.renderers.RelationshipRenderer ..>  odyssey.models.Relationship
-odyssey.renderers.Renderer ..>  odyssey.models.Pattern
-odyssey.analyzers.DependencyAnalyzer ..>  odyssey.models.Relation
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..> "1..*" odyssey.models.Relationship
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.models.Relationship
-odyssey.analyzers.InheritanceAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.DecoratorAnalyzer ..> "1..*" odyssey.models.Pattern
-odyssey.analyzers.DecoratorAnalyzer ..>  odyssey.models.Pattern
-odyssey.analyzers.SequenceAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.methodresolution.IntersectionMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
-odyssey.analyzers.Analyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.methodresolution.UnionMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
-odyssey.analyzers.EmptyAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.EmptyAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.AssociationAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.MessageAnalyzer ..>  odyssey.models.Message
-odyssey.analyzers.DecoratorAnalyzer ..>  odyssey.models.Relation
+odyssey.analyzers.InheritanceOverCompositionAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.methodresolution.AggregationStrategy ..> "1..*" odyssey.methodresolution.Algorithm
 odyssey.analyzers.InheritanceOverCompositionAnalyzer ..> "1..*" odyssey.models.Pattern
 odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.models.Pattern
-odyssey.analyzers.UMLAnalyzer ..>  odyssey.models.Relationship
-odyssey.analyzers.SceneAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.DecoratorAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.renderers.PatternRenderer ..>  odyssey.models.Pattern
-odyssey.analyzers.DecoratorAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.models.Relation
-odyssey.analyzers.UMLAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.UMLParser ..>  odyssey.models.Relationship
+odyssey.renderers.SingletonRenderer ..>  odyssey.models.Relation
+odyssey.analyzers.AncestorAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.analyzers.SequenceAnalyzer ..> "1..*" odyssey.filters.Filter
 odyssey.analyzers.AssociationAnalyzer ..>  odyssey.models.Relation
+odyssey.app.Runner ..>  odyssey.app.Processor
 odyssey.analyzers.AncestorAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.methodresolution.ChainMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
-odyssey.analyzers.FileWriterAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.FileWriterAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.UMLAnalyzer ..> "1..*" odyssey.filters.Filter
 odyssey.analyzers.MessageAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.analyzers.DependencyAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.analyzers.SootAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.analyzers.InheritanceOverCompositionAnalyzer ..> "1..*" odyssey.models.Relationship
+odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.models.Relationship
+odyssey.analyzers.DependencyAnalyzer ..>  odyssey.models.Relation
+odyssey.renderers.InheritanceOverCompositionRenderer ..>  odyssey.models.Pattern
+odyssey.analyzers.SceneAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.analyzers.SingletonAnalyzer ..> "1..*" odyssey.models.Relationship
+odyssey.analyzers.SingletonAnalyzer ..>  odyssey.models.Relationship
+odyssey.analyzers.AssociationAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.analyzers.DecoratorAnalyzer ..>  odyssey.models.Relation
+odyssey.analyzers.InheritanceAnalyzer ..> "1..*" odyssey.models.Relationship
+odyssey.analyzers.InheritanceAnalyzer ..>  odyssey.models.Relationship
+odyssey.renderers.SingletonRelationshipRenderer ..>  odyssey.models.Relation
+odyssey.methodresolution.IntersectionMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
+odyssey.renderers.SingletonRenderer ..>  odyssey.models.Pattern
+odyssey.analyzers.UMLParser ..>  odyssey.models.Relationship
+odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.models.Relation
+odyssey.analyzers.DecoratorAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.renderers.RelationshipRenderer ..>  odyssey.models.Relationship
+odyssey.methodresolution.UnionMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
+odyssey.analyzers.InheritanceAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.analyzers.Analyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.analyzers.SingletonAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.analyzers.InheritanceAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.renderers.InheritanceOverCompositionRenderer ..>  odyssey.models.Relationship
+odyssey.renderers.RelationshipRenderer ..>  odyssey.models.Relation
+odyssey.analyzers.DecoratorAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.analyzers.DecoratorAnalyzer ..> "1..*" odyssey.models.Pattern
+odyssey.analyzers.DecoratorAnalyzer ..>  odyssey.models.Pattern
+odyssey.analyzers.FileWriterAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.analyzers.SingletonAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.renderers.PatternRenderer ..>  odyssey.models.Relationship
+odyssey.app.Runner ..>  odyssey.app.PropertiesSetter
+odyssey.analyzers.UMLAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.renderers.PatternRenderer ..>  odyssey.models.Pattern
+odyssey.analyzers.UMLAnalyzer ..>  odyssey.models.Relationship
+odyssey.renderers.IRelationshipRenderer ..>  odyssey.models.Relation
+odyssey.renderers.SingletonRenderer ..>  odyssey.models.Relationship
+odyssey.analyzers.SceneAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.analyzers.UMLParser ..>  odyssey.models.Relation
+odyssey.methodresolution.ChainMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
 odyssey.analyzers.SingletonAnalyzer ..>  odyssey.models.Pattern
 odyssey.analyzers.AssociationAnalyzer ..> "1..*" odyssey.models.Relationship
 odyssey.analyzers.AssociationAnalyzer ..>  odyssey.models.Relationship
-odyssey.renderers.SingletonRenderer ..>  odyssey.models.Relationship
-odyssey.analyzers.DependencyAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.AncestorAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.renderers.SingletonRenderer ..>  odyssey.models.Pattern
-odyssey.app.Runner ..>  odyssey.app.Processor
-odyssey.renderers.IRelationshipRenderer ..>  odyssey.models.Relation
-odyssey.analyzers.InheritanceAnalyzer ..> "1..*" odyssey.models.Relationship
-odyssey.analyzers.InheritanceAnalyzer ..>  odyssey.models.Relationship
-odyssey.analyzers.SingletonAnalyzer ..> "1..*" odyssey.models.Relationship
-odyssey.analyzers.SingletonAnalyzer ..>  odyssey.models.Relationship
-odyssey.analyzers.SceneAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.renderers.SingletonRenderer ..>  odyssey.models.Relation
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.SingletonAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
 odyssey.analyzers.SootAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.renderers.InheritanceOverCompositionRenderer ..>  odyssey.models.Pattern
-odyssey.renderers.RelationshipRenderer ..>  odyssey.models.Relation
-odyssey.renderers.PatternRenderer ..>  odyssey.models.Relationship
-odyssey.analyzers.SingletonAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.SootAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.methodresolution.AggregationStrategy ..> "1..*" odyssey.methodresolution.Algorithm
-odyssey.renderers.SingletonRelationshipRenderer ..>  odyssey.models.Relation
+odyssey.renderers.Renderer ..>  odyssey.models.Pattern
+odyssey.analyzers.UMLAnalyzer ..> "1..*" odyssey.filters.Filter
+odyssey.analyzers.FileWriterAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
+odyssey.analyzers.MessageAnalyzer ..>  odyssey.models.Message
 @enduml
