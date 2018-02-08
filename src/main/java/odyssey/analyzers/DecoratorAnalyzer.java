@@ -63,11 +63,15 @@ public class DecoratorAnalyzer extends Analyzer {
 
   private SootClass typeOfDecoratedObject(SootClass c) {
     Chain<SootField> fields = c.getFields();
-    Type t = c.getSuperclass().getType();
+    SootClass superClass = c.getSuperclass();
+    Type t = superClass.getType();
     for (SootField f : fields) {
       if (f.getType().equals(t)) {
         return c.getSuperclass();
       }
+    }
+    if (superClass.hasSuperclass()) {
+      return typeOfDecoratedObject(superClass);
     }
     return null;
   }
