@@ -9,7 +9,7 @@ public class ReturnMessageRenderer extends MessageRenderer {
     if (message.getMethodCallerClass().equals(message.getReceiverClass())) {
       return super.renderMessage(method);
     }
-    return parseReturnType(method) + System.lineSeparator() + "deactivate " + method.getDeclaringClass().getShortName();
+    return parseReturnType(method) + System.lineSeparator() + "deactivate " + method.getDeclaringClass().getShortName().replaceAll("\\$", "");
   }
 
   @Override

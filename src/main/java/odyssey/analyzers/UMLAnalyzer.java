@@ -76,7 +76,7 @@ public class UMLAnalyzer extends Analyzer {
         Renderer<SootClass> renderer = classRenderers.get(p.getName());
         if (renderer == null)
           throw new RuntimeException(
-              "Class or Relationship matched a pattern, but no renderer was found for the associated pattern.");
+              "Class or Relationship matched a pattern, but no renderer was found for the associated pattern : " + p.getName());
         builder.append(renderer.render(c, p));
         return;
       }

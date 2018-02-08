@@ -48,7 +48,7 @@ mainClassName = "odyssey.app.Runner"
 applicationDefaultJvmArgs = ["-Xms512m", "-Xmx1024m"]
 run {
 	standardInput = System.in
-	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config.txt']
+	args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo1.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo2.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo3.txt']
