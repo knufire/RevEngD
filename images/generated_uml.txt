@@ -4,810 +4,125 @@ skinparam class {
  borderColor<<Singleton>> blue
 }
 
-class odyssey.app.Runner {
+class App {
 
-+ void Runner()
++ void App()
 + {static} void main(String[])
 
 }
 
-class odyssey.app.PropertiesSetter {
-- {static} String DEFAULT_CONFIG
+class java.lang.SecurityManager {
+# boolean inCheck
+- boolean initialized
+- {static} ThreadGroup rootGroup
+- {static} boolean packageAccessValid
+- {static} String[] packageAccess
+- {static} Object packageAccessLock
+- {static} boolean packageDefinitionValid
+- {static} String[] packageDefinition
+- {static} Object packageDefinitionLock
 
-+ void PropertiesSetter()
-~ {static} void set(String[])
-- {static} void setConfig(String[])
-- {static} String[] preprocessArgs(String[])
-- {static} ListMultimap<String,String> parse(String[])
-- {static} InputStream loadConfigFile(ListMultimap<String,String>)
-- {static} void setSystemProperties(InputStream)
-- {static} void overrideSystemProperties(ListMultimap<String,String>)
-- {static} String processesCLArgs(List<String>)
-- {static} void lambda$processesCLArgs$1(StringBuilder,String)
-- {static} void lambda$overrideSystemProperties$0(ListMultimap,String)
-
-}
-
-class odyssey.analyzers.AnalyzerBundle {
-- Map<String,Object> bundle
-
-+ void AnalyzerBundle()
-+ Object get(String,Class)
-+ void put(String,Object)
-+ List getList(String,Class)
-
-}
-
-class odyssey.app.Processor {
-- List<Analyzer> pipeline
-- AnalyzerBundle bundle
-
-~ void Processor(List<Analyzer>,AnalyzerBundle)
-+ AnalyzerBundle executePipeline()
-
-}
-
-class odyssey.renderers.ClassRenderer {
-# Pattern pattern
-# SootClass clazz
-
-+ void ClassRenderer()
-+ String render(SootClass)
-+ String getName()
-+ String render(SootClass,Pattern)
-+ String renderMethod(SootMethod)
-+ String renderField(SootField)
-+ String renderStyle()
-# String renderClassName()
-# String renderClassType()
-# String getClassType()
-# String renderFields()
-# String renderMethods()
-# String parseReturnType(SootMethod)
-# String parseMethodName(SootMethod)
-# String parseMethodParameters(SootMethod)
-# String parse(Collection<GenericType>)
-# String parse(List<Type>)
-# String getAccessModifier(int)
-# String getStaticAbstractModifier(int)
-# String renderGenericType(GenericType)
-# String renderStandardType(Type)
-# String trimQualifiedName(String)
-+ String render(Object,Pattern)
-+ String render(Object)
-- void lambda$renderMethods$1(StringBuilder,SootMethod)
-- void lambda$renderFields$0(StringBuilder,SootField)
-
-}
-
-class odyssey.renderers.MessageRenderer {
-# Message message
-# Pattern pattern
-
-+ void MessageRenderer()
-+ String render(Message)
-+ String render(Message,Pattern)
-+ String renderFromClass(SootClass)
-+ String renderToClass(SootClass)
-+ String renderArrow()
-+ String renderMessage(SootMethod)
-+ String getName()
-# String parseReturnType(SootMethod)
-# String parse(GenericType)
-# String parse(Type)
-# String trimQualifiedName(String)
-# String parseMethodParameters(SootMethod)
-# String parse(Collection<GenericType>)
-# String parse(List<Type>)
-+ String render(Object,Pattern)
-+ String render(Object)
-
-}
-
-class odyssey.renderers.RelationshipRenderer {
-# Pattern pattern
-
-+ void RelationshipRenderer()
-+ String render(Relationship)
-+ String render(Relationship,Pattern)
-+ String renderLeft(SootClass)
-+ String renderRight(SootClass)
-+ String renderArrow(Relation,int)
-+ String getName()
-# String parseArrow(Relation)
-# String parseBackwardsArrow(Relation)
-# String renderArrowStyle()
-# String parseCardinality(int)
-~ boolean isReverse(Relation)
-+ String render(Object,Pattern)
-+ String render(Object)
-
-}
-
-interface odyssey.methodresolution.Algorithm {
-
-+ {abstract} List<SootMethod> resolve(Unit,SootMethod,Scene)
-
-}
-
-abstract odyssey.analyzers.Analyzer {
-~ List<Filter> filters
-
-# void Analyzer(List<Filter>)
-+ {abstract} AnalyzerBundle execute(AnalyzerBundle)
-+ void addFilter(Filter)
-# boolean passesFilters(SootClass)
-# boolean passesFilters(SootMethod)
-# boolean passesFilters(SootField)
-
-}
-
-interface odyssey.filters.Filter {
-
-+ {abstract} boolean shouldProcess(SootClass)
-+ {abstract} boolean shouldProcess(SootMethod)
-+ {abstract} boolean shouldProcess(SootField)
-
-}
-
-interface odyssey.renderers.IClassRenderer {
-
-+ {abstract} String renderMethod(SootMethod)
-+ {abstract} String renderField(SootField)
-+ {abstract} String renderStyle()
-
-}
-
-class odyssey.models.Pattern {
-- SetMultimap<String,Relationship> keyToRelationships
-- SetMultimap<String,SootClass> keyToClass
-- String name
-
-+ void Pattern(String)
-+ Set<Relationship> getRelationships(String)
-+ Set<SootClass> getClasses(String)
-+ boolean contains(Relationship)
-+ String getKey(Relationship)
-+ String getKey(SootClass)
-+ String getName()
-+ void put(String,SootClass)
-+ void put(String,Relationship)
-+ void setName(String)
-+ boolean contains(SootClass)
-
-}
-
-interface odyssey.renderers.IMessageRenderer {
-
-+ {abstract} String renderFromClass(SootClass)
-+ {abstract} String renderToClass(SootClass)
-+ {abstract} String renderArrow()
-+ {abstract} String renderMessage(SootMethod)
-
-}
-
-class odyssey.models.Message {
-- SootClass methodCaller
-- SootClass methodReceiver
-- SootMethod method
-- String type
-
-+ void Message(SootClass,SootMethod,SootClass,String)
-+ SootClass getMethodCallerClass()
-+ SootMethod getMethod()
-+ SootClass getReceiverClass()
-+ String getMethodCallerClassName()
-+ String getReceiverClassName()
-+ String getMethodName()
-+ String getType()
-+ String toString()
-
-}
-
-interface odyssey.renderers.IRelationshipRenderer {
-
-+ {abstract} String renderLeft(SootClass)
-+ {abstract} String renderRight(SootClass)
-+ {abstract} String renderArrow(Relation,int)
-
-}
-
-class odyssey.models.Relationship {
-- SootClass from
-- SootClass to
-- Relation relation
-- int cardinality
-
-+ void Relationship(SootClass,Relation,SootClass,int)
-+ SootClass getFromClass()
-+ SootClass getToClass()
-+ Relation getRelation()
-+ int getCardinality()
-+ String toString()
-+ int hashCode()
-+ boolean equals(Object)
-
-}
-
-enum odyssey.models.Relation <<Singleton>> {
-+ {static} Relation ASSOCIATION
-+ {static} Relation EXTENDS
-+ {static} Relation IMPLEMENTS
-+ {static} Relation DEPENDENCY
-- {static} Relation[] $VALUES
-
-+ {static} Relation[] values()
-+ {static} Relation valueOf(String)
-- void Relation)
+- boolean hasAllPermission()
++ boolean getInCheck()
++ void SecurityManager()
+# Class[] getClassContext()
+# ClassLoader currentClassLoader()
+- ClassLoader currentClassLoader0()
+# Class<*> currentLoadedClass)
+# int classDepth(String)
+# int classLoaderDepth()
+- int classLoaderDepth0()
+# boolean inClass(String)
+# boolean inClassLoader()
++ Object getSecurityContext()
++ void checkPermission(Permission)
++ void checkPermission(Permission,Object)
++ void checkCreateClassLoader()
+- {static} ThreadGroup getRootGroup()
++ void checkAccess(Thread)
++ void checkAccess(ThreadGroup)
++ void checkExit(int)
++ void checkExec(String)
++ void checkLink(String)
++ void checkRead(FileDescriptor)
++ void checkRead(String)
++ void checkRead(String,Object)
++ void checkWrite(FileDescriptor)
++ void checkWrite(String)
++ void checkDelete(String)
++ void checkConnect(String,int)
++ void checkConnect(String,int,Object)
++ void checkListen(int)
++ void checkAccept(String,int)
++ void checkMulticast(InetAddress)
++ void checkMulticast(InetAddress,byte)
++ void checkPropertiesAccess()
++ void checkPropertyAccess(String)
++ boolean checkTopLevelWindow(Object)
++ void checkPrintJobAccess()
++ void checkSystemClipboardAccess()
++ void checkAwtEventQueueAccess()
+- {static} String[] getPackages(String)
++ void checkPackageAccess(String)
++ void checkPackageDefinition(String)
++ void checkSetFactory()
++ void checkMemberAccess(Class<*>,int)
++ void checkSecurityAccess(String)
+- Class<*> currentLoadedClass0)
++ ThreadGroup getThreadGroup()
 ~ {static} void <clinit>()
 
 }
 
+class SecurityManagerBackdoor {
 
-interface odyssey.renderers.Renderer {
-
-+ {abstract} String render(Object)
-+ {abstract} String render(Object,Pattern)
-+ {abstract} String getName()
++ void SecurityManagerBackdoor(SecurityManager)
++ void checkAccept(String,int)
 
 }
 
-class demos.EagerChocolateBoiler <<Singleton>> {
-- {static} EagerChocolateBoiler boiler
+interface java.lang.Appendable {
 
-- void EagerChocolateBoiler()
-+ {static} EagerChocolateBoiler getInstance()
-~ {static} void <clinit>()
-
-}
-
-class demos.LazyChocolateBoiler <<Singleton>> {
-- {static} LazyChocolateBoiler boiler
-
-- void LazyChocolateBoiler()
-+ {static} LazyChocolateBoiler getInstance()
-~ {static} void <clinit>()
-
-}
-
-class odyssey.analyzers.AncestorAnalyzer {
-- Set<SootClass> processedClasses
-
-+ void AncestorAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- void ancestorHelper(SootClass)
-
-}
-
-class odyssey.analyzers.AssociationAnalyzer {
-~ AnalyzerBundle bundle
-
-+ void AssociationAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- void generateAssociationRelationships(SootClass,List<Relationship>)
-- void addRelationship(Relationship)
-
-}
-
-class odyssey.analyzers.DependencyAnalyzer {
-- AnalyzerBundle bundle
-- Set<Relationship> relationships
-- Scene scene
-
-+ void DependencyAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- void generateDependencyRelationships(SootClass)
-- void evaluateMethodUsingTag(SootClass,Tag)
-- void processGenericType(SootClass,GenericType)
-- void evaluateSootParameters(SootClass,List<Type>)
-- void checkBody(SootClass,Body)
-- void processInvokeStmt(SootClass,InvokeStmt)
-- void processInvokeExpr(SootClass,InvokeExpr)
-- boolean isArray(Type)
-- void processReturnType(SootClass,SootMethod)
-- void processNewExpr(SootClass,NewExpr)
-- void addRelationship(SootClass,SootClass,int)
-- void addRelations(List<Relationship>)
-- void lambda$checkBody$1(SootClass,Unit)
-- void lambda$generateDependencyRelationships$0(SootClass,SootMethod)
-
-}
-
-class odyssey.analyzers.EmptyAnalyzer {
-
-+ void EmptyAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-
-}
-
-class odyssey.analyzers.FileWriterAnalyzer {
-
-+ void FileWriterAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- void writeStringToFile(String,String)
-- void writeFile(String,String)
-
-}
-
-class odyssey.analyzers.InheritanceAnalyzer {
-
-+ void InheritanceAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- void generateExtendsRelationships(SootClass,List<Relationship>)
-- void generateImplementsRelationships(SootClass,List<Relationship>)
-
-}
-
-class odyssey.analyzers.InheritanceOverCompositionAnalyzer {
-
-# void InheritanceOverCompositionAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- void checkRelationships(List<Pattern>,List<Relationship>)
-
-}
-
-class odyssey.analyzers.SceneAnalyzer {
-
-+ void SceneAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-
-}
-
-class odyssey.analyzers.SequenceAnalyzer {
-- AnalyzerBundle bundle
-- int maxCallDepth
-- boolean showSuper
-- Path seqImageLocation
-- Algorithm resolver
-- Map<String,MessageRenderer> messageRenderers
-
-+ void SequenceAnalyzer(List<Filter>,Algorithm,Map<String,MessageRenderer>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- void processMethod(SootMethod,int)
-- void processCommentedOutMessages(List<SootMethod>,SootMethod)
-- void createCommentedOutMessage(SootMethod,SootMethod)
-- void createCallMessage(SootMethod,SootMethod)
-- boolean isSuperCall(SootMethod,SootMethod)
-- String parseCalls()
-- void generateSeqImage(String)
-
-}
-
-class odyssey.analyzers.SingletonAnalyzer {
-
-+ void SingletonAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- boolean hasGetInstance(SootClass)
-- boolean privateConstructor(SootClass)
-- boolean hasInstanceField(SootClass)
-- Relationship createRelationship(List<Relationship>,SootClass)
-
-}
-
-class odyssey.analyzers.SootAnalyzer {
-- Scene scene
-
-+ void SootAnalyzer(List<Filter>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-
-}
-
-class odyssey.analyzers.UMLAnalyzer {
-- Path umlImageLocation
-- List<Pattern> patterns
-- Map<String,ClassRenderer> classRenderers
-- Map<String,RelationshipRenderer> relationshipRenderers
-
-+ void UMLAnalyzer(List<Filter>,Map<String,ClassRenderer>,Map<String,RelationshipRenderer>)
-+ AnalyzerBundle execute(AnalyzerBundle)
-- String parse(AnalyzerBundle)
-- void parse(SootClass,StringBuilder)
-- void parse(Relationship,StringBuilder)
-- void generateUMLImage(String)
++ {abstract} Appendable append(CharSequence)
++ {abstract} Appendable append(CharSequence,int,int)
++ {abstract} Appendable append(char)
 
 }
 
 
-class odyssey.analyzers.UMLParser {
 
-+ void UMLParser()
-+ {static} String parse(SootClass)
-+ {static} String parse(SootField)
-+ {static} String parse(SootMethod)
-+ {static} String parseReturnType(SootMethod)
-+ {static} String parseMethodName(SootMethod)
-+ {static} String parseMethodParameters(SootMethod)
-+ {static} String parse(Collection<GenericType>)
-+ {static} String parse(List<Type>)
-+ {static} String parse(Type)
-+ {static} String parse(GenericType)
-+ {static} String parse(Relationship,String)
-+ {static} String parse(Relation)
-+ {static} String parse(Relation,String)
-+ {static} String parseCardinality(int)
-+ {static} String trimQualifiedName(String)
-+ {static} String getAccessModifier(int)
-+ {static} String getStaticAbstractModifier(int)
-+ {static} String getClassType(int)
+abstract SecurityManagerBackDoorDecorator {
+# SecurityManager decorated
+# boolean isDoorOpen
 
-}
-
-class odyssey.filters.ClassNameFilter {
-
-+ void ClassNameFilter()
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
++ void SecurityManagerBackDoorDecorator(SecurityManager)
++ {abstract} void checkAccept(String,int)
++ void checkAccess(Thread)
++ void checkAccess(ThreadGroup)
++ void checkConnect(String,int)
++ void checkConnect(String,int,Object)
++ void checkCreateClassLoader()
++ void checkDelete(String)
++ void checkExec(String)
++ void checkExit(int)
++ void checkListen(int)
++ void checkMulticast(InetAddress)
++ void checkPackageAccess(String)
++ void checkPackageDefinition(String)
++ void checkPrintJobAccess()
++ void checkPropertiesAccess()
++ void checkRead(FileDescriptor)
++ void checkSecurityAccess(String)
++ void checkSetFactory()
++ void checkWrite(FileDescriptor)
++ void checkWrite(String)
 
 }
 
-class odyssey.filters.ClinitFilter {
-
-+ void ClinitFilter()
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
-
-}
-
-class odyssey.filters.DollarSignFilter {
-
-+ void DollarSignFilter()
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
-
-}
-
-class odyssey.filters.JDKFilter {
-
-+ void JDKFilter()
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
-
-}
-
-class odyssey.filters.NullSuperFilter {
-
-+ void NullSuperFilter()
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
-
-}
-
-class odyssey.filters.PackagePrivateFilter {
-
-+ void PackagePrivateFilter()
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
-
-}
-
-class odyssey.filters.ProtectedFilter {
-
-+ void ProtectedFilter()
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
-
-}
-
-class odyssey.filters.PublicFilter {
-
-+ void PublicFilter()
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
-
-}
-
-class odyssey.filters.RelationshipFilter {
-~ AnalyzerBundle bundle
-
-+ void RelationshipFilter(AnalyzerBundle)
-+ boolean shouldProcess(SootClass)
-+ boolean shouldProcess(SootMethod)
-+ boolean shouldProcess(SootField)
-
-}
-
-class odyssey.methodresolution.AggregateAlgorithm {
-- List<Algorithm> algorithms
-- AggregationStrategy strat
-
-+ void AggregateAlgorithm(AggregationStrategy)
-+ List<SootMethod> resolve(Unit,SootMethod,Scene)
-+ void addAlgorithm(Algorithm)
-
-}
-
-interface odyssey.methodresolution.AggregationStrategy {
-
-+ {abstract} Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
-
-}
-
-class odyssey.methodresolution.CallGraphAlgorithm {
-
-+ void CallGraphAlgorithm()
-+ List<SootMethod> resolve(Unit,SootMethod,Scene)
-
-}
-
-class odyssey.methodresolution.ChainMethodResolver {
-
-+ void ChainMethodResolver()
-+ Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
-
-}
-
-class odyssey.methodresolution.HierachyAlgorithm {
-
-+ void HierachyAlgorithm()
-+ List<SootMethod> resolve(Unit,SootMethod,Scene)
-
-}
-
-class odyssey.methodresolution.IntersectionMethodResolver {
-
-+ void IntersectionMethodResolver()
-+ Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
-- {static} void lambda$resolve$0(Unit,SootMethod,Scene,Set,Algorithm)
-
-}
-
-class odyssey.methodresolution.UnionMethodResolver {
-
-+ void UnionMethodResolver()
-+ Set<SootMethod> resolve(List<Algorithm>,Unit,SootMethod,Scene)
-- {static} void lambda$resolve$0(Set,Unit,SootMethod,Scene,Algorithm)
-
-}
-
-class odyssey.models.CallMessage {
-- String parameters
-
-+ void CallMessage(SootClass,SootMethod,String)
-+ String getParameters()
-+ String getPlantUMLString()
-
-}
-
-class odyssey.models.CommentedOutMessage {
-- String parameters
-
-+ void CommentedOutMessage(SootClass,SootMethod,String)
-+ String getParameters()
-+ String getPlantUMLString()
-
-}
-
-class odyssey.models.ReturnMessage {
-- String returnType
-
-+ void ReturnMessage(SootClass,SootMethod,String)
-+ String getReturnType()
-+ String getPlantUMLString()
-
-}
-
-class odyssey.renderers.CommentMessageRenderer {
-
-+ void CommentMessageRenderer()
-+ String renderFromClass(SootClass)
-
-}
-
-class odyssey.renderers.InheritanceOverCompositionClassRenderer {
-
-+ void InheritanceOverCompositionClassRenderer()
-# String renderClassName()
-+ String getName()
-
-}
-
-class odyssey.renderers.InheritanceOverCompositionRelationshipRenderer {
-
-+ void InheritanceOverCompositionRelationshipRenderer()
-+ String getName()
-# String renderArrowStyle()
-
-}
-
-class odyssey.renderers.InheritanceOverCompositionRenderer {
-
-+ void InheritanceOverCompositionRenderer()
-+ String getStyle()
-+ String render(SootClass,Pattern)
-+ String render(SootMethod,Pattern)
-+ String render(SootField,Pattern)
-+ String render(Relationship,Pattern)
-+ String getName()
-
-}
-
-interface odyssey.renderers.PatternRenderer {
-
-+ {abstract} String getStyle()
-+ {abstract} String render(SootClass,Pattern)
-+ {abstract} String render(SootMethod,Pattern)
-+ {abstract} String render(SootField,Pattern)
-+ {abstract} String render(Relationship,Pattern)
-+ {abstract} String getName()
-
-}
-
-class odyssey.renderers.InitMessageRenderer {
-
-+ void InitMessageRenderer()
-+ String renderMessage(SootMethod)
-
-}
-
-class odyssey.renderers.ReturnMessageRenderer {
-
-+ void ReturnMessageRenderer()
-+ String renderMessage(SootMethod)
-
-}
-
-class odyssey.renderers.SingletonClassRenderer {
-
-+ void SingletonClassRenderer()
-+ String renderStyle()
-# String renderClassName()
-+ String getName()
-
-}
-
-class odyssey.renderers.SingletonRelationshipRenderer {
-
-+ void SingletonRelationshipRenderer()
-+ String getName()
-# String parseArrow(Relation)
-# String parseBackwardsArrow(Relation)
-
-}
-
-class odyssey.renderers.SingletonRenderer {
-
-+ void SingletonRenderer()
-+ String getStyle()
-+ String render(SootClass,Pattern)
-+ String render(SootMethod,Pattern)
-+ String render(SootField,Pattern)
-+ String render(Relationship,Pattern)
-+ String getName()
-
-}
-
-odyssey.renderers.IClassRenderer  <|.. odyssey.renderers.ClassRenderer
-odyssey.renderers.IMessageRenderer  <|.. odyssey.renderers.MessageRenderer
-odyssey.renderers.IRelationshipRenderer  <|.. odyssey.renderers.RelationshipRenderer
-odyssey.renderers.Renderer  <|.. odyssey.renderers.IClassRenderer
-odyssey.renderers.Renderer  <|.. odyssey.renderers.IMessageRenderer
-odyssey.renderers.Renderer  <|.. odyssey.renderers.IRelationshipRenderer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.AncestorAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.AssociationAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.DependencyAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.EmptyAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.FileWriterAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.InheritanceAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.InheritanceOverCompositionAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.SceneAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.SequenceAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.SingletonAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.SootAnalyzer
-odyssey.analyzers.Analyzer  <|-- odyssey.analyzers.UMLAnalyzer
-odyssey.filters.Filter  <|.. odyssey.filters.ClassNameFilter
-odyssey.filters.Filter  <|.. odyssey.filters.ClinitFilter
-odyssey.filters.Filter  <|.. odyssey.filters.DollarSignFilter
-odyssey.filters.Filter  <|.. odyssey.filters.JDKFilter
-odyssey.filters.Filter  <|.. odyssey.filters.NullSuperFilter
-odyssey.filters.Filter  <|.. odyssey.filters.PackagePrivateFilter
-odyssey.filters.Filter  <|.. odyssey.filters.ProtectedFilter
-odyssey.filters.Filter  <|.. odyssey.filters.PublicFilter
-odyssey.filters.Filter  <|.. odyssey.filters.RelationshipFilter
-odyssey.methodresolution.Algorithm  <|.. odyssey.methodresolution.AggregateAlgorithm
-odyssey.methodresolution.Algorithm  <|.. odyssey.methodresolution.CallGraphAlgorithm
-odyssey.methodresolution.AggregationStrategy  <|.. odyssey.methodresolution.ChainMethodResolver
-odyssey.methodresolution.Algorithm  <|.. odyssey.methodresolution.HierachyAlgorithm
-odyssey.methodresolution.AggregationStrategy  <|.. odyssey.methodresolution.IntersectionMethodResolver
-odyssey.methodresolution.AggregationStrategy  <|.. odyssey.methodresolution.UnionMethodResolver
-odyssey.models.Message  <|-- odyssey.models.CallMessage
-odyssey.models.Message  <|-- odyssey.models.CommentedOutMessage
-odyssey.models.Message  <|-- odyssey.models.ReturnMessage
-odyssey.renderers.MessageRenderer  <|-- odyssey.renderers.CommentMessageRenderer
-odyssey.renderers.ClassRenderer  <|-- odyssey.renderers.InheritanceOverCompositionClassRenderer
-odyssey.renderers.RelationshipRenderer  <|-- odyssey.renderers.InheritanceOverCompositionRelationshipRenderer
-odyssey.renderers.PatternRenderer  <|.. odyssey.renderers.InheritanceOverCompositionRenderer
-odyssey.renderers.MessageRenderer  <|-- odyssey.renderers.InitMessageRenderer
-odyssey.renderers.MessageRenderer  <|-- odyssey.renderers.ReturnMessageRenderer
-odyssey.renderers.ClassRenderer  <|-- odyssey.renderers.SingletonClassRenderer
-odyssey.renderers.RelationshipRenderer  <|-- odyssey.renderers.SingletonRelationshipRenderer
-odyssey.renderers.PatternRenderer  <|.. odyssey.renderers.SingletonRenderer
-odyssey.app.Processor --> "1..*" odyssey.analyzers.Analyzer
-odyssey.app.Processor -->  odyssey.analyzers.AnalyzerBundle
-odyssey.renderers.ClassRenderer -->  odyssey.models.Pattern
-odyssey.renderers.MessageRenderer -->  odyssey.models.Message
-odyssey.renderers.MessageRenderer -->  odyssey.models.Pattern
-odyssey.renderers.RelationshipRenderer -->  odyssey.models.Pattern
-odyssey.analyzers.Analyzer --> "1..*" odyssey.filters.Filter
-odyssey.models.Pattern --> "1..*" odyssey.models.Relationship
-odyssey.models.Relationship -->  odyssey.models.Relation
-odyssey.analyzers.AssociationAnalyzer -->  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.DependencyAnalyzer -->  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.DependencyAnalyzer --> "1..*" odyssey.models.Relationship
-odyssey.analyzers.SequenceAnalyzer -->  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.SequenceAnalyzer -->  odyssey.methodresolution.Algorithm
-odyssey.analyzers.SequenceAnalyzer --> "1..*" odyssey.renderers.MessageRenderer
-odyssey.analyzers.UMLAnalyzer --> "1..*" odyssey.models.Pattern
-odyssey.analyzers.UMLAnalyzer --> "1..*" odyssey.renderers.ClassRenderer
-odyssey.analyzers.UMLAnalyzer --> "1..*" odyssey.renderers.RelationshipRenderer
-odyssey.filters.RelationshipFilter -->  odyssey.analyzers.AnalyzerBundle
-odyssey.methodresolution.AggregateAlgorithm --> "1..*" odyssey.methodresolution.Algorithm
-odyssey.methodresolution.AggregateAlgorithm -->  odyssey.methodresolution.AggregationStrategy
-odyssey.analyzers.UMLAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.renderers.IRelationshipRenderer ..>  odyssey.models.Relation
-odyssey.analyzers.SingletonAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.InheritanceAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..> "1..*" odyssey.models.Pattern
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.models.Pattern
-odyssey.renderers.RelationshipRenderer ..>  odyssey.models.Relation
-odyssey.analyzers.EmptyAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.methodresolution.UnionMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
-odyssey.analyzers.SequenceAnalyzer ..>  odyssey.models.Message
-odyssey.methodresolution.AggregationStrategy ..> "1..*" odyssey.methodresolution.Algorithm
-odyssey.analyzers.AssociationAnalyzer ..> "1..*" odyssey.models.Relationship
-odyssey.analyzers.AssociationAnalyzer ..>  odyssey.models.Relationship
-odyssey.analyzers.UMLParser ..>  odyssey.models.Relationship
-odyssey.analyzers.FileWriterAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.renderers.SingletonRenderer ..>  odyssey.models.Relation
-odyssey.analyzers.EmptyAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.SceneAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.SingletonAnalyzer ..> "1..*" odyssey.models.Relationship
-odyssey.analyzers.SingletonAnalyzer ..>  odyssey.models.Relationship
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.methodresolution.ChainMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
-odyssey.analyzers.UMLAnalyzer ..>  odyssey.models.Relationship
-odyssey.analyzers.InheritanceAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.renderers.PatternRenderer ..>  odyssey.models.Pattern
-odyssey.analyzers.SingletonAnalyzer ..>  odyssey.models.Pattern
-odyssey.analyzers.InheritanceAnalyzer ..> "1..*" odyssey.models.Relationship
-odyssey.analyzers.InheritanceAnalyzer ..>  odyssey.models.Relationship
-odyssey.renderers.Renderer ..>  odyssey.models.Pattern
-odyssey.renderers.SingletonRenderer ..>  odyssey.models.Pattern
-odyssey.renderers.InheritanceOverCompositionRenderer ..>  odyssey.models.Relationship
-odyssey.methodresolution.IntersectionMethodResolver ..> "1..*" odyssey.methodresolution.Algorithm
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.SootAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.AncestorAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.app.Runner ..>  odyssey.app.PropertiesSetter
-odyssey.renderers.InheritanceOverCompositionRenderer ..>  odyssey.models.Pattern
-odyssey.app.Runner ..>  odyssey.app.Processor
-odyssey.analyzers.UMLParser ..>  odyssey.models.Relation
-odyssey.analyzers.SootAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.AssociationAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.AssociationAnalyzer ..>  odyssey.models.Relation
-odyssey.renderers.RelationshipRenderer ..>  odyssey.models.Relationship
-odyssey.renderers.SingletonRenderer ..>  odyssey.models.Relationship
-odyssey.analyzers.Analyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.AncestorAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..>  odyssey.models.Relation
-odyssey.renderers.PatternRenderer ..>  odyssey.models.Relationship
-odyssey.analyzers.UMLAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.analyzers.InheritanceOverCompositionAnalyzer ..> "1..*" odyssey.models.Relationship
-odyssey.analyzers.FileWriterAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.SequenceAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.DependencyAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.analyzers.DependencyAnalyzer ..>  odyssey.models.Relation
-odyssey.analyzers.SingletonAnalyzer ..>  odyssey.analyzers.AnalyzerBundle
-odyssey.renderers.SingletonRelationshipRenderer ..>  odyssey.models.Relation
-odyssey.analyzers.SceneAnalyzer ..> "1..*" odyssey.filters.Filter
-odyssey.models.Relation -[#blue]->  odyssey.models.Relation
-demos.EagerChocolateBoiler -[#blue]->  demos.EagerChocolateBoiler
-demos.LazyChocolateBoiler -[#blue]->  demos.LazyChocolateBoiler
+SecurityManagerBackDoorDecorator  <|-- SecurityManagerBackdoor
+java.lang.SecurityManager  <|-- SecurityManagerBackDoorDecorator
+SecurityManagerBackDoorDecorator -->  java.lang.SecurityManager
+App ..>  java.lang.SecurityManager
+SecurityManagerBackdoor ..>  java.lang.SecurityManager
+App ..>  SecurityManagerBackdoor
 @enduml
