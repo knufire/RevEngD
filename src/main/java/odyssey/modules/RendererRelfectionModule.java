@@ -13,6 +13,9 @@ import com.google.inject.name.Named;
 
 import odyssey.renderers.ClassRenderer;
 import odyssey.renderers.CommentMessageRenderer;
+import odyssey.renderers.IClassRenderer;
+import odyssey.renderers.IMessageRenderer;
+import odyssey.renderers.IRelationshipRenderer;
 import odyssey.renderers.InitMessageRenderer;
 import odyssey.renderers.MessageRenderer;
 import odyssey.renderers.RelationshipRenderer;
@@ -26,11 +29,11 @@ public class RendererRelfectionModule extends AbstractModule {
 
   @Provides
   @Named("relationship_renderers")
-  Map<String, RelationshipRenderer> createRelationshipRenderers() {
-    Map<String, RelationshipRenderer> relationshipRenderers = new HashMap<>();
+  Map<String, IRelationshipRenderer> createRelationshipRenderers() {
+    Map<String, IRelationshipRenderer> relationshipRenderers = new HashMap<>();
     addDefaultRelationshipRenderers(relationshipRenderers);
 
-    Collection<RelationshipRenderer> renderers = reflectRelationshipRenderers();
+    Collection<IRelationshipRenderer> renderers = reflectRelationshipRenderers();
 
     renderers.forEach(r -> {
       relationshipRenderers.put(r.getName(), r);
@@ -38,11 +41,11 @@ public class RendererRelfectionModule extends AbstractModule {
     return relationshipRenderers;
   }
 
-  private void addDefaultRelationshipRenderers(Map<String, RelationshipRenderer> relationshipRenderers) {
+  private void addDefaultRelationshipRenderers(Map<String, IRelationshipRenderer> relationshipRenderers) {
     relationshipRenderers.put("default", new RelationshipRenderer());
   }
 
-  private Collection<RelationshipRenderer> reflectRelationshipRenderers() {
+  private Collection<IRelationshipRenderer> reflectRelationshipRenderers() {
     String renderers = System.getProperty("-relationshipRenderers");
 
     try {
@@ -55,12 +58,12 @@ public class RendererRelfectionModule extends AbstractModule {
     }
   }
 
-  private Collection<RelationshipRenderer> reflectRelationshipRenderers(String[] rendererNames)
+  private Collection<IRelationshipRenderer> reflectRelationshipRenderers(String[] rendererNames)
       throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-    List<RelationshipRenderer> renderers = new ArrayList<>();
-    RelationshipRenderer renderer;
+    List<IRelationshipRenderer> renderers = new ArrayList<>();
+    IRelationshipRenderer renderer;
     for (int i = 0; i < rendererNames.length; i++) {
-      renderer = (RelationshipRenderer) Class.forName(rendererNames[i]).newInstance();
+      renderer = (IRelationshipRenderer) Class.forName(rendererNames[i]).newInstance();
       renderers.add(renderer);
     }
     return renderers;
@@ -68,9 +71,9 @@ public class RendererRelfectionModule extends AbstractModule {
 
   @Provides
   @Named("message_renderers")
-  Map<String, MessageRenderer> getMessageRenderers() {
-    Map<String, MessageRenderer> messageRenderers = new HashMap<>();
-    Collection<MessageRenderer> renderers = reflectMessageRenderers();
+  Map<String, IMessageRenderer> getMessageRenderers() {
+    Map<String, IMessageRenderer> messageRenderers = new HashMap<>();
+    Collection<IMessageRenderer> renderers = reflectMessageRenderers();
     addDefaultMessageRenderers(messageRenderers);
 
     renderers.forEach(r -> {
@@ -79,14 +82,14 @@ public class RendererRelfectionModule extends AbstractModule {
     return messageRenderers;
   }
 
-  private void addDefaultMessageRenderers(Map<String, MessageRenderer> messageRenderers) {
+  private void addDefaultMessageRenderers(Map<String, IMessageRenderer> messageRenderers) {
     messageRenderers.put("return", new ReturnMessageRenderer());
     messageRenderers.put("init", new InitMessageRenderer());
     messageRenderers.put("comment", new CommentMessageRenderer());
     messageRenderers.put("default", new MessageRenderer());
   }
 
-  private Collection<MessageRenderer> reflectMessageRenderers() {
+  private Collection<IMessageRenderer> reflectMessageRenderers() {
     String renderers = System.getProperty("-messageRenderers");
     try {
       String[] tokens = renderers.split(" ");
@@ -98,12 +101,12 @@ public class RendererRelfectionModule extends AbstractModule {
     }
   }
 
-  private Collection<MessageRenderer> reflectMessageRenderers(String[] rendererNames)
+  private Collection<IMessageRenderer> reflectMessageRenderers(String[] rendererNames)
       throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-    List<MessageRenderer> renderers = new ArrayList<>();
-    MessageRenderer renderer;
+    List<IMessageRenderer> renderers = new ArrayList<>();
+    IMessageRenderer renderer;
     for (int i = 0; i < rendererNames.length; i++) {
-      renderer = (MessageRenderer) Class.forName(rendererNames[i]).newInstance();
+      renderer = (IMessageRenderer) Class.forName(rendererNames[i]).newInstance();
       renderers.add(renderer);
     }
     return renderers;
@@ -111,9 +114,9 @@ public class RendererRelfectionModule extends AbstractModule {
 
   @Provides
   @Named("class_renderers")
-  Map<String, ClassRenderer> getClassRenderers() {
-    Map<String, ClassRenderer> classRenderers = new HashMap<>();
-    Collection<ClassRenderer> renderers = reflectClassRenderers();
+  Map<String, IClassRenderer> getClassRenderers() {
+    Map<String, IClassRenderer> classRenderers = new HashMap<>();
+    Collection<IClassRenderer> renderers = reflectClassRenderers();
     addDefaultClassRenderers(classRenderers);
 
     renderers.forEach(r -> {
@@ -122,11 +125,11 @@ public class RendererRelfectionModule extends AbstractModule {
     return classRenderers;
   }
 
-  private void addDefaultClassRenderers(Map<String, ClassRenderer> classRenderers) {
+  private void addDefaultClassRenderers(Map<String, IClassRenderer> classRenderers) {
     classRenderers.put("default", new ClassRenderer());
   }
 
-  private Collection<ClassRenderer> reflectClassRenderers() {
+  private Collection<IClassRenderer> reflectClassRenderers() {
     String renderers = System.getProperty("-classRenderers");
     try {
       String[] tokens = renderers.split(" ");
@@ -138,12 +141,12 @@ public class RendererRelfectionModule extends AbstractModule {
     }
   }
 
-  private Collection<ClassRenderer> reflectClassRenderers(String[] rendererNames)
+  private Collection<IClassRenderer> reflectClassRenderers(String[] rendererNames)
       throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-    List<ClassRenderer> renderers = new ArrayList<>();
-    ClassRenderer renderer;
+    List<IClassRenderer> renderers = new ArrayList<>();
+    IClassRenderer renderer;
     for (int i = 0; i < rendererNames.length; i++) {
-      renderer = (ClassRenderer) Class.forName(rendererNames[i]).newInstance();
+      renderer = (IClassRenderer) Class.forName(rendererNames[i]).newInstance();
       renderers.add(renderer);
     }
     return renderers;

@@ -14,8 +14,8 @@ import net.sourceforge.plantuml.SourceStringReader;
 import odyssey.filters.Filter;
 import odyssey.models.Pattern;
 import odyssey.models.Relationship;
-import odyssey.renderers.ClassRenderer;
-import odyssey.renderers.RelationshipRenderer;
+import odyssey.renderers.IClassRenderer;
+import odyssey.renderers.IRelationshipRenderer;
 import odyssey.renderers.Renderer;
 import soot.SootClass;
 
@@ -23,11 +23,11 @@ public class UMLAnalyzer extends Analyzer {
 
   private Path umlImageLocation;
   private List<Pattern> patterns;
-  private Map<String, ClassRenderer> classRenderers;
-  private Map<String, RelationshipRenderer> relationshipRenderers;
+  private Map<String, IClassRenderer> classRenderers;
+  private Map<String, IRelationshipRenderer> relationshipRenderers;
 
-  public UMLAnalyzer(List<Filter> filters, Map<String, ClassRenderer> classRenderers,
-      Map<String, RelationshipRenderer> relationshipRenderers) {
+  public UMLAnalyzer(List<Filter> filters, Map<String, IClassRenderer> classRenderers,
+      Map<String, IRelationshipRenderer> relationshipRenderers) {
     super(filters);
     this.classRenderers = classRenderers;
     this.relationshipRenderers = relationshipRenderers;
@@ -49,7 +49,7 @@ public class UMLAnalyzer extends Analyzer {
     builder.append("skinparam linetype ortho\n");
     
     //Add styles for patterns to use
-    for (ClassRenderer c : classRenderers.values()) {
+    for (IClassRenderer c : classRenderers.values()) {
       builder.append(c.renderStyle());
       builder.append(System.lineSeparator());
     }

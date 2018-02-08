@@ -13,18 +13,18 @@ import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
 import odyssey.filters.Filter;
 import odyssey.models.Message;
-import odyssey.renderers.MessageRenderer;
+import odyssey.renderers.IMessageRenderer;
 
 public class SequenceAnalyzer extends Analyzer {
 
   private AnalyzerBundle bundle;
   private Path seqImageLocation;
-  private Map<String, MessageRenderer> messageRenderers;
+  private Map<String, IMessageRenderer> messageRenderers;
   
-  public SequenceAnalyzer(List<Filter> filters, Map<String, MessageRenderer> messageRenderers) {
+  public SequenceAnalyzer(List<Filter> filters, Map<String, IMessageRenderer> messageRenderers2) {
     super(filters);
     seqImageLocation = Paths.get(System.getProperty("-s"));
-    this.messageRenderers = messageRenderers;
+    this.messageRenderers = messageRenderers2;
   }
 
   @Override
@@ -40,7 +40,7 @@ public class SequenceAnalyzer extends Analyzer {
     StringBuilder builder = new StringBuilder();
     builder.append("@startuml\n");
     for (Message c : bundle.getList("messages", Message.class)) {
-      MessageRenderer renderer = messageRenderers.get(c.getType());
+      IMessageRenderer renderer = messageRenderers.get(c.getType());
       if (renderer != null) {
         builder.append(renderer.render(c));
         builder.append("\n");        
