@@ -1,6 +1,7 @@
 package odyssey.analyzers;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import odyssey.filters.Filter;
 import odyssey.models.Pattern;
@@ -8,6 +9,7 @@ import odyssey.models.Relation;
 import odyssey.models.Relationship;
 import soot.SootClass;
 import soot.SootField;
+import soot.SootMethod;
 import soot.Type;
 import soot.util.Chain;
 
@@ -45,8 +47,9 @@ public class DecoratorAnalyzer extends Analyzer {
       return;
     }
     // Decorator
-    if (isBadDecorator(c)) {
-      // patterns.add(createBadDecoratorPattern(c));
+    List<SootMethod> missingMethods = findMissingMethods(c, decorated);
+    if (!missingMethods.isEmpty()) {
+      patterns.add(createBadDecoratorPattern(c, decorated, missingMethods));
     } else {
       patterns.add(createRegularDecoratorPattern(c, decorated));
     }
@@ -63,12 +66,38 @@ public class DecoratorAnalyzer extends Analyzer {
     return null;
   }
 
-  private boolean isBadDecorator(SootClass c) {
+  private List<SootMethod> findMissingMethods(SootClass c, SootClass decorated) {
+    List<SootMethod> methods = getMissingMethods(getDeclaredMethods(c), decorated);
+    return methods;
+  }
+
+  private List<SootMethod> getDeclaredMethods(SootClass c) {
+    return c.getMethods().stream().filter(m -> c.declaresMethodByName(m.getName())).collect(Collectors.toList());
+  }
+
+  private List<SootMethod> getMissingMethods(List<SootMethod> decoratorMethods, SootClass decorated) {
+    return decorated.getMethods().stream().filter(m -> m.isPublic()).filter(m -> !methodMatches(m, decoratorMethods))
+        .collect(Collectors.toList());
+  }
+
+  private boolean methodMatches(SootMethod m, List<SootMethod> decoratorMethods) {
+    String toMatch = m.getSignature().split(" ")[1];
+    for (SootMethod decoratorMethod : decoratorMethods) {
+      if (toMatch.equals(decoratorMethod.getSignature().split(" ")[1])) {
+        return true;
+      }
+    }
     return false;
   }
 
-  private Pattern createBadDecoratorPattern(SootClass c) {
-    return null;
+  private Pattern createBadDecoratorPattern(SootClass c, SootClass decorated, List<SootMethod> missingMethods) {
+    Pattern p = new Pattern("decorator");
+    p.put("component", decorated);
+    p.put("badDecorator", c);
+    p.put("decorates", findDecoratorRelationship(c, decorated));
+    String methodKey = c.getName() + " badMethod";
+    missingMethods.forEach(m -> p.put(methodKey, m));
+    return p;
   }
 
   private Pattern createRegularDecoratorPattern(SootClass c, SootClass decorated) {
@@ -81,10 +110,10 @@ public class DecoratorAnalyzer extends Analyzer {
 
   private Relationship findDecoratorRelationship(SootClass c, SootClass decorated) {
     for (Relationship r : relationships) {
-      System.out.println(r);
-      System.out.println("\t " + c);
-      System.out.println("\t" + decorated.getShortName());
-      System.out.println();
+      // System.out.println(r);
+      // System.out.println("\t " + c);
+      // System.out.println("\t" + decorated.getShortName());
+      // System.out.println();
       if (r.getFromClass().equals(c) && r.getToClass().equals(decorated)) {
         if (r.getRelation().equals(Relation.ASSOCIATION)) {
           return r;

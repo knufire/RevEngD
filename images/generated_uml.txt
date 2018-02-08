@@ -7,6 +7,9 @@ BackgroundColor<<Decorator>> PaleGreen
 skinparam class {
 BackgroundColor<<Component>> PaleGreen
 }
+skinparam class {
+BackgroundColor<<BadDecorator>> PaleGreen
+}
 class App {
 
 + void App()
@@ -94,7 +97,7 @@ interface java.lang.Appendable {
 
 
 
-abstract SecurityManagerBackDoorDecorator <<Decorator>> {
+abstract SecurityManagerBackDoorDecorator <<Bad Decorator>> {
 # SecurityManager decorated
 # boolean isDoorOpen
 
@@ -119,6 +122,10 @@ abstract SecurityManagerBackDoorDecorator <<Decorator>> {
 + void checkSetFactory()
 + void checkWrite(FileDescriptor)
 + void checkWrite(String)
++<font color=”#FF0000”>boolean getInCheck()</font>
++<font color=”#FF0000”>Object getSecurityContext()</font>
++<font color=”#FF0000”>boolean checkTopLevelWindow(Object)</font>
++<font color=”#FF0000”>ThreadGroup getThreadGroup()</font>
 
 }
 
