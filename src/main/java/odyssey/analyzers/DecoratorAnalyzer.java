@@ -95,13 +95,13 @@ public class DecoratorAnalyzer extends Analyzer {
     SootClass object = bundle.get("scene", Scene.class).getSootClass("java.lang.Object");
     for(SootMethod method : object.getMethods()) {
       if (!m.getReturnType().equals(method.getReturnType())) {
-        return false;
+        return true;
       }
       if (!m.getName().equals(method.getName())) {
-        return false;
+        return true;
       }
       if (m.getParameterTypes().equals(method.getParameterTypes())) {
-        return false;
+        return true;
       }
     }
     String toMatch = m.getSignature().split(" ")[1];
