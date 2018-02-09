@@ -42,7 +42,6 @@ public class AssociationAnalyzer extends Analyzer {
     Chain<SootField> fields = c.getFields();
     Scene scene = bundle.get("scene", Scene.class);
     for (SootField f : fields) {
-      System.out.println("Association: " + f.toString());
       if (!passesFilters(f))
         continue;
       Tag signatureTag = f.getTag("SignatureTag");

@@ -77,7 +77,7 @@ public class ClassRenderer implements IClassRenderer {
         GenericType fieldType = fieldEvaluator.getType();
         builder.append(renderGenericType(fieldType));
       } catch (Exception e) {
-        // DoNothing
+        builder.append(renderStandardType(field.getType()));
       }
     } else {
       builder.append(renderStandardType(field.getType()));
