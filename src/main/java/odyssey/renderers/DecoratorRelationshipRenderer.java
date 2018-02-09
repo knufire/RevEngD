@@ -8,11 +8,11 @@ public class DecoratorRelationshipRenderer extends RelationshipRenderer {
   }
 
   public String renderRight(SootClass clazz) {
-
     return super.renderRight(clazz) + " : <<Decorates>>";
   }
 
   protected String renderArrowStyle() {
+    System.err.println("RENDERERING   " + relationship);
     return "[#Green]";
   }
 }

@@ -31,7 +31,6 @@ public class DecoratorClassRenderer extends ClassRenderer {
   }
 
   protected String renderMethods() {
-    System.err.println(pattern.getKey(clazz));
     if (pattern.getKey(clazz).equals("badDecorator")) {
       StringBuilder builder = new StringBuilder();
       
