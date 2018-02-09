@@ -40,10 +40,13 @@ The properties file consists of single flag and its arguments separated by space
   -classRenderers : A list of fully qualified class renderers to be added to the Seqeunce Diagram Rendering process. EX: odyssey.renderers.SingletonClassRenderer  
   -relationshipRenderers : A list of fully qualified relationship renderers to be added to the Seqeunce Diagram Rendering process. EX: odyssey.renderers.SingletonRelationshipRenderer  
 
+## Distribution
+The distribution containing all files needed to run the project can be found [here](distribution/RevEngD-1.0.0-SNAPSHOT.zip)  
+The jar containing just the files for the RevEngD project can be found [here](distribution/RevEngD-1.0.0-SNAPSHOT/lib/RevEngD-1.0.0-SNAPSHOT.jar)  
 
 ## Example of Running
-One way to run the project would be to build the project using gradle and run the RevEngD.bat file located in
-"build/distributions/RevEngD-SNAPSHOT.zip/bin" using the command line and passing the above arguments in. An example command to run the program would be  
+One way to run the project would be to download the distribution and run the RevEngD.bat file located in
+"RevEngD-SNAPSHOT.zip/bin" using the command line and passing the above arguments in. An example command to run the program would be  
 ```
 ./RevEngD.bat -d "C:/Projects/coolProject" -m app.main -c app.main app.otherClass
  ```
