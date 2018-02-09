@@ -50,7 +50,8 @@ run {
 	standardInput = System.in
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_adapter.txt']
-	args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_adapter2.txt']
+	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_adapter2.txt']
+	args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_adapter3.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo1.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo2.txt']
 	//args = ['-config', 'C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/resources/collin_config_Demo3.txt']

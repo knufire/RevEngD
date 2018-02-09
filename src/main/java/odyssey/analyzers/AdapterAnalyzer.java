@@ -86,7 +86,7 @@ public class AdapterAnalyzer extends Analyzer {
             SootClass adaptee = this.bundle.get("scene", Scene.class).getSootClass(maxField.getKey().getType().toString());
             Relationship adapts = getRelationship(c, adaptee, adaptsRelations, relationships);
             Relationship isATarget = getRelationship(c, target, targetRelations, relationships);
-            if (adapts != null && isATarget != null) {
+            if (adapts != null && isATarget != null && !adaptee.equals(target)) {
               patterns.add(addAdapterPattern(target, c, adaptee, adapts, isATarget));
             }
           }
@@ -94,7 +94,7 @@ public class AdapterAnalyzer extends Analyzer {
           SootClass adaptee = this.bundle.get("scene", Scene.class).getSootClass(c.getFields().getFirst().getType().toString());
           Relationship adapts = getRelationship(c, adaptee, adaptsRelations, relationships);
           Relationship isATarget = getRelationship(c, target, targetRelations, relationships);
-          if (adapts != null && isATarget != null) {
+          if (adapts != null && isATarget != null && !adaptee.equals(target)) {
             patterns.add(addAdapterPattern(target, c, adaptee, adapts, isATarget));
           }
         }
