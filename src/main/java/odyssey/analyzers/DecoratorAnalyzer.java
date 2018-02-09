@@ -25,7 +25,6 @@ public class DecoratorAnalyzer extends Analyzer {
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<SootClass> classes = bundle.getList("classes", SootClass.class);
 
-    classes.forEach(c -> System.out.println(c));
 
     relationships = bundle.getList("relationships", Relationship.class);
     addClassesToPatterns(classes, patterns);
@@ -96,6 +95,20 @@ public class DecoratorAnalyzer extends Analyzer {
       if (toMatch.equals(decoratorMethod.getSignature().split(" ")[1])) {
         return true;
       }
+      if (m.isAbstract()) {
+        System.err.println("ABSTRACT");
+        if (!m.getReturnType().equals(decoratorMethod.getReturnType())) {
+          return false;
+        }
+        if (!m.getName().equals(decoratorMethod.getName())) {
+          return false;
+        }
+        if (m.getParameterTypes().equals(decoratorMethod.getParameterTypes())) {
+          return false;
+        }
+        return true;
+      }
+
     }
     return false;
   }

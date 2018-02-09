@@ -101,7 +101,6 @@ public class InheritanceOverCompositionAnalyzer extends Analyzer {
   private void addPattern(Relationship r, Pattern p) {
     p.put("IoverC", r);
     p.put("from", r.getFromClass());
-    p.put("to", r.getToClass());
   }
 
 }
