@@ -50,6 +50,7 @@ public class UMLAnalyzer extends Analyzer {
     
     //Add styles for patterns to use
     for (ClassRenderer c : classRenderers.values()) {
+      c.setFilters(filters);
       builder.append(c.renderStyle());
       builder.append(System.lineSeparator());
     }

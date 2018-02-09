@@ -1,11 +1,13 @@
 package odyssey.renderers;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import edu.rosehulman.jvm.sigevaluator.FieldEvaluator;
 import edu.rosehulman.jvm.sigevaluator.GenericType;
 import edu.rosehulman.jvm.sigevaluator.MethodEvaluator;
+import odyssey.filters.Filter;
 import odyssey.models.Pattern;
 import soot.Scene;
 import soot.SootClass;
@@ -18,6 +20,7 @@ public class ClassRenderer implements IClassRenderer {
 
   protected Pattern pattern;
   protected SootClass clazz;
+  protected List<Filter> filters = Collections.emptyList();
 
   @Override
   public final String render(SootClass clazz) {
@@ -118,21 +121,40 @@ public class ClassRenderer implements IClassRenderer {
   protected String renderFields() {
     StringBuilder builder = new StringBuilder();
     clazz.getFields().forEach(f -> {
-      builder.append(renderField(f));
-      builder.append(System.lineSeparator());
+      if(passesFilters(f)) {
+        builder.append(renderField(f));
+        builder.append(System.lineSeparator());        
+      }
     });
     return builder.toString();
   }
+
+  protected boolean passesFilters(SootField f) {
+    for(Filter filter : filters) {
+      if (!filter.shouldProcess(f)) return false;
+    }
+    return true;
+  }
+  
 
   protected String renderMethods() {
     StringBuilder builder = new StringBuilder();
     clazz.getMethods().forEach(m -> {
-      builder.append(renderMethod(m));
-      builder.append(System.lineSeparator());
+      if(passesFilters(m)) {
+        builder.append(renderMethod(m));
+        builder.append(System.lineSeparator());
+      }
     });
     return builder.toString();
   }
 
+  protected boolean passesFilters(SootMethod m) {
+    for(Filter filter : filters) {
+      if (!filter.shouldProcess(m)) return false;
+    }
+    return true;
+  }
+  
   protected String parseReturnType(SootMethod m) {
     StringBuilder builder = new StringBuilder();
     Tag signatureTag = m.getTag("SignatureTag");
@@ -252,5 +274,10 @@ public class ClassRenderer implements IClassRenderer {
   protected String trimQualifiedName(String s) {
     String[] parts = s.split("\\.");
     return parts[parts.length - 1];
+  }
+
+  @Override
+  public void setFilters(List<Filter> filters) {
+    this.filters = filters;
   }
 }
