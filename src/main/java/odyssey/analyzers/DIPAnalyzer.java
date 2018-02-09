@@ -31,7 +31,8 @@ public class DIPAnalyzer extends Analyzer {
   private Pattern createDIPPattern(Relationship r) {
     Pattern p = new Pattern("dip");
     p.put("relationship", r);
-    p.put("violator", r.getFromClass());
+    p.put("from", r.getFromClass());
+    p.put("to", r.getToClass());
     return p;
   }
 
