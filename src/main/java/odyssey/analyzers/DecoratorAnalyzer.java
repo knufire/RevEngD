@@ -7,6 +7,7 @@ import odyssey.filters.Filter;
 import odyssey.models.Pattern;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -16,15 +17,16 @@ import soot.util.Chain;
 public class DecoratorAnalyzer extends Analyzer {
 
   private List<Relationship> relationships;
+  private AnalyzerBundle bundle;
 
   protected DecoratorAnalyzer(List<Filter> filters) {
     super(filters);
   }
 
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
+    this.bundle = bundle;
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<SootClass> classes = bundle.getList("classes", SootClass.class);
-
 
     relationships = bundle.getList("relationships", Relationship.class);
     addClassesToPatterns(classes, patterns);
@@ -90,6 +92,18 @@ public class DecoratorAnalyzer extends Analyzer {
   }
 
   private boolean methodMatches(SootMethod m, List<SootMethod> decoratorMethods) {
+    SootClass object = bundle.get("scene", Scene.class).getSootClass("java.lang.Object");
+    for(SootMethod method : object.getMethods()) {
+      if (!m.getReturnType().equals(method.getReturnType())) {
+        return false;
+      }
+      if (!m.getName().equals(method.getName())) {
+        return false;
+      }
+      if (m.getParameterTypes().equals(method.getParameterTypes())) {
+        return false;
+      }
+    }
     String toMatch = m.getSignature().split(" ")[1];
     for (SootMethod decoratorMethod : decoratorMethods) {
       if (toMatch.equals(decoratorMethod.getSignature().split(" ")[1])) {
