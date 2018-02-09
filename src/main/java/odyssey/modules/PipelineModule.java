@@ -66,8 +66,8 @@ public class PipelineModule extends AbstractModule {
     createSootAnalyzer(pipeline);
     createAncestorAnalyzer(pipeline);
     createInheritanceAnalyzer(pipeline);
-    createAssociationAnalyzer(pipeline);
     createDependencyAnalyzer(pipeline);
+    createAssociationAnalyzer(pipeline);
     createMessageAnalyzer(algo, pipeline);
 
     pipeline.addAll(userAnalyzers);

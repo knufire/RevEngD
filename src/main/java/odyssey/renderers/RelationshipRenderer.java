@@ -7,10 +7,12 @@ import soot.SootClass;
 
 public class RelationshipRenderer implements IRelationshipRenderer {
 
+  protected Relationship relationship;
   protected Pattern pattern;
 
   @Override
   public final String render(Relationship t) {
+    this.relationship = t;
     StringBuilder builder = new StringBuilder();
     builder.append(renderLeft(isReverse(t.getRelation()) ? t.getToClass() : t.getFromClass()));
     builder.append(" ");

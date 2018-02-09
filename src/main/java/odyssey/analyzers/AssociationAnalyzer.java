@@ -42,6 +42,7 @@ public class AssociationAnalyzer extends Analyzer {
     Chain<SootField> fields = c.getFields();
     Scene scene = bundle.get("scene", Scene.class);
     for (SootField f : fields) {
+      System.out.println("Association: " + f.toString());
       if (!passesFilters(f))
         continue;
       Tag signatureTag = f.getTag("SignatureTag");
@@ -72,17 +73,22 @@ public class AssociationAnalyzer extends Analyzer {
             }
           }
         } catch (Exception e) {
+          baseTypeResolver(c, f, scene);
           continue;
         }
       } else {
-        boolean isArray = f.getType().toString().contains("[");
-        Type baseType = f.getType().makeArrayType().baseType;
-        SootClass fieldClass = scene.getSootClass(baseType.toString());
-        if (passesFilters(fieldClass) && !c.equals(fieldClass)) {
-//        if (passesFilters(fieldClass)) {
-          addRelationship(new Relationship(c, Relation.ASSOCIATION, fieldClass, isArray ? -1 : 0));
-        }
+        baseTypeResolver(c, f, scene);
       }
+    }
+  }
+  
+  private void baseTypeResolver(SootClass c, SootField f, Scene scene) {
+    boolean isArray = f.getType().toString().contains("[");
+    Type baseType = f.getType().makeArrayType().baseType;
+    SootClass fieldClass = scene.getSootClass(baseType.toString());
+    if (passesFilters(fieldClass) && !c.equals(fieldClass)) {
+//    if (passesFilters(fieldClass)) {
+      addRelationship(new Relationship(c, Relation.ASSOCIATION, fieldClass, isArray ? -1 : 0));
     }
   }
 

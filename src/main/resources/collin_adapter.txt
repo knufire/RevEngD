@@ -1,13 +1,13 @@
 -a private
--d C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/build/classes/main
--m odyssey.app.Runner
+-d C:/Users/moorect/eclipse-workspace/CSSE374/Lab7-1/bin
+-m problem.client.App
 -s C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/sequence.svg
 -i C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/class.svg
--c odyssey.app.Runner
+-c problem.client.App java.util.Iterator java.util.Enumeration
 -folders ""
 -bl odyssey.modules csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
 --include-ancestors false
--e <odyssey.app.Runner: void main(java.lang.String[])>
+-e <problem.client.App: void main(java.lang.String[])>
 --include-object false
 -max-depth 10
 --expand-jdk false
