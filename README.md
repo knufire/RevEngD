@@ -58,6 +58,9 @@ One way to run the project would be to download the distribution and run the Rev
  }
 ```
 
+## Running the project on our own project
+![RevEngD UML](documentation/M4_UML.svg)
+
 # Who Drove When
 -----M1-----  
 Hand Drawn UML Creation -- Collin    
