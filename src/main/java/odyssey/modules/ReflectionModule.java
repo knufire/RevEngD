@@ -93,8 +93,7 @@ public class ReflectionModule extends AbstractModule {
     try {
       Class<T> algorithm = (Class<T>) Class.forName(name);
       return algorithm.newInstance();
-    } catch (InstantiationException | IllegalAccessException | IllegalArgumentException | SecurityException
-        | ClassNotFoundException e) {
+    } catch (Exception e) {
       System.err.println("Could not instantiate method resolver algorithm class.");
       e.printStackTrace();
       return null;

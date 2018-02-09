@@ -50,7 +50,7 @@ public class RendererRelfectionModule extends AbstractModule {
       return reflectRelationshipRenderers(tokens);
     } catch (NullPointerException e) {
       return Collections.emptyList();
-    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -93,7 +93,7 @@ public class RendererRelfectionModule extends AbstractModule {
       return reflectMessageRenderers(tokens);
     } catch (NullPointerException e) {
       return Collections.emptyList();
-    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -133,7 +133,7 @@ public class RendererRelfectionModule extends AbstractModule {
       return reflectClassRenderers(tokens);
     } catch (NullPointerException e) {
       return Collections.emptyList();
-    } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+    } catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

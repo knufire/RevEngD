@@ -5,7 +5,7 @@
 -i C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/class.svg
 -c odyssey.app.Runner
 -folders ""
--bl odyssey.modules csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
+-bl csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
 --include-ancestors false
 -e <odyssey.app.Runner: void main(java.lang.String[])>
 --include-object false
