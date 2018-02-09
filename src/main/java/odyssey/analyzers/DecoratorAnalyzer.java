@@ -96,7 +96,6 @@ public class DecoratorAnalyzer extends Analyzer {
         return true;
       }
       if (m.isAbstract()) {
-        System.err.println("ABSTRACT");
         if (!m.getReturnType().equals(decoratorMethod.getReturnType())) {
           return false;
         }
