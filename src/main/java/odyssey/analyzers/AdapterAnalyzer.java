@@ -90,7 +90,7 @@ public class AdapterAnalyzer extends Analyzer {
               patterns.add(addAdapterPattern(target, c, adaptee, adapts, isATarget));
             }
           }
-        } else if (!hasBodies) {
+        } else if (!hasBodies && !c.getFields().isEmpty()) {
           SootClass adaptee = this.bundle.get("scene", Scene.class).getSootClass(c.getFields().getFirst().getType().toString());
           Relationship adapts = getRelationship(c, adaptee, adaptsRelations, relationships);
           Relationship isATarget = getRelationship(c, target, targetRelations, relationships);

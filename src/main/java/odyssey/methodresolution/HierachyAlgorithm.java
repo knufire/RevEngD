@@ -19,7 +19,7 @@ public class HierachyAlgorithm implements Algorithm {
       List<SootMethod> possibleMethods = hierarchy.resolveAbstractDispatch(m.getDeclaringClass(), m);
       return possibleMethods;
     } catch (RuntimeException e) {
-      System.err.println("Unable to resolve concrete dispatch : " + m.getName());
+      System.err.println("HiearchyAlgorithm: Unable to resolve concrete dispatch : " + m.getName());
     }
     return Collections.emptyList();
   }

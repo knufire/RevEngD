@@ -5,7 +5,7 @@
 -i C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/class.svg
 -c odyssey.app.Runner
 -folders ""
--bl csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
+-bl csse374.revengd.examples.fixtures soot. jas. heros. demos. jasmin. pxb. java_cup. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
 --include-ancestors false
 -e <odyssey.app.Runner: void main(java.lang.String[])>
 --include-object false
@@ -20,7 +20,3 @@
 --exclude-lambda true
 -uml C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/generated_uml.txt
 -seq C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/generated_sequence_diagram.txt
--analyzers odyssey.analyzers.AdapterAnalyzer
--classRenderers odyssey.renderers.AdapterClassRenderer
--relationshipRenderers odyssey.renderers.AdapterRelationshipRenderer
--adapterThreshold 0.10
