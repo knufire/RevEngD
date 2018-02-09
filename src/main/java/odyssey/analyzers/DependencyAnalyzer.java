@@ -172,17 +172,23 @@ public class DependencyAnalyzer extends Analyzer {
   }
 
   private void addRelationship(SootClass from, SootClass to, int cardinality) {
+    SootClass toClass = to;
     if (from.hasSuperclass()) {
-      if (from.getSuperclass().equals(to)) {
+      if (from.getSuperclass().equals(toClass)) {
         return;
       }
-      if (from.getInterfaces().contains(to)) {
+      if (from.getInterfaces().contains(toClass)) {
         return;
       }
     }
-    if (passesFilters(to)) {
-      if (!from.equals(to)) {
-        relationships.add(new Relationship(from, Relation.DEPENDENCY, to, cardinality));
+    if (passesFilters(toClass)) {
+      if (!from.equals(toClass)) {
+        boolean isArray = toClass.getType().toString().contains("[");
+        if (isArray) {
+          Type baseType = toClass.getType().makeArrayType().baseType;
+          toClass = bundle.get("scene", Scene.class).getSootClass(baseType.toString().replaceAll("\\[\\]", ""));
+        }
+        relationships.add(new Relationship(from, Relation.DEPENDENCY, toClass, cardinality));
       }
     }
   }

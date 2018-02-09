@@ -6,6 +6,9 @@ import odyssey.filters.Filter;
 import odyssey.models.Pattern;
 import odyssey.models.Relation;
 import odyssey.models.Relationship;
+import soot.Scene;
+import soot.SootClass;
+import soot.Type;
 
 public class DIPAnalyzer extends Analyzer {
 
@@ -18,8 +21,9 @@ public class DIPAnalyzer extends Analyzer {
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
     relationships.forEach(r -> {
+      SootClass toClass = r.getToClass();
       if (r.getRelation() == Relation.ASSOCIATION || r.getRelation() == Relation.DEPENDENCY) {
-        if (!(r.getToClass().isAbstract() || r.getToClass().isInterface() || r.getToClass().isFinal())) {
+        if (!(toClass.isAbstract() || toClass.isInterface() || toClass.isFinal())) {
           patterns.add(createDIPPattern(r));
         }
       }
