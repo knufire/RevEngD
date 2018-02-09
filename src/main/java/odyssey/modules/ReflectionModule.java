@@ -46,7 +46,6 @@ public class ReflectionModule extends AbstractModule {
       throws InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException,
       NoSuchMethodException, SecurityException, ClassNotFoundException {
     String[] analyzerNames = System.getProperty("-analyzers").split(" ");
-    System.out.println(analyzerNames[0]);
     Class<? extends Analyzer> analyzerClass;
     Constructor<? extends Analyzer> constructor;
 

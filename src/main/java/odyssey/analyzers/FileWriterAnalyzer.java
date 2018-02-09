@@ -30,11 +30,13 @@ public class FileWriterAnalyzer extends Analyzer {
       writeFile(location, string);
     } catch (IOException e) {
       System.err.println("Unable to save data to " + location);
+      e.printStackTrace();
     }
   }
 
   private void writeFile(String location, String string) throws IOException {
     File file = new File(location);
+    file.createNewFile();
     FileWriter writer = new FileWriter(file);
     writer.write(string);
     writer.flush();
