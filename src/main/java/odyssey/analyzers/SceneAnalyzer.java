@@ -51,14 +51,6 @@ public class SceneAnalyzer extends Analyzer {
 //        .addExclusions(Arrays.asList("soot.*", "polygot.*")).addExclusions(Arrays.asList("org.*", "com.*"));
 //    sceneBuilder = sceneBuilder.addExclusion("odyssey.modules.*");
 
-    String blacklist = System.getProperty("-bl");
-    if (blacklist != null) {
-      tokens = blacklist.split(" ");
-      for (int i = 0; i < tokens.length; i++) {
-        sceneBuilder.addExclusion(tokens[i] + "*");
-      }
-    }
-
     List<String> classNames = Arrays.asList(System.getProperty("-c").split(" "));
     sceneBuilder = sceneBuilder.addClasses(classNames);
 

@@ -114,6 +114,7 @@ public class DependencyAnalyzer extends Analyzer {
   private void checkBody(SootClass clazz, Body body) {
     UnitGraph graph = new ExceptionalUnitGraph(body);
     graph.forEach(u -> {
+      //System.err.println(u);
       if (u instanceof InvokeStmt) {
         processInvokeStmt(clazz, (InvokeStmt) u);
       } else if (u instanceof AssignStmt) {

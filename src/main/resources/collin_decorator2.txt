@@ -20,7 +20,6 @@
 --exclude-lambda true
 -uml C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/generated_uml.txt
 -seq C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/generated_sequence_diagram.txt
--analyzers odyssey.analyzers.AdapterAnalyzer
--classRenderers odyssey.renderers.AdapterClassRenderer
--relationshipRenderers odyssey.renderers.AdapterRelationshipRenderer
--adapterThreshold 0.50
+-analyzers odyssey.analyzers.DecoratorAnalyzer
+-classRenderers odyssey.renderers.DecoratorClassRenderer
+-relationshipRenderers odyssey.renderers.DecoratorRelationshipRenderer

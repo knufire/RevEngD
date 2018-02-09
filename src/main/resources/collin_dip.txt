@@ -1,13 +1,13 @@
 -a private
 -d C:/Users/moorect/eclipse-workspace/CSSE374/LiveCoding 5-1/bin
--m headfirst.factory.pizzaaf.solution2.PizzaTestDrive
+-m headfirst.factory.pizzaaf.solution.PizzaTestDrive
 -s C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/sequence.svg
 -i C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/class.svg
--c headfirst.factory.pizzaaf.solution2.PizzaTestDrive headfirst.factory.pizzaaf.solution2.ChicagoPizzaIngredientFactory headfirst.factory.pizzaaf.solution2.ChicagoPizzaStore headfirst.factory.pizzaaf.solution2.NYPizzaIngredientFactory headfirst.factory.pizzaaf.solution2.NYPizzaStore headfirst.factory.pizzaaf.solution2.ReflectivePizzaIngredientFactory
--folders ""
--bl puzzle. test. headfirst.factory.pizzaaf.solution. headfirst.factory.pizzaaf. odyssey. csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
+-c headfirst.factory.pizzaaf.solution.PizzaTestDrive headfirst.factory.pizzaaf.solution.ChicagoPizzaIngredientFactory headfirst.factory.pizzaaf.solution.ChicagoPizzaStore headfirst.factory.pizzaaf.solution.NYPizzaIngredientFactory headfirst.factory.pizzaaf.solution.NYPizzaStore headfirst.factory.pizzaaf.solution.ReflectivePizzaIngredientFactory
+-folders "C:/Users/moorect/eclipse-workspace/CSSE374/LiveCoding 5-1/bin"
+-bl puzzle. test. headfirst.factory.pizzaaf. odyssey. csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
 --include-ancestors false
--e <headfirst.factory.pizzaaf.solution2.PizzaTestDrive: void main(java.lang.String[])>
+-e <headfirst.factory.pizzaaf.solution.PizzaTestDrive: void main(java.lang.String[])>
 --include-object false
 -max-depth 10
 --expand-jdk false

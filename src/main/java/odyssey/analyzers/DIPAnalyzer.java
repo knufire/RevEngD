@@ -20,24 +20,23 @@ public class DIPAnalyzer extends Analyzer {
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
     List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
     List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
+    Pattern p = new Pattern("dip");
     relationships.forEach(r -> {
       SootClass toClass = r.getToClass();
       if (r.getRelation() == Relation.ASSOCIATION || r.getRelation() == Relation.DEPENDENCY) {
         if (!(toClass.isAbstract() || toClass.isInterface() || toClass.isFinal())) {
-          patterns.add(createDIPPattern(r));
+          createDIPPattern(r, p);
         }
       }
     });
-    
+    patterns.add(p);
     return bundle;
   }
 
-  private Pattern createDIPPattern(Relationship r) {
-    Pattern p = new Pattern("dip");
+  private void createDIPPattern(Relationship r, Pattern p) {   
     p.put("relationship", r);
     p.put("from", r.getFromClass());
     p.put("to", r.getToClass());
-    return p;
   }
 
 }

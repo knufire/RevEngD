@@ -40,9 +40,11 @@ public class MessageAnalyzer extends Analyzer {
   }
   
   private void processMethod(SootMethod method, int depth) {
+    System.err.println(method + " : " + depth);
     if (depth >= maxCallDepth)
       return;
     if (method.hasActiveBody()) {
+      System.err.println("\t" + method);
       UnitGraph graph = new ExceptionalUnitGraph(method.getActiveBody());
       for (Unit u : graph) {
         
@@ -59,7 +61,7 @@ public class MessageAnalyzer extends Analyzer {
         List<SootMethod> possibleTargets = resolver.resolve(u, unresolvedMethod, bundle.get("scene", Scene.class));
         
         if (possibleTargets.isEmpty()) continue;
-        
+        System.err.println("\t\t" + method);
         SootMethod targetMethod = possibleTargets.get(0);
         if (passesFilters(targetMethod)) {
           if (showSuper || !isSuperCall(method, targetMethod)) {
