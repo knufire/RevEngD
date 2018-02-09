@@ -1,0 +1,27 @@
+-a private
+-d C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/build/classes/main
+-m odyssey.app.Runner
+-s C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/sequence.svg
+-i C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/class.svg
+-c java.io.InputStreamReader java.io.OutputStreamWriter java.awt.event.MouseAdapter sun.nio.cs.StreamEncoder sun.nio.cs.StreamDecoder
+-folders ""
+-bl odyssey. csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
+--include-ancestors true
+-e <odyssey.app.Runner: void main(java.lang.String[])>
+--include-object false
+-max-depth 10
+--expand-jdk false
+--show-inheritance true
+--show-dependence true
+--show-association true
+--include-super true
+-mrs odyssey.methodresolution.IntersectionMethodResolver
+-mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
+--exclude-lambda true
+-uml C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/generated_uml.txt
+-seq C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/generated_sequence_diagram.txt
+-analyzers odyssey.analyzers.AdapterAnalyzer
+-classRenderers odyssey.renderers.AdapterClassRenderer
+-relationshipRenderers odyssey.renderers.AdapterRelationshipRenderer
+-adapterThreshold 0.10
+-classpath "C:\Program Files\Java\jre1.8.0_144\lib\rt.jar"

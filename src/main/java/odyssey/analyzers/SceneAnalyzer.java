@@ -47,9 +47,9 @@ public class SceneAnalyzer extends Analyzer {
 
     sceneBuilder = sceneBuilder.addEntryPointMatcher(new MainMethodMatcher(mainClassName));
 
-    sceneBuilder = sceneBuilder.addExclusions(Arrays.asList("java.*", "javax.*", "sun.*"))
-        .addExclusions(Arrays.asList("soot.*", "polygot.*")).addExclusions(Arrays.asList("org.*", "com.*"));
-    sceneBuilder = sceneBuilder.addExclusion("odyssey.modules.*");
+//    sceneBuilder = sceneBuilder.addExclusions(Arrays.asList("java.*", "javax.*", "sun.*"))
+//        .addExclusions(Arrays.asList("soot.*", "polygot.*")).addExclusions(Arrays.asList("org.*", "com.*"));
+//    sceneBuilder = sceneBuilder.addExclusion("odyssey.modules.*");
 
     String blacklist = System.getProperty("-bl");
     if (blacklist != null) {

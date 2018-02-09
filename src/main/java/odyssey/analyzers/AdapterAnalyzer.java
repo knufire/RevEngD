@@ -25,15 +25,18 @@ import soot.util.Chain;
 
 public class AdapterAnalyzer extends Analyzer {
 
+  private AnalyzerBundle bundle;
+  
   protected AdapterAnalyzer(List<Filter> filters) {
     super(filters);
   }
 
   @Override
   public AnalyzerBundle execute(AnalyzerBundle bundle) {
-    List<Pattern> patterns = bundle.getList("patterns", Pattern.class);
-    List<SootClass> clazzes = bundle.getList("classes", SootClass.class);
-    List<Relationship> relationships = bundle.getList("relationships", Relationship.class);
+    this.bundle = bundle;
+    List<Pattern> patterns = this.bundle.getList("patterns", Pattern.class);
+    List<SootClass> clazzes = this.bundle.getList("classes", SootClass.class);
+    List<Relationship> relationships = this.bundle.getList("relationships", Relationship.class);
     
     List<Relation> adaptsRelations = new ArrayList<>();
     List<Relation> targetRelations = new ArrayList<>();
@@ -44,21 +47,32 @@ public class AdapterAnalyzer extends Analyzer {
     Double threshold = Double.parseDouble(System.getProperty("-adapterThreshold"));
     
     for (SootClass c: clazzes) {
+      if (!c.isConcrete()) 
+        continue;
       List<SootClass> targets = new ArrayList<>(c.getInterfaces());
+      
       if (c.hasSuperclass() && !c.getSuperclass().getName().equals("java.lang.Object")) {
         targets.add(c.getSuperclass());
       }
       if (targets.size() == 1) {
         SootClass target = targets.get(0);
+        System.out.println("Class: " + c); 
+        System.out.println("Target: " + target);
         List<SootMethod> methods = getOverriddenMethods(target, c);
+        System.out.println(methods);
         Map<SootField, Integer> scores = new HashMap<>();
+        boolean hasBodies = false;
         for (SootMethod m : methods) {
+          if (m.hasActiveBody()) {
+            hasBodies = true;
+          }
           SootField field = delagatesCall(m, c.getFields());
           if (field != null) {
             scores.put(field, scores.getOrDefault(field, 0)+1);
           }
         }
         
+        System.out.println("Scores: " + scores);
         Entry<SootField, Integer> maxField = null;
         for (Entry<SootField, Integer> e : scores.entrySet()) {
           if (maxField == null || e.getValue() > maxField.getValue()) {
@@ -67,10 +81,20 @@ public class AdapterAnalyzer extends Analyzer {
         }
         if (maxField != null) {
           double percentage = (maxField.getValue() / (double)target.getMethodCount());
+          System.out.println("Percent: " + percentage);
           if (percentage > threshold) {
-            SootClass adaptee = bundle.get("scene", Scene.class).getSootClass(maxField.getKey().getType().toString());
+            SootClass adaptee = this.bundle.get("scene", Scene.class).getSootClass(maxField.getKey().getType().toString());
             Relationship adapts = getRelationship(c, adaptee, adaptsRelations, relationships);
             Relationship isATarget = getRelationship(c, target, targetRelations, relationships);
+            if (adapts != null && isATarget != null) {
+              patterns.add(addAdapterPattern(target, c, adaptee, adapts, isATarget));
+            }
+          }
+        } else if (!hasBodies) {
+          SootClass adaptee = this.bundle.get("scene", Scene.class).getSootClass(c.getFields().getFirst().getType().toString());
+          Relationship adapts = getRelationship(c, adaptee, adaptsRelations, relationships);
+          Relationship isATarget = getRelationship(c, target, targetRelations, relationships);
+          if (adapts != null && isATarget != null) {
             patterns.add(addAdapterPattern(target, c, adaptee, adapts, isATarget));
           }
         }
@@ -78,7 +102,7 @@ public class AdapterAnalyzer extends Analyzer {
       
     }
     
-    return bundle;
+    return this.bundle;
   }
 
   private Relationship getRelationship(SootClass from, SootClass to, List<Relation> relations, List<Relationship> relationships) {
@@ -95,12 +119,8 @@ public class AdapterAnalyzer extends Analyzer {
     p.put("target", target);
     p.put("adapter", adapter);
     p.put("adaptee", adaptee);
-    if (adapts != null) {
-      p.put("adapts", adapts);
-    }
-    if (isATarget != null) {
-      p.put("isATarget", isATarget);
-    }
+    p.put("adapts", adapts);
+    p.put("isATarget", isATarget);
     return p;
   }
 
@@ -123,11 +143,13 @@ public class AdapterAnalyzer extends Analyzer {
   
   private SootField delagatesCall(SootMethod m, Chain<SootField> fields) {
     if (m.getSubSignature().contains("<init>")) return null;
-    if (!m.hasActiveBody()) return null;
+    if (!m.hasActiveBody()) {
+     return null;
+    }
     Body body = m.getActiveBody();
     UnitGraph graph = new ExceptionalUnitGraph(body);
     for (Unit u : graph) {
-      //findType(u);
+      System.out.println("Unit: " + u);
       if (u instanceof InvokeStmt) {
         InvokeStmt stmt = (InvokeStmt) u;
         InvokeExpr expr = stmt.getInvokeExpr();
