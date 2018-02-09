@@ -16,6 +16,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Unit;
+import soot.jimple.AssignStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -44,7 +45,7 @@ public class AdapterAnalyzer extends Analyzer {
     
     for (SootClass c: clazzes) {
       List<SootClass> targets = new ArrayList<>(c.getInterfaces());
-      if (c.hasSuperclass() && c.getSuperclass().getName().equals("java.lang.Object")) {
+      if (c.hasSuperclass() && !c.getSuperclass().getName().equals("java.lang.Object")) {
         targets.add(c.getSuperclass());
       }
       if (targets.size() == 1) {
@@ -54,7 +55,7 @@ public class AdapterAnalyzer extends Analyzer {
         for (SootMethod m : methods) {
           SootField field = delagatesCall(m, c.getFields());
           if (field != null) {
-            scores.put(field, scores.getOrDefault(field, 0));
+            scores.put(field, scores.getOrDefault(field, 0)+1);
           }
         }
         
@@ -64,9 +65,9 @@ public class AdapterAnalyzer extends Analyzer {
             maxField = e;
           }
         }
-        
         if (maxField != null) {
-          if ((maxField.getValue() / (double)target.getMethodCount()) > threshold) {
+          double percentage = (maxField.getValue() / (double)target.getMethodCount());
+          if (percentage > threshold) {
             SootClass adaptee = bundle.get("scene", Scene.class).getSootClass(maxField.getKey().getType().toString());
             Relationship adapts = getRelationship(c, adaptee, adaptsRelations, relationships);
             Relationship isATarget = getRelationship(c, target, targetRelations, relationships);
@@ -126,6 +127,7 @@ public class AdapterAnalyzer extends Analyzer {
     Body body = m.getActiveBody();
     UnitGraph graph = new ExceptionalUnitGraph(body);
     for (Unit u : graph) {
+      //findType(u);
       if (u instanceof InvokeStmt) {
         InvokeStmt stmt = (InvokeStmt) u;
         InvokeExpr expr = stmt.getInvokeExpr();
@@ -135,10 +137,19 @@ public class AdapterAnalyzer extends Analyzer {
             return f;
           }
         }
+      } else if (u instanceof AssignStmt) {
+        AssignStmt stmt = (AssignStmt) u;
+        if (stmt.getRightOp() instanceof InvokeExpr) {
+          InvokeExpr expr = (InvokeExpr) stmt.getRightOp();
+          SootClass target = expr.getMethod().getDeclaringClass();
+          for (SootField f : fields) {
+            if (f.getType().equals(target.getType())) {
+              return f;
+            }
+          }
+        }
       }
     }
     return null;
-  }
-  
-  
+  }  
 }

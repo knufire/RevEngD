@@ -4,7 +4,7 @@ import soot.SootClass;
 
 public class AdapterRelationshipRenderer extends RelationshipRenderer {
   public String getName() {
-    return "decorator";
+    return "adapter";
   }
 
   public String renderRight(SootClass clazz) {

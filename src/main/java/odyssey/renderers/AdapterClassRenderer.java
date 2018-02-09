@@ -17,7 +17,6 @@ public class AdapterClassRenderer extends ClassRenderer {
   
   @Override
   protected String renderClassName() {
-    String className = clazz.getName();
     String key = pattern.getKey(clazz);
     return super.renderClassName() + " <<" + key + ">>";
   }
