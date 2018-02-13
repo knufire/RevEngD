@@ -1,0 +1,23 @@
+-a private
+
+-d C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/build/classes/main
+-m odyssey.app.Runner
+-s C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/sequence.svg
+-i C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/images/class.svg
+-c odyssey.app.Runner
+-bl odyssey.modules csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver.
+-folders "C:/Users/moorect/eclipse-workspace/CSSE374/Project/RevEngD/src/main/java"
+--include-ancestors false
+-e <odyssey.app.Runner: void main(java.lang.String[])>
+--include-object false
+-max-depth 5
+--expand-jdk false
+--show-inheritance true
+--show-dependence true
+--show-association true
+--include-super true
+-mrs odyssey.methodresolution.ChainMethodResolver
+-mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
+--exclude-lambda true
+-analyzers csse374.revengd.detectors.BidirectionalDetector
+-renderers csse374.revengd.renderers.BidirectionalRenderer

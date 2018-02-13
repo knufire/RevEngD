@@ -1,0 +1,26 @@
+-a private
+
+-d C:/Users/Rahul/Documents/csse374_workspace/RevEngD/build/classes/main
+-m odyssey.app.Runner
+-s C:/Users/Rahul/Documents/csse374_workspace/RevEngD/images/sequence.svg
+-i C:/Users/Rahul/Documents/csse374_workspace/RevEngD/images/class.svg
+-c odyssey.app.Runner
+-bl problem. puzzle. soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver.
+-folders C:/Users/Rahul/Documents/csse374_workspace/RevEngD/src/main/java/
+--include-ancestors false
+-e <odyssey.app.Runner: void main(java.lang.String[])>
+--include-object false
+-max-depth 5
+--expand-jdk false
+--show-inheritance true
+--show-dependence true
+--show-association true
+--include-super true
+-mrs odyssey.methodresolution.ChainMethodResolver
+-mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
+--exclude-lambda true
+-analyzers odyssey.analyzers.InheritanceOverCompositionAnalyzer odyssey.analyzers.SingletonAnalyzer odyssey.analyzers.DIPAnalyzer
+-classRenderers odyssey.renderers.DIPClassRenderer odyssey.renderers.InheritanceOverCompositionClassRenderer odyssey.renderers.SingletonClassRenderer
+-relationshipRenderers odyssey.renderers.DIPRelationshipRenderer odyssey.renderers.InheritanceOverCompositionRelationshipRenderer odyssey.renderers.SingletonRelationshipRenderer
+-filters odyssey.filters.DollarSignFilter
+-uml C:/Users/Rahul/Documents/csse374_workspace/RevEngD/images/generated_uml.txt

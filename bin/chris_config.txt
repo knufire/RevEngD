@@ -1,0 +1,26 @@
+-a private
+-d C:/Users/keinslc/Documents/CSSE/CSSE 374/Exam2/Exam2/build/classes/main
+-m client.CheeseCakeClient
+-s C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/sequence.svg
+-i C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/class.svg
+-c client.CheeseCakeClient
+-folders ""
+-bl odyssey.modules csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
+-classPath "C:/Users/keinslc/.gradle/caches/modules-2/files-2.1/edu.rosehulman.csse374/CheeseCakeFactory/1.0.0/5d1a47fe9355a37611aadeccc4233becf5b48576/CheeseCakeFactory-1.0.0.jar" 
+--include-ancestors false
+-e <client.CheeseCakeClient: void main(java.lang.String[])>
+--include-object false
+-max-depth 5
+--expand-jdk false
+--show-inheritance true
+--show-dependence true
+--show-association true
+--include-super true
+-mrs odyssey.methodresolution.ChainMethodResolver
+-mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
+--exclude-lambda true
+-uml C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_uml.txt
+-seq C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_sequence_diagram.txt
+-classRenderers odyssey.renderers.DecoratorClassRenderer
+-analyzers odyssey.analyzers.SingletonAnalyzer odyssey.analyzers.DecoratorAnalyzer
+-relationshipRenderers odyssey.renderers.DecoratorRelationshipRenderer

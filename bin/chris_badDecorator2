@@ -1,0 +1,25 @@
+-a private
+-d C:/Users/keinslc/Documents/CSSE/CSSE 374/Labs/3-1 Live Coding/DecoratorMistake2/bin
+-m App
+-s C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/sequence.svg
+-i C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/class.svg
+-c App java.lang.SecurityManager
+-folders ""
+-bl odyssey.modules csse374.revengd.examples.fixtures soot. java. javax. sun. polyglot. org. com. h. net.sourceforge.plantuml jcckit. smetana. gen. edu.rosehulman.jvm.sigevaluator. beaver. 
+--include-ancestors false
+-e <App: void main(java.lang.String[])>
+--include-object false
+-max-depth 5
+--expand-jdk false
+--show-inheritance true
+--show-dependence true
+--show-association true
+--include-super true
+-mrs odyssey.methodresolution.ChainMethodResolver
+-mra odyssey.methodresolution.CallGraphAlgorithm odyssey.methodresolution.HierachyAlgorithm
+--exclude-lambda true
+-uml C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_uml.txt
+-seq C:/Users/keinslc/Documents/CSSE/CSSE 374/Project/RevEngD/images/generated_sequence_diagram.txt
+-classRenderers odyssey.renderers.DecoratorClassRenderer
+-analyzers odyssey.analyzers.SingletonAnalyzer odyssey.analyzers.DecoratorAnalyzer
+-relationshipRenderers odyssey.renderers.DecoratorRelationshipRenderer
